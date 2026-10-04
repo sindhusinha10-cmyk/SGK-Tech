@@ -32,10 +32,10 @@ from PIL import Image, ImageDraw, ImageFont
 
 FONT_DIR = "/usr/share/fonts/truetype/dejavu/"
 
-IDS = ["kiln", "ribb", "zag", "glim", "rumble"]
+IDS = ["gaja", "mayur", "diya", "patra", "kumbha"]
 
 # the array values used in the roster picture, and the poses in the performance sheet
-VALUES = {"kiln": 7, "ribb": 3, "zag": 9, "glim": 1, "rumble": 5}
+VALUES = {"gaja": 8, "mayur": 3, "diya": 1, "patra": 5, "kumbha": 9}
 POSES = [("Idle", 0.0, "1 · IDLE"), ("GlanceR", 0.45, "2 · GLANCE RIGHT"),
          ("Hop", 0.36, "3 · HOP APEX"), ("Land", 0.18, "4 · LAND"),
          ("Success", 0.62, "5 · SUCCESS")]

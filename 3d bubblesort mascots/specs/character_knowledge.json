@@ -1,0 +1,147 @@
+[
+  {
+    "id": "gaja",
+    "name": "Gaja",
+    "title": "The Bipedal Elephant & Heavyweight Anchor",
+    "cultural_heritage": {
+      "motif": "Gaja (Airavata / Gajendra)",
+      "cultural_significance": "In Indian heritage, the elephant embodies profound memory, patience, wisdom, and unyielding physical presence. It signifies grounded stability and venerable steadiness.",
+      "visual_design": "Stout, friendly bipedal baby elephant standing on two sturdy hind legs. Large expressive floppy ears, raised curved trunk expressing joy, slate blue-grey skin, and warm terracotta inner ears. Blank runtime badge on chest."
+    },
+    "bubble_sort_pedagogy": {
+      "algorithm_role": "Heavyweight / Anchor Element",
+      "sorting_behavior": "When an array item has a high numeric value, Bubble Sort causes it to steadily 'bubble up' to the right end of the array pass-by-pass. Gaja represents this heavyweight element: with each comparison pass, Gaja hops decisively across smaller elements until reaching the final sorted partition.",
+      "runtime_state_reactions": {
+        "GlanceL": "Turns trunk and eyes left to inspect the neighbouring array element value.",
+        "GlanceR": "Turns trunk and eyes right to compare numeric values.",
+        "Hop": "Powerful vertical bipedal leap with flapping ears as the slot coordinates swap.",
+        "NoSwap": "Nods knowingly and stays put when the adjacent element is already smaller.",
+        "Success": "Trumpets trunk high in victory with a joyful ear flap when the array is sorted."
+      }
+    },
+    "3d_asset_specs": {
+      "mesh": "gaja.glb",
+      "height_m": 1.25,
+      "base_armature": "14-bone standard biped core",
+      "accessory_bones": ["trunk.01", "trunk.02", "trunk.03", "ear.L", "ear.R"],
+      "materials": ["gaja_skin_rough", "gaja_ear_terracotta", "badge_slate_cream"],
+      "triangle_budget": "< 12000"
+    }
+  },
+  {
+    "id": "mayur",
+    "name": "Mayur",
+    "title": "The Peacock Chick & Pattern Comparator",
+    "cultural_heritage": {
+      "motif": "Mayura (Peacock)",
+      "cultural_significance": "The national bird of India, Mayura symbolizes beauty, sacred vigilance, cyclical rebirth, and radiant celestial geometry. Its fanned plumage is a traditional symbol of completeness and discernment.",
+      "visual_design": "Plump teal/cerulean bird chick standing on two slender clawed legs. Features a triple-feather head crest and a wide radial fan of emerald green and golden feathers adorned with shimmering indigo eye-spots."
+    },
+    "bubble_sort_pedagogy": {
+      "algorithm_role": "Comparison & Pattern Verification Pointer",
+      "sorting_behavior": "Mayur serves as the dynamic visual comparator. The expansive tail fan folds inward during fast travel and fans outward into a breathtaking radial arc during element inspection and victorious sort completion.",
+      "runtime_state_reactions": {
+        "GlanceL": "Tilts head crest and cocks beak leftward to scrutinize the left neighbour.",
+        "GlanceR": "Pecks and glances rightward during pairwise comparison.",
+        "Hop": "Nimble, fluttery hop in place with tail feathers rustling.",
+        "NoSwap": "Gentle preening flutter indicating the adjacent pair is in ascending order.",
+        "Success": "Magnificent full tail fan expansion with high-frequency plumage shiver."
+      }
+    },
+    "3d_asset_specs": {
+      "mesh": "mayur.glb",
+      "height_m": 1.10,
+      "base_armature": "14-bone standard biped core",
+      "accessory_bones": ["tailFan_root", "tailFan.L", "tailFan.R", "crest.top", "beak"],
+      "materials": ["peacock_blue_satin", "feather_emerald_gold", "badge_slate_cream"],
+      "triangle_budget": "< 14500"
+    }
+  },
+  {
+    "id": "diya",
+    "name": "Diya",
+    "title": "The Terracotta Lamp & Traversal Pointer",
+    "cultural_heritage": {
+      "motif": "Diya / Deepa (Clay Oil Lamp)",
+      "cultural_significance": "The clay lamp symbolizes the triumph of light over darkness and knowledge over ignorance (Tamaso ma jyotir gamaya). It represents inner focus, truth, and persistent clarity.",
+      "visual_design": "Chubby terracotta clay bowl with a pinched pouring spout, short stubby clay arms and feet, and a warm glowing teardrop flame crest alive on top. A radiant amber gem rests on its cheek."
+    },
+    "bubble_sort_pedagogy": {
+      "algorithm_role": "Active Traversal Pointer & Invariance Validator",
+      "sorting_behavior": "In Bubble Sort, an inner loop pointer traverses adjacent pairs [j, j+1]. Diya acts as the radiant searchlight of the algorithm: its flame glows brighter during active comparison and turns steady gold once its element is locked into its invariant sorted position.",
+      "runtime_state_reactions": {
+        "GlanceL": "Pivots flame and warm eyes left, illuminating the left slot.",
+        "GlanceR": "Spill of warm light rightward toward the comparison target.",
+        "Hop": "Energetic bobbing bounce with the flame flexing like a teardrop.",
+        "NoSwap": "Flame pulses warm amber, confirming no inversion exists between pairs.",
+        "Success": "Flame flares into brilliant warm gold with joyful arm spinning."
+      }
+    },
+    "3d_asset_specs": {
+      "mesh": "diya.glb",
+      "height_m": 0.85,
+      "base_armature": "14-bone standard biped core",
+      "accessory_bones": ["flame_base", "flame_mid", "flame_tip"],
+      "materials": ["terracotta_matte_clay", "flame_emissive_translucent", "badge_slate_cream"],
+      "triangle_budget": "< 8000"
+    }
+  },
+  {
+    "id": "patra",
+    "name": "Patra",
+    "title": "The Parchment Scroll & Array Memory Index",
+    "cultural_heritage": {
+      "motif": "Patra / Grantha (Ancient Manuscript Scroll)",
+      "cultural_significance": "Represents the ancient Indian preservation of foundational mathematical treatises (such as the Sulba Sutras and Aryabhatiya). It symbolizes structured records, sequential texts, and written memory.",
+      "visual_design": "Chubby upright rolled manuscript scroll of aged ivory paper with visible ancient script textures, bound with a saffron silk sash ribbon and tassel, standing on carved wooden peg feet."
+    },
+    "bubble_sort_pedagogy": {
+      "algorithm_role": "Data Index & Historical State Logger",
+      "sorting_behavior": "Every sorting algorithm requires memory tracking of indices and swap counters. Patra represents the sequential indexing of the array: its curled paper unfurls slightly when swaps occur, visualizing the state change in memory.",
+      "runtime_state_reactions": {
+        "GlanceL": "Unfurls top curl slightly toward the left neighbour.",
+        "GlanceR": "Curls top edge rightward to inspect the next slot.",
+        "Hop": "Crisp upright spring on its wooden peg feet with ribbon tassels swinging.",
+        "NoSwap": "Gentle ribbon wobble confirming index increment without swap.",
+        "Success": "Full joyful bow with parchment unrolling slightly in celebration."
+      }
+    },
+    "3d_asset_specs": {
+      "mesh": "patra.glb",
+      "height_m": 1.05,
+      "base_armature": "14-bone standard biped core",
+      "accessory_bones": ["scroll_curl_top", "scroll_curl_side", "ribbon_knot"],
+      "materials": ["manuscript_parchment_aged", "saffron_silk_ribbon", "badge_slate_cream"],
+      "triangle_budget": "< 9500"
+    }
+  },
+  {
+    "id": "kumbha",
+    "name": "Kumbha",
+    "title": "The Golden Kalasha & Array Boundary Buffer",
+    "cultural_heritage": {
+      "motif": "Purna Kalasha / Kumbha (Sacred Vessel)",
+      "cultural_significance": "A fundamental emblem of fullness, auspicious completion, abundance, and source of life. Crowned with lush mango leaves (Amrapallava) and a sacred coconut (Shriphala).",
+      "visual_design": "Round plump polished brass pot with engraved floral neck rim, crowned with five emerald green mango leaves and a fibrous brown coconut. Short golden brass arms and feet."
+    },
+    "bubble_sort_pedagogy": {
+      "algorithm_role": "Array Boundary & Fullness (Sorted) Verifier",
+      "sorting_behavior": "Signifies the boundary of the unsorted partition (n - i - 1). Once an element reaches its final place at the end of the pass, Kumbha marks it as complete. When the entire array is sorted, Kumbha's fullness represents O(1) auxiliary space completion.",
+      "runtime_state_reactions": {
+        "GlanceL": "Shifts brass weight and tips mango leaves toward the left slot.",
+        "GlanceR": "Tips coconut crown rightward to check array boundary.",
+        "Hop": "Solid, resonant metallic hop with mango leaves swaying.",
+        "NoSwap": "Reverberant metallic chime pose confirming partition boundary intact.",
+        "Success": "Leaves flutter upright, coconut shines, and celebratory brass shimmer."
+      }
+    },
+    "3d_asset_specs": {
+      "mesh": "kumbha.glb",
+      "height_m": 0.95,
+      "base_armature": "14-bone standard biped core",
+      "accessory_bones": ["coconut_top", "leaf_FL", "leaf_FR", "leaf_BL", "leaf_BR"],
+      "materials": ["sacred_brass_polished", "mango_leaf_emerald", "coconut_husk_brown", "badge_slate_cream"],
+      "triangle_budget": "< 11000"
+    }
+  }
+]
