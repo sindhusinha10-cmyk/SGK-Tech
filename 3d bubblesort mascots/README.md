@@ -57,7 +57,8 @@ outlines in solid black.
 │   ├── animation_clips.md      every clip, what it does and how to drive it
 │   ├── rig_spec.md             the 14-bone core + per-character extras, in detail
 │   ├── badge_label.md          where to put the number, in model space and screen space
-│   └── validation_report.json  the pass/fail report produced by tools/validate.py
+│   ├── validation_report.json  the pass/fail report produced by tools/validate.py
+│   └── blender_verification.json  the same facts re-read by BLENDER's glTF importer
 ├── index.html                  LIVE VIEWER — drives the GLBs in a browser
 ├── vendor/                     three.js r128 + GLTFLoader (MIT, vendored so the
 │                               viewer works with no internet connection)
@@ -67,7 +68,9 @@ outlines in solid black.
 │   ├── silhouettes.png         solid-black silhouette test (front + three-quarter)
 │   ├── animation_strip.png     idle → glance → hop apex → landing → success, per character
 │   ├── bubblesort_rehearsal.webp / .gif   a real bubble-sort pass, performed live
-│   └── rehearsal_keysheet.png  the same pass as a contact sheet
+│   ├── rehearsal_keysheet.png  the same pass as a contact sheet
+│   └── blender_*.png           the same checks rendered a SECOND time with Cycles,
+│                               straight out of the .blend files (see §6)
 ├── tools/                      the source pipeline (rebuilds everything, byte-for-byte)
 │   ├── mlib.py                 geometry primitives (lathe, tube, superellipsoid, plates…)
 │   ├── rig.py                  skeleton, automatic skinning, clip baking
@@ -80,7 +83,11 @@ outlines in solid black.
 │   ├── render.py               offline software renderer used for every PNG
 │   ├── make_sheets.py          roster / views / silhouettes / animation strip
 │   └── make_gif.py             the animated bubble-sort rehearsal
-└── blender/                    Blender source — see "Blender source files" below
+└── blender/                    BLENDER SOURCE — real .blend files, built here
+    ├── source/*.blend          five character files + a combined roster file
+    ├── make_blend.py           writes them from models/*.glb (Blender 4.2 LTS)
+    ├── render_blender_shots.py Cycles renders of the .blend files -> shots/
+    └── headless_bpy_shim.py    lets `import bpy` work in a container with no X server
 ```
 
 ### Triangles and file sizes (measured, not estimated)
@@ -198,12 +205,21 @@ To be explicit, because a claim like "rigged and animation-ready" has to be true
 * **Rendered evidence:** every PNG in `shots/` is rendered from the *skinned* geometry
   through the same pose functions that were baked into the clips — not from a separate
   mock-up.
-* **Blender source:** see `blender/README.md`. This environment has no Blender installed
-  and no access to the Blender download servers, so no `.blend` is shipped. Instead the
-  folder contains the exact recipe to produce native Blender files (a complete
-  `import_and_bake_blender.py` script for Blender 3.6+/4.x, written against the glTF
-  importer, plus the `use_inverse_kinematics`/action-naming steps) — it is a spec, and
-  is labelled as one.
+* **Blender source:** **shipped, and it is real.** `blender/source/` contains five
+  character `.blend` files plus `bubblesort_squad_roster.blend`, written by Blender
+  **4.2.23 LTS** on this machine from the same GLBs that ship in `models/`. Each file
+  carries the skinned mesh (materials and embedded textures resolved), the armature
+  with its full bone list, all eight clips as actions *and* on NLA tracks, a 30 fps
+  metric scene, a three-point light rig, a framed camera, a `README` text datablock and
+  the delivery conventions as custom properties. See `blender/README.md`.
+* **A second, independent verification.** `blender/make_blend.py` writes
+  `specs/blender_verification.json`, whose numbers are read back by **Blender's own
+  glTF importer** rather than by the pipeline that wrote the files. It agrees with
+  `specs/validation_report.json` on triangles, bones, clip names and durations, skin
+  influences and the badge anchor. `blender/render_blender_shots.py` then renders the
+  `.blend` files with **Cycles** — a completely different renderer from the one behind
+  the rest of `shots/` — producing `shots/blender_roster.png`,
+  `shots/blender_views_<id>.png` and `shots/blender_poses_<id>.png`.
 
 ---
 
@@ -244,3 +260,25 @@ python3 make_gif.py sheet      # just the contact sheet (about 20 s)
 
 Dependencies: `numpy` and `Pillow` only (`pip install numpy pillow`). Everything else —
 glTF writing, skinning, rendering — is implemented in this folder.
+
+### Rebuilding the Blender side
+
+```bash
+cd "3d bubblesort mascots"
+
+# with Blender installed normally:
+blender --background --python blender/make_blend.py           -- models blender/source
+blender --background --python blender/render_blender_shots.py -- models blender/source shots all
+
+# or as the PyPI module, in a container with no X server:
+pip install bpy==4.2.23
+python3 blender/headless_bpy_shim.py            # loader-only stubs, see blender/README.md
+export LD_LIBRARY_PATH=/tmp/bpy-shim/lib:$LD_LIBRARY_PATH
+export LD_PRELOAD=/tmp/bpy-shim/lib/libbpy_shim.so
+python3 blender/make_blend.py
+python3 blender/render_blender_shots.py -- models blender/source shots all
+```
+
+About 2 s to write all six `.blend` files, about 5 minutes for the ten Cycles sheets on
+CPU. Both scripts are plain Blender Python against the bundled glTF importer — no
+add-ons, no network.

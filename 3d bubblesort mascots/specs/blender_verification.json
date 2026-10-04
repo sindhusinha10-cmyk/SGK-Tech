@@ -1,0 +1,840 @@
+{
+ "generator": "blender/make_blend.py",
+ "blender_version": "4.2.23 LTS",
+ "note": "Independent verification: these numbers are read back by Blender's own glTF importer from the shipped GLBs, not by the pipeline that wrote them.",
+ "fps": 30,
+ "slot_pitch_m": 1.1,
+ "axis_convention": {
+  "gltf": "Y up, characters face +Z",
+  "blender": "Z up, characters stand on Z=0 and face -Y",
+  "importer_mapping": "gltf (x, y, z) -> blender (x, -z, y)"
+ },
+ "models": [
+  {
+   "id": "kiln",
+   "mesh_object": "kiln_mesh",
+   "armature": "kiln_armature",
+   "bones": [
+    "root",
+    "hips",
+    "spine",
+    "chest",
+    "neck",
+    "head",
+    "lidL",
+    "lidR",
+    "eyeL",
+    "eyeR",
+    "crown",
+    "badge",
+    "handleL",
+    "handleR",
+    "legL",
+    "legR",
+    "base"
+   ],
+   "bone_count": 17,
+   "core_bones_missing": [],
+   "extra_bones": [
+    "crown",
+    "handleL",
+    "handleR"
+   ],
+   "badge_bone": true,
+   "badge_anchor_gltf": [
+    0.0,
+    0.52,
+    0.3198
+   ],
+   "clips": [
+    {
+     "name": "Idle",
+     "frame_start": 0.0,
+     "frame_end": 120.0,
+     "seconds": 4.0,
+     "fcurves": 63,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "GlanceL",
+     "frame_start": 0.0,
+     "frame_end": 27.0,
+     "seconds": 0.9,
+     "fcurves": 54,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "GlanceR",
+     "frame_start": 0.0,
+     "frame_end": 27.0,
+     "seconds": 0.9,
+     "fcurves": 54,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "Crouch",
+     "frame_start": 0.0,
+     "frame_end": 15.0,
+     "seconds": 0.5,
+     "fcurves": 54,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "Hop",
+     "frame_start": 0.0,
+     "frame_end": 21.600000381469727,
+     "seconds": 0.72,
+     "fcurves": 68,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "Land",
+     "frame_start": 0.0,
+     "frame_end": 15.0,
+     "seconds": 0.5,
+     "fcurves": 54,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "NoSwap",
+     "frame_start": 0.0,
+     "frame_end": 28.5,
+     "seconds": 0.95,
+     "fcurves": 48,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "Success",
+     "frame_start": 0.0,
+     "frame_end": 37.5,
+     "seconds": 1.25,
+     "fcurves": 72,
+     "fake_user": true,
+     "on_nla": true
+    }
+   ],
+   "clip_names": [
+    "Idle",
+    "GlanceL",
+    "GlanceR",
+    "Crouch",
+    "Hop",
+    "Land",
+    "NoSwap",
+    "Success"
+   ],
+   "clips_missing": [],
+   "images": [
+    "ceramic",
+    "matte"
+   ],
+   "node_groups": [],
+   "triangles": 7136,
+   "vertices": 4192,
+   "materials": [
+    "kiln_badge",
+    "kiln_badge_rim",
+    "kiln_clay",
+    "kiln_eye_dark",
+    "kiln_eye_glint",
+    "kiln_glaze",
+    "kiln_indigo",
+    "kiln_lid",
+    "kiln_pop"
+   ],
+   "vertex_groups": 17,
+   "max_influences": 4,
+   "modifiers": [
+    "ARMATURE"
+   ],
+   "bounds_blender_min": [
+    -0.4333949387073517,
+    -0.33608707785606384,
+    1.862645149230957e-09
+   ],
+   "bounds_blender_max": [
+    0.4333949387073517,
+    0.32499998807907104,
+    1.3559999465942383
+   ],
+   "height_m": 1.3559999447315931,
+   "ground_z": 1.862645149230957e-09,
+   "front_y": -0.33608707785606384,
+   "file": "source/kiln.blend",
+   "bytes": 392995
+  },
+  {
+   "id": "ribb",
+   "mesh_object": "ribb_mesh",
+   "armature": "ribb_armature",
+   "bones": [
+    "root",
+    "hips",
+    "spine",
+    "chest",
+    "neck",
+    "head",
+    "lidL",
+    "lidR",
+    "eyeL",
+    "eyeR",
+    "lidKnot",
+    "badge",
+    "handleL",
+    "handleR",
+    "legL",
+    "legR",
+    "base"
+   ],
+   "bone_count": 17,
+   "core_bones_missing": [],
+   "extra_bones": [
+    "lidKnot",
+    "handleL",
+    "handleR"
+   ],
+   "badge_bone": true,
+   "badge_anchor_gltf": [
+    0.0,
+    0.152,
+    0.2593
+   ],
+   "clips": [
+    {
+     "name": "Idle",
+     "frame_start": 0.0,
+     "frame_end": 120.0,
+     "seconds": 4.0,
+     "fcurves": 63,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "GlanceL",
+     "frame_start": 0.0,
+     "frame_end": 27.0,
+     "seconds": 0.9,
+     "fcurves": 54,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "GlanceR",
+     "frame_start": 0.0,
+     "frame_end": 27.0,
+     "seconds": 0.9,
+     "fcurves": 54,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "Crouch",
+     "frame_start": 0.0,
+     "frame_end": 15.0,
+     "seconds": 0.5,
+     "fcurves": 54,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "Hop",
+     "frame_start": 0.0,
+     "frame_end": 21.600000381469727,
+     "seconds": 0.72,
+     "fcurves": 68,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "Land",
+     "frame_start": 0.0,
+     "frame_end": 15.0,
+     "seconds": 0.5,
+     "fcurves": 54,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "NoSwap",
+     "frame_start": 0.0,
+     "frame_end": 28.5,
+     "seconds": 0.95,
+     "fcurves": 48,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "Success",
+     "frame_start": 0.0,
+     "frame_end": 37.5,
+     "seconds": 1.25,
+     "fcurves": 72,
+     "fake_user": true,
+     "on_nla": true
+    }
+   ],
+   "clip_names": [
+    "Idle",
+    "GlanceL",
+    "GlanceR",
+    "Crouch",
+    "Hop",
+    "Land",
+    "NoSwap",
+    "Success"
+   ],
+   "clips_missing": [],
+   "images": [
+    "cord",
+    "matte",
+    "weave"
+   ],
+   "node_groups": [],
+   "triangles": 14032,
+   "vertices": 7967,
+   "materials": [
+    "ribb_badge",
+    "ribb_badge_rim",
+    "ribb_cord",
+    "ribb_cream",
+    "ribb_eye_dark",
+    "ribb_eye_glint",
+    "ribb_lid",
+    "ribb_weave",
+    "ribb_weave_dk"
+   ],
+   "vertex_groups": 17,
+   "max_influences": 4,
+   "modifiers": [
+    "ARMATURE"
+   ],
+   "bounds_blender_min": [
+    -0.5164385437965393,
+    -0.38217782974243164,
+    0.0
+   ],
+   "bounds_blender_max": [
+    0.5164385437965393,
+    0.3330000042915344,
+    0.8539999723434448
+   ],
+   "height_m": 0.8539999723434448,
+   "ground_z": 0.0,
+   "front_y": -0.38217782974243164,
+   "file": "source/ribb.blend",
+   "bytes": 566854
+  },
+  {
+   "id": "zag",
+   "mesh_object": "zag_mesh",
+   "armature": "zag_armature",
+   "bones": [
+    "root",
+    "hips",
+    "spine",
+    "chest",
+    "neck",
+    "head",
+    "lidL",
+    "lidR",
+    "eyeL",
+    "eyeR",
+    "badge",
+    "finL",
+    "finR",
+    "legL",
+    "legR",
+    "base"
+   ],
+   "bone_count": 16,
+   "core_bones_missing": [],
+   "extra_bones": [
+    "finL",
+    "finR"
+   ],
+   "badge_bone": true,
+   "badge_anchor_gltf": [
+    0.0,
+    0.52,
+    0.2371
+   ],
+   "clips": [
+    {
+     "name": "Idle",
+     "frame_start": 0.0,
+     "frame_end": 120.0,
+     "seconds": 4.0,
+     "fcurves": 59,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "GlanceL",
+     "frame_start": 0.0,
+     "frame_end": 27.0,
+     "seconds": 0.9,
+     "fcurves": 53,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "GlanceR",
+     "frame_start": 0.0,
+     "frame_end": 27.0,
+     "seconds": 0.9,
+     "fcurves": 53,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "Crouch",
+     "frame_start": 0.0,
+     "frame_end": 15.0,
+     "seconds": 0.5,
+     "fcurves": 50,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "Hop",
+     "frame_start": 0.0,
+     "frame_end": 21.600000381469727,
+     "seconds": 0.72,
+     "fcurves": 58,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "Land",
+     "frame_start": 0.0,
+     "frame_end": 15.0,
+     "seconds": 0.5,
+     "fcurves": 50,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "NoSwap",
+     "frame_start": 0.0,
+     "frame_end": 28.5,
+     "seconds": 0.95,
+     "fcurves": 47,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "Success",
+     "frame_start": 0.0,
+     "frame_end": 37.5,
+     "seconds": 1.25,
+     "fcurves": 71,
+     "fake_user": true,
+     "on_nla": true
+    }
+   ],
+   "clip_names": [
+    "Idle",
+    "GlanceL",
+    "GlanceR",
+    "Crouch",
+    "Hop",
+    "Land",
+    "NoSwap",
+    "Success"
+   ],
+   "clips_missing": [],
+   "images": [
+    "matte",
+    "stone"
+   ],
+   "node_groups": [],
+   "triangles": 1286,
+   "vertices": 2534,
+   "materials": [
+    "zag_badge",
+    "zag_badge_rim",
+    "zag_dark",
+    "zag_eye_glint",
+    "zag_glow",
+    "zag_lid",
+    "zag_stone",
+    "zag_strata"
+   ],
+   "vertex_groups": 16,
+   "max_influences": 4,
+   "modifiers": [
+    "ARMATURE"
+   ],
+   "bounds_blender_min": [
+    -0.24534516036510468,
+    -0.3109999895095825,
+    0.0
+   ],
+   "bounds_blender_max": [
+    0.24534516036510468,
+    0.24534516036510468,
+    1.0740000009536743
+   ],
+   "height_m": 1.0740000009536743,
+   "ground_z": 0.0,
+   "front_y": -0.3109999895095825,
+   "file": "source/zag.blend",
+   "bytes": 251854
+  },
+  {
+   "id": "glim",
+   "mesh_object": "glim_mesh",
+   "armature": "glim_armature",
+   "bones": [
+    "root",
+    "hips",
+    "spine",
+    "chest",
+    "neck",
+    "head",
+    "lidL",
+    "lidR",
+    "eyeL",
+    "eyeR",
+    "badge",
+    "core",
+    "legL",
+    "legR",
+    "base",
+    "frondF",
+    "frondB",
+    "frondL",
+    "frondR"
+   ],
+   "bone_count": 19,
+   "core_bones_missing": [],
+   "extra_bones": [
+    "core",
+    "frondF",
+    "frondB",
+    "frondL",
+    "frondR"
+   ],
+   "badge_bone": true,
+   "badge_anchor_gltf": [
+    0.0,
+    0.234,
+    0.3
+   ],
+   "clips": [
+    {
+     "name": "Idle",
+     "frame_start": 0.0,
+     "frame_end": 120.0,
+     "seconds": 4.0,
+     "fcurves": 70,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "GlanceL",
+     "frame_start": 0.0,
+     "frame_end": 27.0,
+     "seconds": 0.9,
+     "fcurves": 61,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "GlanceR",
+     "frame_start": 0.0,
+     "frame_end": 27.0,
+     "seconds": 0.9,
+     "fcurves": 61,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "Crouch",
+     "frame_start": 0.0,
+     "frame_end": 15.0,
+     "seconds": 0.5,
+     "fcurves": 61,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "Hop",
+     "frame_start": 0.0,
+     "frame_end": 21.600000381469727,
+     "seconds": 0.72,
+     "fcurves": 78,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "Land",
+     "frame_start": 0.0,
+     "frame_end": 15.0,
+     "seconds": 0.5,
+     "fcurves": 64,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "NoSwap",
+     "frame_start": 0.0,
+     "frame_end": 28.5,
+     "seconds": 0.95,
+     "fcurves": 55,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "Success",
+     "frame_start": 0.0,
+     "frame_end": 37.5,
+     "seconds": 1.25,
+     "fcurves": 91,
+     "fake_user": true,
+     "on_nla": true
+    }
+   ],
+   "clip_names": [
+    "Idle",
+    "GlanceL",
+    "GlanceR",
+    "Crouch",
+    "Hop",
+    "Land",
+    "NoSwap",
+    "Success"
+   ],
+   "clips_missing": [],
+   "images": [
+    "matte"
+   ],
+   "node_groups": [],
+   "triangles": 6024,
+   "vertices": 3436,
+   "materials": [
+    "glim_badge",
+    "glim_badge_rim",
+    "glim_core",
+    "glim_eye_dark",
+    "glim_eye_glint",
+    "glim_frond",
+    "glim_gel",
+    "glim_gel_dp",
+    "glim_lid"
+   ],
+   "vertex_groups": 19,
+   "max_influences": 4,
+   "modifiers": [
+    "ARMATURE"
+   ],
+   "bounds_blender_min": [
+    -0.3090802729129791,
+    -0.3306526243686676,
+    0.0
+   ],
+   "bounds_blender_max": [
+    0.3090802729129791,
+    0.30000001192092896,
+    0.7959858775138855
+   ],
+   "height_m": 0.7959858775138855,
+   "ground_z": 0.0,
+   "front_y": -0.3306526243686676,
+   "file": "source/glim.blend",
+   "bytes": 359421
+  },
+  {
+   "id": "rumble",
+   "mesh_object": "rumble_mesh",
+   "armature": "rumble_armature",
+   "bones": [
+    "root",
+    "hips",
+    "spine",
+    "chest",
+    "neck",
+    "head",
+    "lidL",
+    "lidR",
+    "eyeL",
+    "eyeR",
+    "badge",
+    "ringA",
+    "ringB",
+    "ringC",
+    "legL",
+    "legR",
+    "base",
+    "tailFlap",
+    "legBL",
+    "legBR"
+   ],
+   "bone_count": 20,
+   "core_bones_missing": [],
+   "extra_bones": [
+    "ringA",
+    "ringB",
+    "ringC",
+    "tailFlap",
+    "legBL",
+    "legBR"
+   ],
+   "badge_bone": true,
+   "badge_anchor_gltf": [
+    0.0,
+    0.22,
+    0.3093
+   ],
+   "clips": [
+    {
+     "name": "Idle",
+     "frame_start": 0.0,
+     "frame_end": 120.0,
+     "seconds": 4.0,
+     "fcurves": 67,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "GlanceL",
+     "frame_start": 0.0,
+     "frame_end": 27.0,
+     "seconds": 0.9,
+     "fcurves": 61,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "GlanceR",
+     "frame_start": 0.0,
+     "frame_end": 27.0,
+     "seconds": 0.9,
+     "fcurves": 61,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "Crouch",
+     "frame_start": 0.0,
+     "frame_end": 15.0,
+     "seconds": 0.5,
+     "fcurves": 64,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "Hop",
+     "frame_start": 0.0,
+     "frame_end": 21.600000381469727,
+     "seconds": 0.72,
+     "fcurves": 89,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "Land",
+     "frame_start": 0.0,
+     "frame_end": 15.0,
+     "seconds": 0.5,
+     "fcurves": 73,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "NoSwap",
+     "frame_start": 0.0,
+     "frame_end": 28.5,
+     "seconds": 0.95,
+     "fcurves": 55,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "Success",
+     "frame_start": 0.0,
+     "frame_end": 37.5,
+     "seconds": 1.25,
+     "fcurves": 82,
+     "fake_user": true,
+     "on_nla": true
+    }
+   ],
+   "clip_names": [
+    "Idle",
+    "GlanceL",
+    "GlanceR",
+    "Crouch",
+    "Hop",
+    "Land",
+    "NoSwap",
+    "Success"
+   ],
+   "clips_missing": [],
+   "images": [
+    "matte"
+   ],
+   "node_groups": [],
+   "triangles": 12676,
+   "vertices": 7018,
+   "materials": [
+    "rumble_badge",
+    "rumble_badge_rim",
+    "rumble_copper",
+    "rumble_eye_dark",
+    "rumble_eye_glint",
+    "rumble_lid",
+    "rumble_pop",
+    "rumble_rubber",
+    "rumble_shell",
+    "rumble_vent"
+   ],
+   "vertex_groups": 20,
+   "max_influences": 4,
+   "modifiers": [
+    "ARMATURE"
+   ],
+   "bounds_blender_min": [
+    -0.4000000059604645,
+    -0.34947746992111206,
+    0.0
+   ],
+   "bounds_blender_max": [
+    0.4363359212875366,
+    0.36658695340156555,
+    0.6554506421089172
+   ],
+   "height_m": 0.6554506421089172,
+   "ground_z": 0.0,
+   "front_y": -0.34947746992111206,
+   "file": "source/rumble.blend",
+   "bytes": 521057
+  }
+ ],
+ "roster": {
+  "file": "source/bubblesort_squad_roster.blend",
+  "bytes": 1565450,
+  "slot_pitch_m": 1.1,
+  "characters": [
+   "kiln",
+   "ribb",
+   "zag",
+   "glim",
+   "rumble"
+  ],
+  "arms": [
+   "glim_armature",
+   "kiln_armature",
+   "ribb_armature",
+   "rumble_armature",
+   "zag_armature"
+  ]
+ }
+}

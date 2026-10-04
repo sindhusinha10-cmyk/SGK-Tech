@@ -1,2 +1,7 @@
 __pycache__/
 *.pyc
+
+# Blender: auto-backups written next to a saved .blend on every re-save.
+# blender/source/*.blend is the real deliverable; these are throwaway copies.
+*.blend1
+*.blend2
