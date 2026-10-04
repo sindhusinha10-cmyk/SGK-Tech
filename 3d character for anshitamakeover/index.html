@@ -1,0 +1,4400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#060606" />
+<title>Maison Lumière · Haute Bridal &amp; Makeup 3D Concierge</title>
+<meta name="description" content="An interactive, procedurally-generated 3D concierge selector for a luxury bridal couture &amp; makeover atelier. Five studio-grade WebGL characters." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================
+   MAISON LUMIÈRE — UI SYSTEM
+   Obsidian + champagne gold. Glassmorphism, no external assets.
+   ============================================================ */
+*,*::before,*::after{box-sizing:border-box;}
+html,body{margin:0;padding:0;height:100%;overflow:hidden;overscroll-behavior:none;}
+:root{
+  --bg:#060606;
+  --gold:#C8A96A;
+  --gold-lt:#E8D9B0;
+  --gold-dim:rgba(200,169,106,.34);
+  --gold-faint:rgba(200,169,106,.13);
+  --ink:#F4F0E8;
+  --muted:#958C80;
+  --muted-2:#6E675E;
+  --glass:rgba(14,14,16,.52);
+  --glass-2:rgba(20,19,22,.72);
+  --stroke:rgba(200,169,106,.22);
+  --stroke-soft:rgba(255,255,255,.06);
+  --shadow:0 26px 70px rgba(0,0,0,.62);
+  --serif:'Cinzel','Playfair Display',Georgia,'Times New Roman',serif;
+  --sans:'Outfit','Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --dock-h:118px;
+}
+body{
+  background:
+    radial-gradient(120% 80% at 50% 8%, #141210 0%, #0A0A0B 42%, #060606 72%, #040404 100%),
+    radial-gradient(60% 40% at 12% 90%, rgba(94,58,26,.20) 0%, rgba(0,0,0,0) 70%),
+    radial-gradient(55% 45% at 88% 82%, rgba(38,44,72,.18) 0%, rgba(0,0,0,0) 70%),
+    #060606;
+  color:var(--ink);
+  font-family:var(--sans);
+  font-weight:300;
+  -webkit-font-smoothing:antialiased;
+  -webkit-tap-highlight-color:transparent;
+}
+button{font-family:inherit;color:inherit;background:none;border:none;cursor:pointer;}
+::selection{background:rgba(200,169,106,.28);}
+
+/* ---------- Stage ---------- */
+#stage{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none;z-index:1;}
+
+/* ---------- Atmosphere overlays ---------- */
+#vignette{position:fixed;inset:0;z-index:2;pointer-events:none;
+  background:radial-gradient(115% 85% at 50% 42%, rgba(0,0,0,0) 38%, rgba(0,0,0,.42) 74%, rgba(0,0,0,.82) 100%);}
+#grain{position:fixed;inset:-60%;z-index:3;pointer-events:none;opacity:.05;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='220' height='220' filter='url(%23n)' opacity='.9'/></svg>");
+  animation:grainShift 7s steps(6) infinite;}
+@keyframes grainShift{0%{transform:translate(0,0)}20%{transform:translate(-3%,2%)}40%{transform:translate(2%,-3%)}60%{transform:translate(-2%,-2%)}80%{transform:translate(3%,1%)}100%{transform:translate(0,0)}}
+#flash{position:fixed;inset:0;z-index:6;pointer-events:none;opacity:0;
+  background:radial-gradient(60% 50% at 50% 55%, rgba(232,217,176,.30) 0%, rgba(200,169,106,.10) 40%, rgba(0,0,0,0) 72%);}
+#cursorGlow{position:fixed;z-index:2;pointer-events:none;width:520px;height:520px;left:0;top:0;margin:-260px 0 0 -260px;
+  background:radial-gradient(circle, rgba(200,169,106,.10) 0%, rgba(200,169,106,.045) 26%, rgba(0,0,0,0) 62%);
+  mix-blend-mode:screen;opacity:0;transition:opacity .8s ease;will-change:transform;}
+
+/* ---------- Loader ---------- */
+#loader{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(80% 60% at 50% 45%, #100E0C 0%, #060606 70%);
+  transition:opacity .9s ease, visibility .9s ease;}
+#loader.done{opacity:0;visibility:hidden;}
+.ld-inner{text-align:center;width:min(420px,84vw);}
+.mono{width:58px;height:58px;margin:0 auto 22px;display:grid;place-items:center;position:relative;
+  border:1px solid var(--gold-dim);transform:rotate(45deg);
+  box-shadow:0 0 40px rgba(200,169,106,.16), inset 0 0 24px rgba(200,169,106,.08);}
+.mono span{transform:rotate(-45deg);font-family:var(--serif);font-size:17px;letter-spacing:.06em;color:var(--gold-lt);}
+.ld-title{font-family:var(--serif);font-size:20px;letter-spacing:.42em;color:var(--gold-lt);text-indent:.42em;}
+.ld-sub{margin-top:9px;font-size:10.5px;letter-spacing:.30em;color:var(--muted-2);text-transform:uppercase;}
+.bar{margin:30px auto 0;width:210px;height:1px;background:rgba(255,255,255,.09);position:relative;overflow:hidden;}
+.bar i{position:absolute;inset:0 100% 0 0;background:linear-gradient(90deg,rgba(200,169,106,0),#E8D9B0,rgba(200,169,106,0));transition:right .4s cubic-bezier(.4,0,.2,1);}
+.ld-note{margin-top:16px;font-size:10px;letter-spacing:.24em;color:var(--muted-2);text-transform:uppercase;line-height:1.9;}
+#loader .offline{color:var(--muted);font-size:11.5px;letter-spacing:.06em;text-transform:none;line-height:1.75;}
+#loader .offline b{color:var(--gold-lt);font-weight:500;}
+#loader .offline code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:rgba(200,169,106,.10);padding:2px 6px;border-radius:4px;color:var(--gold-lt);font-size:11px;}
+
+/* ---------- Chrome (shared glass) ---------- */
+.glass{
+  background:linear-gradient(160deg, rgba(28,27,31,.62) 0%, rgba(12,12,14,.58) 100%);
+  -webkit-backdrop-filter:blur(22px) saturate(150%);backdrop-filter:blur(22px) saturate(150%);
+  border:1px solid var(--stroke);
+  box-shadow:var(--shadow), inset 0 1px 0 rgba(255,255,255,.045);
+}
+.eyebrow{font-size:9.5px;letter-spacing:.34em;text-transform:uppercase;color:var(--muted-2);}
+
+/* ---------- Top bar ---------- */
+#topbar{position:fixed;z-index:20;top:0;left:0;right:0;height:82px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 clamp(16px,3vw,38px);pointer-events:none;}
+#topbar > *{pointer-events:auto;}
+.brand{display:flex;align-items:center;gap:14px;}
+.brand .mono{width:42px;height:42px;margin:0;}
+.brand .mono span{font-size:12px;}
+.brand-name{font-family:var(--serif);font-size:15px;letter-spacing:.24em;color:var(--ink);line-height:1.2;}
+.brand-sub{font-size:9px;letter-spacing:.26em;color:var(--muted-2);text-transform:uppercase;margin-top:4px;}
+.topright{display:flex;gap:10px;align-items:center;}
+.ghost-btn{display:inline-flex;align-items:center;gap:9px;height:36px;padding:0 16px;border-radius:999px;
+  border:1px solid rgba(255,255,255,.10);background:rgba(12,12,14,.42);
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  font-size:10.5px;letter-spacing:.20em;text-transform:uppercase;color:var(--muted);
+  transition:all .35s cubic-bezier(.4,0,.2,1);}
+.ghost-btn:hover{color:var(--ink);border-color:var(--gold-dim);}
+.ghost-btn .dot{width:6px;height:6px;border-radius:50%;background:#3A3630;transition:all .35s ease;}
+.ghost-btn.active{color:var(--gold-lt);border-color:var(--gold-dim);background:rgba(200,169,106,.09);}
+.ghost-btn.active .dot{background:var(--gold);box-shadow:0 0 10px 2px rgba(200,169,106,.55);}
+
+/* ---------- Info card (right) ---------- */
+#info{position:fixed;z-index:20;right:clamp(16px,3vw,38px);top:104px;width:min(330px,42vw);padding:24px 24px 22px;border-radius:20px;}
+.idx{display:flex;align-items:baseline;gap:8px;}
+.idx b{font-family:var(--serif);font-size:13px;color:var(--gold-lt);font-weight:600;}
+.idx span{color:var(--muted-2);font-size:10px;letter-spacing:.2em;}
+#cName{margin:12px 0 0;font-family:var(--serif);font-weight:500;font-size:clamp(30px,3.4vw,42px);line-height:1.02;letter-spacing:.02em;
+  background:linear-gradient(180deg,#FFF8EA 0%,#E8D9B0 55%,#B99B5E 100%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+#cTitle{margin-top:8px;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);}
+.rule{height:1px;margin:18px 0 16px;background:linear-gradient(90deg,var(--gold-dim),rgba(200,169,106,.02));}
+#cDesc{margin:0;font-size:12.5px;line-height:1.85;color:var(--muted);font-weight:300;}
+.tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:16px;}
+.tag{font-size:9px;letter-spacing:.20em;text-transform:uppercase;color:var(--gold);padding:5px 10px;border-radius:999px;
+  border:1px solid var(--gold-faint);background:rgba(200,169,106,.05);}
+.specs{margin-top:18px;display:grid;gap:9px;}
+.spec{display:flex;justify-content:space-between;gap:12px;font-size:10.5px;letter-spacing:.08em;}
+.spec i{color:var(--muted-2);font-style:normal;text-transform:uppercase;letter-spacing:.2em;font-size:9px;}
+.spec b{color:var(--ink);font-weight:400;}
+
+/* ---------- Emotion panel (right, under info) ---------- */
+#emotions{position:fixed;z-index:20;right:clamp(16px,3vw,38px);top:calc(104px + 372px);width:min(330px,42vw);padding:18px;border-radius:20px;}
+.panel-title{margin-bottom:12px;}
+.emo{display:flex;align-items:center;gap:13px;width:100%;padding:11px 13px;border-radius:14px;margin-bottom:7px;
+  border:1px solid transparent;background:rgba(255,255,255,.022);
+  transition:all .35s cubic-bezier(.4,0,.2,1);text-align:left;}
+.emo:last-child{margin-bottom:0;}
+.emo:hover{background:rgba(200,169,106,.07);border-color:var(--gold-faint);transform:translateX(-3px);}
+.emo.active{background:linear-gradient(100deg, rgba(200,169,106,.16), rgba(200,169,106,.03));
+  border-color:var(--gold-dim);box-shadow:inset 0 0 26px rgba(200,169,106,.07);transform:translateX(-3px);}
+.emo svg{width:19px;height:19px;flex:none;stroke:var(--muted);fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;transition:stroke .35s ease;}
+.emo.active svg{stroke:var(--gold-lt);}
+.emo .e-txt{display:flex;flex-direction:column;gap:2px;min-width:0;}
+.emo .e-txt b{font-size:12px;font-weight:400;letter-spacing:.05em;color:var(--muted);transition:color .35s ease;}
+.emo.active .e-txt b{color:var(--gold-lt);}
+.emo .e-txt i{font-style:normal;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted-2);}
+
+/* ---------- Bottom dock ---------- */
+#dock{position:fixed;z-index:22;left:0;right:0;bottom:0;height:var(--dock-h);display:flex;align-items:center;justify-content:center;
+  padding:0 16px;pointer-events:none;}
+#dock::before{content:"";position:absolute;left:0;right:0;bottom:0;height:calc(var(--dock-h) + 46px);pointer-events:none;
+  background:linear-gradient(0deg, rgba(4,4,4,.94) 0%, rgba(4,4,4,.72) 42%, rgba(4,4,4,0) 100%);}
+#dockInner{position:relative;display:flex;flex-wrap:wrap;justify-content:center;row-gap:9px;gap:10px;pointer-events:auto;max-width:100%;overflow-x:auto;overflow-y:hidden;
+  padding:12px 6px 14px;scrollbar-width:none;}
+#dockInner::-webkit-scrollbar{display:none;}
+.pill{position:relative;display:flex;align-items:center;gap:12px;padding:9px 17px 9px 10px;border-radius:999px;flex:none;
+  border:1px solid rgba(255,255,255,.075);background:rgba(14,14,16,.5);
+  -webkit-backdrop-filter:blur(18px) saturate(150%);backdrop-filter:blur(18px) saturate(150%);
+  transition:transform .45s cubic-bezier(.34,1.4,.5,1), border-color .4s ease, background .4s ease, box-shadow .5s ease;}
+.pill:hover{transform:translateY(-3px);border-color:var(--gold-faint);}
+.pill .swatch{width:34px;height:34px;border-radius:50%;flex:none;position:relative;
+  background:radial-gradient(circle at 32% 28%, var(--c2) 0%, var(--c1) 58%, #060606 130%);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.14), 0 4px 12px rgba(0,0,0,.5);transition:all .45s ease;}
+.pill .swatch::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:1px solid rgba(200,169,106,0);transition:all .45s ease;}
+.pill .txt{display:flex;flex-direction:column;gap:2px;text-align:left;}
+.pill .txt b{font-family:var(--serif);font-size:13.5px;font-weight:500;letter-spacing:.10em;color:var(--muted);transition:color .4s ease;}
+.pill .txt i{font-style:normal;font-size:8.5px;letter-spacing:.20em;text-transform:uppercase;color:var(--muted-2);transition:color .4s ease;}
+.pill .num{font-family:var(--serif);font-size:9px;color:var(--muted-2);letter-spacing:.1em;padding-left:2px;}
+.pill.active{border-color:var(--gold-dim);background:linear-gradient(120deg, rgba(40,33,25,.78), rgba(14,14,16,.6));
+  box-shadow:0 14px 40px rgba(0,0,0,.6), 0 0 0 1px rgba(200,169,106,.10), 0 0 34px rgba(200,169,106,.13);transform:translateY(-4px);}
+.pill.active .swatch{box-shadow:inset 0 0 0 1px rgba(255,255,255,.2), 0 0 22px 3px rgba(200,169,106,.32);}
+.pill.active .swatch::after{border-color:rgba(200,169,106,.55);inset:-5px;}
+.pill.active .txt b{color:var(--gold-lt);}
+.pill.active .txt i{color:var(--gold);}
+.pill.active .num{color:var(--gold);}
+
+/* ---------- Hint ---------- */
+#hint{position:fixed;z-index:20;left:50%;transform:translateX(-50%);bottom:calc(var(--dock-h) + 6px);
+  font-size:9.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--muted-2);white-space:nowrap;pointer-events:none;
+  transition:opacity .8s ease;}
+#hint.hide{opacity:0;}
+
+/* ---------- Mini concierge widget ---------- */
+#widget{position:fixed;z-index:21;left:clamp(16px,3vw,38px);bottom:calc(var(--dock-h) + 34px);width:172px;height:186px;
+  border-radius:18px;overflow:hidden;pointer-events:none;
+  border:1px solid var(--stroke);
+  box-shadow:0 22px 60px rgba(0,0,0,.66), inset 0 1px 0 rgba(255,255,255,.05);
+  opacity:0;visibility:hidden;transform:translateY(14px) scale(.96);
+  transition:opacity .6s ease, transform .6s cubic-bezier(.34,1.3,.5,1), visibility .6s ease;}
+#widget.on{opacity:1;visibility:visible;transform:translateY(0) scale(1);}
+#widget .wv{position:absolute;left:0;right:0;top:0;height:152px;background:transparent;}
+#widget::after{content:"";position:absolute;left:0;right:0;top:0;height:152px;pointer-events:none;
+  background:radial-gradient(80% 70% at 50% 30%, rgba(200,169,106,.07) 0%, rgba(0,0,0,0) 62%);}
+#widget .wlabel{position:absolute;left:0;right:0;bottom:0;height:34px;display:flex;align-items:center;gap:7px;padding:0 11px;
+  background:linear-gradient(0deg, rgba(8,8,9,.94), rgba(8,8,9,.70));
+  border-top:1px solid rgba(200,169,106,.16);}
+#widget .wlabel .pulse{width:6px;height:6px;border-radius:50%;background:var(--gold);flex:none;
+  box-shadow:0 0 8px 2px rgba(200,169,106,.6);animation:pulse 2.2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.7)}}
+#widget .wlabel span{font-size:8.5px;letter-spacing:.20em;text-transform:uppercase;color:var(--muted-2);white-space:nowrap;overflow:hidden;}
+#widget .wlabel b{font-family:var(--serif);font-size:10.5px;letter-spacing:.14em;color:var(--gold-lt);font-weight:500;}
+#widget .wcorner{position:absolute;width:14px;height:14px;border:1px solid var(--gold);opacity:.5;}
+#widget .wcorner.tl{top:8px;left:8px;border-right:0;border-bottom:0;}
+#widget .wcorner.br{bottom:42px;right:8px;border-left:0;border-top:0;}
+
+/* ---------- Responsive ---------- */
+@media (max-width:1180px){
+  #info{width:min(300px,44vw);padding:20px;}
+  #emotions{width:min(300px,44vw);top:auto;bottom:calc(var(--dock-h) + 34px);padding:14px;}
+  #emotions .panel-title{display:none;}
+  #emotions{display:flex;gap:7px;}
+  .emo{flex-direction:column;align-items:center;gap:7px;padding:10px 8px;margin:0;flex:1;}
+  .emo .e-txt{align-items:center;text-align:center;}
+  .emo .e-txt i{display:none;}
+  .emo .e-txt b{font-size:9.5px;letter-spacing:.1em;}
+  .emo:hover,.emo.active{transform:translateY(-3px);}
+}
+@media (max-width:860px){
+  :root{--dock-h:104px;}
+  #topbar{height:70px;padding:0 14px;}
+  .brand-sub{display:none;}
+  #info{right:14px;left:auto;top:74px;width:min(272px,72vw);padding:16px 18px;}
+  #cName{font-size:26px;}
+  #cDesc{display:none;}
+  .specs{grid-template-columns:1fr 1fr;gap:6px 16px;margin-top:12px;}
+  .spec:nth-child(3){display:none;}
+  .tags{margin-top:12px;}
+  #emotions{right:14px;left:14px;bottom:calc(var(--dock-h) + 16px);width:auto;padding:9px;}
+  #widget{width:104px;height:118px;left:14px;bottom:calc(var(--dock-h) + 84px);}
+  #widget .wv{height:92px;}
+  #widget .wlabel{height:26px;padding:0 8px;}
+  #widget .wlabel span{display:none;}
+  #widget .wcorner{display:none;}
+  #hint{display:none;}
+  #dockInner{gap:8px;padding:10px 4px 12px;}
+  .pill{padding:7px 13px 7px 8px;gap:9px;}
+  .pill .swatch{width:28px;height:28px;}
+  .pill .txt b{font-size:11.5px;}
+  .pill .txt i{display:none;}
+  .pill .num{display:none;}
+}
+@media (max-width:480px){
+  #info .specs{display:none;}
+  #widget{width:88px;height:100px;bottom:calc(var(--dock-h) + 78px);}
+  #widget .wv{height:76px;}
+}
+@media (max-height:700px){
+  #emotions{display:none;}
+}
+@media (prefers-reduced-motion:reduce){
+  #grain{animation:none;}
+}
+  /* seven concierges: the dock wraps, so give it the height to do so —
+     --dock-h also offsets #hint, #widget and #emotions, hence the bumps. */
+  @media (max-width:1700px){ :root{--dock-h:152px;} }
+  @media (max-width:430px){ :root{--dock-h:200px;} }
+  /* ---- collapsible info card + clean-view toggle ---- */
+  #infoToggle{position:absolute;top:14px;right:14px;width:28px;height:28px;border-radius:50%;
+    border:1px solid var(--gold-faint);background:rgba(255,255,255,.05);color:var(--gold);
+    cursor:pointer;font-size:15px;line-height:1;display:flex;align-items:center;justify-content:center;
+    transition:all .3s ease;padding:0;}
+  #infoToggle:hover{border-color:var(--gold-dim);background:rgba(200,169,106,.16);color:var(--gold-lt);}
+  #info.collapsed .rule,#info.collapsed #cDesc,
+  #info.collapsed .tags,#info.collapsed .specs{display:none;}
+  #info.collapsed{padding:15px 18px 14px;}
+  #info.collapsed #cName{font-size:23px;margin-top:6px;}
+  #cleanBtn{position:fixed;z-index:30;top:18px;right:clamp(16px,3vw,38px);padding:8px 15px;
+    border-radius:999px;border:1px solid var(--gold-faint);background:rgba(12,11,10,.74);
+    color:var(--gold);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;
+    cursor:pointer;backdrop-filter:blur(8px);font-family:inherit;transition:all .3s ease;}
+  #cleanBtn:hover{border-color:var(--gold-dim);color:var(--gold-lt);}
+  body.clean-ui #info,body.clean-ui #emotions,body.clean-ui #widget,
+  body.clean-ui #hint,body.clean-ui #dock{opacity:0;pointer-events:none;}
+  body.clean-ui #info,body.clean-ui #emotions,body.clean-ui #widget,
+  body.clean-ui #hint,body.clean-ui #dock{transition:opacity .35s ease;}
+  @media (max-width:900px){ #cleanBtn{top:auto;bottom:calc(var(--dock-h) + 10px);} }
+</style>
+</head>
+<body>
+
+<!-- ============================ STAGE ============================ -->
+<canvas id="stage"></canvas>
+<div id="cursorGlow"></div>
+<div id="vignette"></div>
+<div id="grain"></div>
+<div id="flash"></div>
+
+<!-- ============================ LOADER ============================ -->
+<div id="loader">
+  <div class="ld-inner">
+    <div class="mono"><span>ML</span></div>
+    <div class="ld-title">MAISON LUMIÈRE</div>
+    <div class="ld-sub">Haute Bridal &amp; Makeup Atelier</div>
+    <div class="bar"><i id="ldBar" style="right:100%"></i></div>
+    <div class="ld-note" id="ldNote">Preparing your concierge</div>
+  </div>
+</div>
+
+<!-- ============================ TOP BAR ============================ -->
+<header id="topbar">
+  <div class="brand">
+    <div class="mono"><span>ML</span></div>
+    <div>
+      <div class="brand-name">Maison Lumière</div>
+      <div class="brand-sub">Bridal Couture · Makeover Salon · Est. 1998</div>
+    </div>
+  </div>
+  <div class="topright">
+    <button class="ghost-btn" id="btnOrbit" type="button"><span class="dot"></span>Auto Orbit</button>
+    <button class="ghost-btn active" id="btnDual" type="button"><span class="dot"></span>Dual View</button>
+  </div>
+</header>
+
+<!-- ============================ INFO CARD ============================ -->
+<aside id="info" class="glass">
+  <button id="infoToggle" type="button" aria-label="Collapse details" title="Collapse details">–</button>
+  <div class="idx">Concierge <b id="idxNum">01</b><span>&nbsp;/&nbsp;07</span></div>
+  <h1 id="cName">Asha</h1>
+  <div id="cTitle">The Royal Bridal Stylist</div>
+  <div class="rule"></div>
+  <p id="cDesc">Signature lehengas, zardozi ateliers and the ceremonial drape — Asha walks you through the entire bridal trousseau, from fabric to phera.</p>
+  <div class="tags" id="cTags"></div>
+  <div class="specs" id="cSpecs"></div>
+</aside>
+
+<!-- ============================ EMOTIONS ============================ -->
+<aside id="emotions" class="glass">
+  <div class="panel-title eyebrow">Concierge Demeanour</div>
+
+  <button class="emo" data-emo="welcome" type="button">
+    <svg viewBox="0 0 24 24"><path d="M9 11.5c0-1.9 1.3-3.4 3-3.4s3 1.5 3 3.4c0 2.4-3 5.4-3 5.4s-3-3-3-5.4Z"/><path d="M12 3.5c0 1.4-1 1.9-1 3.1"/><path d="M5 14v5M19 14v5"/></svg>
+    <span class="e-txt"><b>Welcoming</b><i>Namaste · Welcome</i></span>
+  </button>
+
+  <button class="emo" data-emo="happy" type="button">
+    <svg viewBox="0 0 24 24"><path d="M3.5 13.5c1.6 5 5.7 7 8.5 7s6.9-2 8.5-7"/><path d="M8 9.5h.01M16 9.5h.01"/><path d="M12 3.5v2M5 6l1.4 1.4M19 6l-1.4 1.4"/></svg>
+    <span class="e-txt"><b>Happy</b><i>Deal Closed · Joy</i></span>
+  </button>
+
+  <button class="emo" data-emo="thinking" type="button">
+    <svg viewBox="0 0 24 24"><path d="M8.6 8.8a3.4 3.4 0 1 1 5 3c-.7.4-1.1 1-1.1 2v.7"/><path d="M12.5 17.6h.01"/><path d="M4 5.5c1.6-1 3.4-1.5 5-1.2"/></svg>
+    <span class="e-txt"><b>Thinking</b><i>Selecting Looks</i></span>
+  </button>
+
+  <button class="emo" data-emo="hesitant" type="button">
+    <svg viewBox="0 0 24 24"><path d="M4 9c2.5-2.4 5-2.4 7.5 0S17 11.4 20 9"/><path d="M8.5 8.2h.01M15.5 8.2h.01"/><path d="M8 15.5c1.6 1.4 4.2 1.4 6 .2"/></svg>
+    <span class="e-txt"><b>Hesitant</b><i>Soft Empathy</i></span>
+  </button>
+</aside>
+
+<div id="hint">Drag to orbit · Scroll to zoom · Keys 1–7 · H hides the interface</div>
+<button id="cleanBtn" type="button">Clean view</button>
+
+<!-- ============================ DOCK ============================ -->
+<footer id="dock"><div id="dockInner"></div></footer>
+
+<!-- ============================ MINI WIDGET ============================ -->
+<div id="widget">
+  <div class="wv"></div>
+  <div class="wcorner tl"></div>
+  <div class="wcorner br"></div>
+  <div class="wlabel"><span class="pulse"></span><span>Live ·</span><b id="wName">Asha</b></div>
+</div>
+
+<!-- ============================ LIBRARIES ============================ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>window.THREE||document.write('<script src="vendor/three.min.js"><\/script>');</script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script>(window.THREE&&THREE.GLTFLoader)||document.write('<script src="vendor/GLTFLoader.js"><\/script>');</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>window.gsap||document.write('<script src="vendor/gsap.min.js"><\/script>');</script>
+
+<script>
+/* =====================================================================
+   MAISON LUMIÈRE — Haute Bridal & Makeup Studio · 3D Concierge Selector
+   ---------------------------------------------------------------------
+   Single-file, zero-asset, procedural character system.
+
+   ARCHITECTURE (everything is detachable — see window.HBStudio at the end)
+     02_core.js   → utils · material library · procedural textures ·
+                    geometry helpers · HDR studio environment · renderer
+     03_rig.js    → Rig class (gaze, blink, breath, emotion poses) +
+                    shared humanoid / eye / mouth / hair builders
+     04_chars.js  → Asha · Mochi · Noor · Tara · Gia
+     05_app.js    → camera, transitions, UI, widget, loop, export API
+
+   EMBEDDING A CHARACTER ANYWHERE (any Three.js r128 project):
+     const char = HBStudio.buildCharacter('asha');   // or 'mochi' …
+     scene.add(char.root);                           // char.root is a Group
+     char.setEmotion('welcome');                     // | 'happy' | 'thinking'
+     char.update(time, delta, {x:0, y:0});           // | 'hesitant' | 'poise'
+     char.lookTarget(mouseNDC.x, mouseNDC.y);        // −1 … 1
+   Nothing else is required: no textures, no models, no network.
+   ===================================================================== */
+(function () {
+'use strict';
+
+/* ---------------------------------------------------------------- 0 · boot */
+var T = window.THREE;
+var loaderEl = document.getElementById('loader');
+var ldNote = document.getElementById('ldNote');
+var ldBar = document.getElementById('ldBar');
+
+function offline(msg) {
+  if (!loaderEl) return;
+  loaderEl.classList.remove('done');
+  document.querySelector('#loader .bar').style.display = 'none';
+  ldNote.className = 'offline';
+  ldNote.innerHTML = msg;
+}
+if (!T) {
+  offline('<b>Three.js could not be loaded.</b><br/>This build streams r128 from a CDN, so it needs an internet connection the first time. Open it in a browser with network access — or use the fully inlined <code>index.offline.html</code> build.');
+  return;
+}
+if (!window.gsap) {
+  offline('<b>GSAP could not be loaded.</b><br/>Animation library unreachable — open this file with network access, or use <code>index.offline.html</code>.');
+  return;
+}
+function progress(p) { if (ldBar) ldBar.style.right = (100 - Math.round(p * 100)) + '%'; }
+
+/* ---------------------------------------------------------------- 1 · utils */
+var TAU = Math.PI * 2;
+var clamp = T.MathUtils.clamp;
+var lerp = T.MathUtils.lerp;
+function V3(x, y, z) { return new T.Vector3(x, y, z); }
+/* three r128 has no colour management: a hex literal is sRGB, but the renderer
+   treats material / light colours as LINEAR radiance. Every authored colour in
+   this file (and in 03/04/05) therefore goes through LC() once.             */
+function LC(h) { return new T.Color(h).convertSRGBToLinear(); }
+function C(h) { return LC(h); }
+function damp(current, target, lambda, dt) { return lerp(current, target, 1 - Math.exp(-lambda * dt)); }
+
+/* deterministic hash noise (no deps) */
+function hash(n) { var s = Math.sin(n * 127.1 + 311.7) * 43758.5453123; return s - Math.floor(s); }
+function noise3(x, y, z) {
+  var i = Math.floor(x), j = Math.floor(y), k = Math.floor(z);
+  var f = function (t) { return t * t * (3 - 2 * t); };
+  var u = f(x - i), v = f(y - j), w = f(z - k);
+  var n = hash(i + j * 57 + k * 131);
+  var a = hash(i + 1 + j * 57 + k * 131), b = hash(i + (j + 1) * 57 + k * 131), c = hash(i + 1 + (j + 1) * 57 + k * 131);
+  var d = hash(i + j * 57 + k * 131 + 57), e = hash(i + 1 + j * 57 + k * 131 + 57), g = hash(i + (j + 1) * 57 + k * 131 + 57), h = hash(i + 1 + (j + 1) * 57 + k * 131 + 57);
+  return lerp(lerp(lerp(n, a, u), lerp(b, c, u), v), lerp(lerp(d, e, u), lerp(g, h, u), v), w);
+}
+
+/* ---------------------------------------------------------------- 2 · material library */
+/* Skin: faked subsurface via a warm emissive bleed + clearcoat specular. */
+function skinMat(col, o) {
+  o = o || {};
+  return new T.MeshPhysicalMaterial({
+    color: LC(col),
+    roughness: o.rough !== undefined ? o.rough : 0.58,
+    metalness: 0,
+    clearcoat: o.cc !== undefined ? o.cc : 0.26,
+    clearcoatRoughness: 0.56,
+    envMapIntensity: o.env !== undefined ? o.env : 0.9,
+    emissive: C(col).multiplyScalar(o.glow !== undefined ? o.glow : 0.11)
+  });
+}
+function goldMat(tone) {
+  var t = tone || 0;
+  var cols = [0xC8A96A, 0xE9D29B, 0xA8843F, 0xF2DFB4];
+  var rough = [0.24, 0.14, 0.36, 0.10];
+  return new T.MeshPhysicalMaterial({
+    color: LC(cols[t]), metalness: 1.0, roughness: rough[t],
+    envMapIntensity: 1.75, clearcoat: 0.7, clearcoatRoughness: 0.18
+  });
+}
+function velvetMat(col, o) {
+  o = o || {};
+  return new T.MeshPhysicalMaterial({
+    color: LC(col), roughness: 0.97, metalness: 0.0,
+    clearcoat: 0.32, clearcoatRoughness: 0.92,
+    envMapIntensity: 0.55,
+    emissive: C(col).multiplyScalar(o.glow !== undefined ? o.glow : 0.07)
+  });
+}
+function silkMat(col, rough) {
+  return new T.MeshPhysicalMaterial({
+    color: LC(col), roughness: rough === undefined ? 0.30 : rough, metalness: 0.08,
+    clearcoat: 1.0, clearcoatRoughness: 0.20, envMapIntensity: 1.35
+  });
+}
+function hairMat(col, o) {
+  o = o || {};
+  return new T.MeshPhysicalMaterial({
+    color: LC(col), roughness: o.rough !== undefined ? o.rough : 0.33, metalness: 0.18,
+    clearcoat: 0.9, clearcoatRoughness: 0.16, envMapIntensity: 1.6
+  });
+}
+function glossMat(col, rough) {
+  return new T.MeshPhysicalMaterial({
+    color: LC(col), roughness: rough === undefined ? 0.07 : rough, metalness: 0.0,
+    clearcoat: 1.0, clearcoatRoughness: 0.03, envMapIntensity: 2.3
+  });
+}
+function crystalMat(col) {
+  return new T.MeshPhysicalMaterial({
+    color: LC(col === undefined ? 0xEAF4FF : col), roughness: 0.02, metalness: 0.06,
+    clearcoat: 1.0, clearcoatRoughness: 0.02, envMapIntensity: 3.0,
+    transparent: true, opacity: 0.82, emissive: LC(0x0A1622)
+  });
+}
+function pearlMat() {
+  return new T.MeshPhysicalMaterial({
+    color: LC(0xF6EDE4), roughness: 0.12, metalness: 0.35,
+    clearcoat: 1.0, clearcoatRoughness: 0.06, envMapIntensity: 2.6,
+    emissive: LC(0x2A1E1A)
+  });
+}
+function matteMat(col, rough) {
+  return new T.MeshStandardMaterial({ color: LC(col), roughness: rough === undefined ? 0.9 : rough, metalness: 0.0, envMapIntensity: 0.5 });
+}
+function glowMat(col, opacity) {
+  return new T.MeshBasicMaterial({ color: LC(col), transparent: true, opacity: opacity === undefined ? 1 : opacity, blending: T.AdditiveBlending, depthWrite: false });
+}
+
+/* ---------------------------------------------------------------- 3 · procedural textures */
+function cnv(w, h) { var c = document.createElement('canvas'); c.width = w; c.height = h; return c; }
+function toTex(c, rep) {
+  var t = new T.CanvasTexture(c);
+  t.encoding = T.sRGBEncoding;
+  t.anisotropy = 8;
+  if (rep) { t.wrapS = t.wrapT = T.RepeatWrapping; }
+  return t;
+}
+/* vertical / horizontal multi-stop gradient */
+function gradTex(stops, vertical, w, h) {
+  w = w || 8; h = h || 256;
+  var c = cnv(w, h), g = c.getContext('2d');
+  var gr = vertical ? g.createLinearGradient(0, 0, 0, h) : g.createLinearGradient(0, 0, w, 0);
+  for (var i = 0; i < stops.length; i++) gr.addColorStop(stops[i][0], stops[i][1]);
+  g.fillStyle = gr; g.fillRect(0, 0, w, h);
+  return toTex(c);
+}
+/* soft radial blob (blush, light pools, sparkles) */
+function radialTex(inner, outer, size, pow) {
+  size = size || 256;
+  var c = cnv(size, size), g = c.getContext('2d');
+  var gr = g.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+  gr.addColorStop(0, inner);
+  gr.addColorStop(pow === undefined ? 0.45 : pow, outer);
+  gr.addColorStop(1, 'rgba(0,0,0,0)');
+  g.fillStyle = gr; g.fillRect(0, 0, size, size);
+  return toTex(c);
+}
+/* eye map wrapped on a sphere: iris bullseye sits at u = 0.25 (= +Z front) */
+function eyeTex(base, iris, pupil, ring, fibre) {
+  var w = 1024, h = 512, c = cnv(w, h), g = c.getContext('2d');
+  g.fillStyle = base; g.fillRect(0, 0, w, h);
+  var cx = w * 0.25, cy = h * 0.5, R = w * 0.122;
+  var gr = g.createRadialGradient(cx, cy, R * 0.05, cx, cy, R);
+  gr.addColorStop(0.00, pupil);
+  gr.addColorStop(0.38, pupil);
+  gr.addColorStop(0.48, iris);
+  gr.addColorStop(0.82, iris);
+  gr.addColorStop(0.92, ring);
+  gr.addColorStop(1.00, 'rgba(0,0,0,0)');
+  g.fillStyle = gr; g.beginPath(); g.arc(cx, cy, R, 0, TAU); g.fill();
+  /* iris fibres */
+  g.save(); g.globalAlpha = 0.30; g.strokeStyle = fibre || '#C98B4A'; g.lineWidth = 2.2;
+  for (var i = 0; i < 84; i++) {
+    var a = (i / 84) * TAU + hash(i) * 0.3;
+    var r0 = R * (0.40 + hash(i * 3) * 0.1), r1 = R * (0.86 + hash(i * 7) * 0.12);
+    g.beginPath();
+    g.moveTo(cx + Math.cos(a) * r0, cy + Math.sin(a) * r0);
+    g.lineTo(cx + Math.cos(a) * r1, cy + Math.sin(a) * r1);
+    g.stroke();
+  }
+  g.restore();
+  /* lower catchlight bounce (subtle) */
+  g.save(); g.globalAlpha = 0.18; g.fillStyle = '#FFD9A8';
+  g.beginPath(); g.ellipse(cx, cy + R * 0.48, R * 0.42, R * 0.16, 0, 0, TAU); g.fill(); g.restore();
+  return toTex(c);
+}
+/* iridescent / holographic gradient (Gia's makeup + hair) */
+function iridTex(size) {
+  size = size || 512;
+  var c = cnv(size, size), g = c.getContext('2d');
+  var gr = g.createLinearGradient(0, 0, size, size);
+  gr.addColorStop(0.00, 'rgba(255,205,225,1)');
+  gr.addColorStop(0.18, 'rgba(198,190,255,1)');
+  gr.addColorStop(0.36, 'rgba(178,240,238,1)');
+  gr.addColorStop(0.54, 'rgba(214,255,206,1)');
+  gr.addColorStop(0.72, 'rgba(255,236,190,1)');
+  gr.addColorStop(0.88, 'rgba(255,196,222,1)');
+  gr.addColorStop(1.00, 'rgba(206,196,255,1)');
+  g.fillStyle = gr; g.fillRect(0, 0, size, size);
+  g.globalCompositeOperation = 'overlay';
+  for (var i = 0; i < 26; i++) {
+    var y = hash(i * 11) * size;
+    g.fillStyle = 'rgba(255,255,255,' + (0.05 + hash(i) * 0.10) + ')';
+    g.fillRect(0, y, size, 2 + hash(i * 5) * 9);
+  }
+  return toTex(c);
+}
+/* studio backdrop: warm pool of light falling off to black */
+function backdropTex() {
+  var s = 512, c = cnv(s, s), g = c.getContext('2d');
+  g.fillStyle = '#050505'; g.fillRect(0, 0, s, s);
+  var gr = g.createRadialGradient(s * 0.5, s * 0.62, 0, s * 0.5, s * 0.62, s * 0.58);
+  gr.addColorStop(0.00, 'rgba(72,52,30,0.95)');
+  gr.addColorStop(0.28, 'rgba(42,31,20,0.72)');
+  gr.addColorStop(0.62, 'rgba(16,14,13,0.42)');
+  gr.addColorStop(1.00, 'rgba(4,4,4,0)');
+  g.fillStyle = gr; g.fillRect(0, 0, s, s);
+  return toTex(c);
+}
+/* zardozi / brocade pattern for trims (gold on deep ground) */
+function brocadeTex(ground, line) {
+  var s = 256, c = cnv(s, s), g = c.getContext('2d');
+  g.fillStyle = ground; g.fillRect(0, 0, s, s);
+  g.strokeStyle = line; g.lineWidth = 2.2;
+  for (var i = 0; i < 8; i++) {
+    for (var j = 0; j < 8; j++) {
+      var x = (i + 0.5) * s / 8, y = (j + 0.5) * s / 8;
+      g.beginPath();
+      for (var k = 0; k <= 16; k++) {
+        var a = k / 16 * TAU, r = 9 + 5 * Math.sin(a * 4);
+        var px = x + Math.cos(a) * r, py = y + Math.sin(a) * r * 0.7;
+        if (k === 0) g.moveTo(px, py); else g.lineTo(px, py);
+      }
+      g.stroke();
+      g.beginPath(); g.arc(x, y, 2.6, 0, TAU); g.fillStyle = line; g.fill();
+    }
+  }
+  var t = toTex(c, true); t.repeat.set(6, 1); return t;
+}
+
+/* ---------------------------------------------------------------- 4 · geometry helpers */
+function capsule(r, len, seg, capSeg) {
+  seg = seg || 18; capSeg = capSeg || 8;
+  var pts = [], i, a;
+  for (i = 0; i <= capSeg; i++) { a = -Math.PI / 2 + (i / capSeg) * (Math.PI / 2); pts.push(new T.Vector2(Math.cos(a) * r, -len / 2 + Math.sin(a) * r)); }
+  for (i = 0; i <= capSeg; i++) { a = (i / capSeg) * (Math.PI / 2); pts.push(new T.Vector2(Math.cos(a) * r, len / 2 + Math.sin(a) * r)); }
+  return new T.LatheGeometry(pts, seg);
+}
+function lathe(profile2D, seg, smooth) {
+  var pts = profile2D.map(function (p) { return p instanceof T.Vector2 ? p : new T.Vector2(p[0], p[1]); });
+  if (smooth) {
+    var sc = new T.SplineCurve(pts);
+    pts = sc.getPoints(Math.max(18, pts.length * 3));
+  }
+  return new T.LatheGeometry(pts, seg || 40);
+}
+function roundedBox(w, h, d, r, seg) {
+  seg = seg || 5;
+  var g = new T.BoxGeometry(w, h, d, seg, seg, seg);
+  var pos = g.attributes.position, v = new T.Vector3(), core = new T.Vector3(), dir = new T.Vector3();
+  var hx = Math.max(0, w / 2 - r), hy = Math.max(0, h / 2 - r), hz = Math.max(0, d / 2 - r);
+  for (var i = 0; i < pos.count; i++) {
+    v.fromBufferAttribute(pos, i);
+    core.set(clamp(v.x, -hx, hx), clamp(v.y, -hy, hy), clamp(v.z, -hz, hz));
+    dir.copy(v).sub(core);
+    if (dir.lengthSq() > 1e-9) { dir.normalize().multiplyScalar(r); v.copy(core).add(dir); }
+    pos.setXYZ(i, v.x, v.y, v.z);
+  }
+  g.computeVertexNormals();
+  return g;
+}
+/* generic parametric surface: fn(u,v,target) → Vector3 */
+function parametric(fn, uSeg, vSeg) {
+  uSeg = uSeg || 40; vSeg = vSeg || 30;
+  var pos = [], uv = [], idx = [], p = new T.Vector3(), u, v, i, j;
+  for (i = 0; i <= vSeg; i++) {
+    v = i / vSeg;
+    for (j = 0; j <= uSeg; j++) {
+      u = j / uSeg;
+      fn(u, v, p);
+      pos.push(p.x, p.y, p.z); uv.push(u, 1 - v);
+    }
+  }
+  for (i = 0; i < vSeg; i++) for (j = 0; j < uSeg; j++) {
+    var a = i * (uSeg + 1) + j, b = a + 1, c = a + uSeg + 1, d = c + 1;
+    idx.push(a, c, b, b, c, d);
+  }
+  var g = new T.BufferGeometry();
+  g.setAttribute('position', new T.Float32BufferAttribute(pos, 3));
+  g.setAttribute('uv', new T.Float32BufferAttribute(uv, 2));
+  g.setIndex(idx);
+  g.computeVertexNormals();
+  return g;
+}
+/* ribbon swept along a 3D curve (sashes, pallus, gajra chains, braids) */
+function ribbon(curve, widthFn, uSeg, vSeg, twistFn) {
+  uSeg = uSeg || 60; vSeg = vSeg || 6;
+  var up = V3(0, 1, 0), tan = V3(), side = V3(), nrm = V3(), p = V3(), out = V3();
+  return parametric(function (u, v, target) {
+    curve.getPointAt(u, p);
+    curve.getTangentAt(u, tan);
+    side.copy(tan).cross(up);
+    if (side.lengthSq() < 1e-6) side.set(1, 0, 0);
+    side.normalize();
+    nrm.copy(side).cross(tan).normalize();
+    if (twistFn) { var a = twistFn(u); side.applyAxisAngle(tan, a); nrm.applyAxisAngle(tan, a); }
+    var w = widthFn(u, v);
+    out.copy(p).addScaledVector(side, (v - 0.5) * w).addScaledVector(nrm, Math.sin(v * Math.PI) * w * 0.10);
+    target.copy(out);
+    return target;
+  }, uSeg, vSeg);
+}
+function tubeFrom(points, r, seg, radial, closed) {
+  var curve = new T.CatmullRomCurve3(points, !!closed, 'catmullrom', 0.5);
+  return new T.TubeGeometry(curve, seg || 48, r, radial || 8, !!closed);
+}
+/* fur / plush displacement */
+function fluff(geo, amp, freq) {
+  var pos = geo.attributes.position, v = new T.Vector3();
+  for (var i = 0; i < pos.count; i++) {
+    v.fromBufferAttribute(pos, i);
+    var n = noise3(v.x * freq, v.y * freq, v.z * freq) - 0.5;
+    var m = noise3(v.x * freq * 2.7 + 9, v.y * freq * 2.7, v.z * freq * 2.7 + 4) - 0.5;
+    var l = v.length() || 1;
+    v.multiplyScalar(1 + (n * amp + m * amp * 0.45) / l);
+    pos.setXYZ(i, v.x, v.y, v.z);
+  }
+  geo.computeVertexNormals();
+  return geo;
+}
+/* radial fabric folds on a lathe skirt */
+function folds(geo, count, amp, yFalloff) {
+  var pos = geo.attributes.position, v = new T.Vector3();
+  for (var i = 0; i < pos.count; i++) {
+    v.fromBufferAttribute(pos, i);
+    var a = Math.atan2(v.z, v.x);
+    var f = 1 + Math.sin(a * count) * amp;
+    var k = yFalloff ? Math.pow(clamp(1 - (v.y - yFalloff[0]) / (yFalloff[1] - yFalloff[0]), 0, 1), 1.4) : 1;
+    v.x *= 1 + (f - 1) * k; v.z *= 1 + (f - 1) * k;
+    pos.setXYZ(i, v.x, v.y, v.z);
+  }
+  geo.computeVertexNormals();
+  return geo;
+}
+/* scatter N small meshes around a circle/helix (jasmine buds, zardozi dots) */
+function scatterRing(count, fn) {
+  var g = new T.Group();
+  for (var i = 0; i < count; i++) { var m = fn(i / count, i); if (m) g.add(m); }
+  return g;
+}
+function mesh(geo, mat, cast) {
+  var m = new T.Mesh(geo, mat);
+  m.castShadow = cast !== false;
+  m.receiveShadow = false;
+  return m;
+}
+function group(x, y, z) { var g = new T.Group(); g.position.set(x || 0, y || 0, z || 0); return g; }
+
+/* ---------------------------------------------------------------- 5 · renderer + scene */
+var canvas = document.getElementById('stage');
+var renderer;
+try {
+  renderer = new T.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+} catch (e) {
+  offline('<b>WebGL is unavailable.</b><br/>Your browser or device blocked hardware acceleration. Try a desktop Chrome, Edge or Safari with WebGL enabled.');
+  return;
+}
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+renderer.setSize(window.innerWidth, window.innerHeight, false);
+renderer.setClearColor(0x000000, 0);
+renderer.outputEncoding = T.sRGBEncoding;
+renderer.toneMapping = T.ACESFilmicToneMapping;
+renderer.toneMappingExposure = envFallback ? 1.05 : 1.0;
+renderer.physicallyCorrectLights = false;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = T.PCFSoftShadowMap;
+renderer.autoClear = false;
+
+var scene = new T.Scene();
+scene.fog = new T.FogExp2(0x050506, 0.052);
+
+var camera = new T.PerspectiveCamera(34, window.innerWidth / window.innerHeight, 0.08, 100);
+camera.position.set(0, 1.42, 3.55);
+
+var widgetCam = new T.PerspectiveCamera(30, 1, 0.05, 100);
+widgetCam.position.set(0, 1.45, 1.05);
+
+/* ---------- HDR studio environment (PMREM from a procedural softbox set) ---------- */
+function buildEnvironment() {
+  var pmrem = new T.PMREMGenerator(renderer);
+  pmrem.compileEquirectangularShader();
+  var es = new T.Scene();
+
+  var dome = new T.Mesh(
+    new T.SphereGeometry(14, 32, 24),
+    new T.ShaderMaterial({
+      side: T.BackSide,
+      uniforms: {},
+      vertexShader: [
+        'varying vec3 vDir;',
+        'void main(){ vDir = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }'
+      ].join('\n'),
+      fragmentShader: [
+        'varying vec3 vDir;',
+        'void main(){',
+        '  vec3 d = normalize(vDir);',
+        '  float h = clamp(d.y*0.5+0.5, 0.0, 1.0);',
+        '  vec3 c = mix(vec3(0.008,0.008,0.010), vec3(0.050,0.048,0.058), h);',
+        '  float key = pow(max(dot(d, normalize(vec3(0.60,0.50,0.62))), 0.0), 7.0);',
+        '  c += vec3(0.62,0.40,0.17)*key*1.35;',
+        '  float fill = pow(max(dot(d, normalize(vec3(-0.78,0.12,0.38))), 0.0), 8.0);',
+        '  c += vec3(0.05,0.08,0.17)*fill*1.2;',
+        '  float top = pow(max(dot(d, vec3(0.0,1.0,0.0)), 0.0), 5.0);',
+        '  c += vec3(0.05,0.05,0.06)*top;',
+        '  gl_FragColor = vec4(c,1.0);',
+        '}'
+      ].join('\n')
+    })
+  );
+  es.add(dome);
+
+  function softbox(w, h, pos, col) {
+    var m = new T.Mesh(new T.PlaneGeometry(w, h), new T.MeshBasicMaterial({ color: LC(col), side: T.DoubleSide }));
+    m.position.set(pos[0], pos[1], pos[2]);
+    m.lookAt(0, 0.6, 0);
+    es.add(m);
+    return m;
+  }
+  softbox(7, 5, [4.6, 5.0, 5.2], new T.Color(7.2, 5.4, 3.1));   // warm key
+  softbox(6, 6, [-6.4, 2.2, 3.4], new T.Color(0.55, 0.78, 1.35)); // cool fill
+  softbox(1.4, 7, [0.4, 3.4, -7.0], new T.Color(9.5, 7.6, 4.6));  // hot rim strip
+  softbox(1.0, 6, [-3.4, 2.6, -5.4], new T.Color(2.2, 1.5, 4.2)); // violet kicker
+  softbox(8, 8, [0, 9.0, 0.5], new T.Color(1.05, 1.05, 1.15));    // overhead silk
+
+  var rt = pmrem.fromScene(es, 0.035);
+  dome.geometry.dispose(); dome.material.dispose();
+  pmrem.dispose();
+  return rt.texture;
+}
+/* Equirectangular canvas environment — used if PMREM is unavailable or
+   produces a broken (NaN/black) probe on the host GPU.                     */
+function equirectEnv() {
+  /* painted small, then upscaled → soft blobs (no harsh mirror hotspots) */
+  var sw = 256, sh = 128;
+  var small = cnv(sw, sh), g = small.getContext('2d');
+  var gr = g.createLinearGradient(0, 0, 0, sh);
+  gr.addColorStop(0.00, '#1c1c26');
+  gr.addColorStop(0.30, '#0d0d12');
+  gr.addColorStop(0.58, '#08080b');
+  gr.addColorStop(1.00, '#040405');
+  g.fillStyle = gr; g.fillRect(0, 0, sw, sh);
+  function blob(x, y, rx, ry, col, a) {
+    var m = Math.max(rx, ry);
+    var rg = g.createRadialGradient(x, y, 0, x, y, m);
+    rg.addColorStop(0, col);
+    rg.addColorStop(0.45, col.replace(/,[\d.]+\)$/, ',0.30)'));
+    rg.addColorStop(1, 'rgba(0,0,0,0)');
+    g.save();
+    g.globalAlpha = a;
+    g.translate(x, y); g.scale(rx / m, ry / m); g.translate(-x, -y);
+    g.fillStyle = rg;
+    g.beginPath(); g.arc(x, y, m, 0, TAU); g.fill();
+    g.restore();
+  }
+  blob(74, 38, 78, 54, 'rgba(255,214,160,1)', 0.62);   /* warm key      */
+  blob(192, 56, 58, 42, 'rgba(150,180,255,1)', 0.34);  /* cool fill     */
+  blob(128, 26, 28, 80, 'rgba(255,236,195,1)', 0.40);  /* overhead silk */
+  blob(34, 52, 34, 26, 'rgba(255,200,150,1)', 0.24);   /* kicker        */
+  blob(150, 84, 80, 22, 'rgba(120,96,64,1)', 0.14);    /* floor bounce  */
+  var c = cnv(1024, 512);
+  c.getContext('2d').drawImage(small, 0, 0, 1024, 512);
+  var t = new T.CanvasTexture(c);
+  t.mapping = T.EquirectangularReflectionMapping;
+  t.encoding = T.sRGBEncoding;
+  return t;
+}
+
+/* Some software / limited GPUs produce a broken PMREM probe (NaNs that turn
+   every PBR material black). Probe it once and fall back if it is dead.      */
+function envIsUsable(tex) {
+  try {
+    var rt = new T.WebGLRenderTarget(4, 4);
+    var s = new T.Scene();
+    var m = new T.Mesh(new T.SphereGeometry(1, 10, 8),
+      new T.MeshStandardMaterial({ color: LC(0x808080), roughness: 0.5, metalness: 0.0 }));
+    s.add(m);
+    s.environment = tex;
+    var c2 = new T.PerspectiveCamera(45, 1, 0.1, 10);
+    c2.position.set(0, 0, 3); c2.lookAt(0, 0, 0);
+    var prevTarget = renderer.getRenderTarget();
+    var prevColor = new T.Color(), prevAlpha = renderer.getClearAlpha();
+    renderer.getClearColor(prevColor);
+    renderer.setClearColor(0x000000, 1);
+    renderer.setRenderTarget(rt);
+    renderer.clear(true, true, true);
+    renderer.render(s, c2);
+    var px = new Uint8Array(4 * 4 * 4);
+    renderer.readRenderTargetPixels(rt, 0, 0, 4, 4, px);
+    renderer.setRenderTarget(prevTarget);
+    renderer.setClearColor(prevColor, prevAlpha);
+    var sum = 0;
+    for (var i = 0; i < px.length; i += 4) sum += px[i] + px[i + 1] + px[i + 2];
+    m.geometry.dispose(); m.material.dispose(); rt.dispose();
+    return sum > 24;
+  } catch (e) { return false; }
+}
+
+var envMap = null, envFallback = false;
+try {
+  var probe = buildEnvironment();
+  if (envIsUsable(probe)) envMap = probe;
+  else { envFallback = true; if (probe.dispose) probe.dispose(); }
+} catch (e) { envFallback = true; }
+if (!envMap) { envMap = equirectEnv(); envFallback = true; }
+scene.environment = envMap;
+
+/* ---------- lights: warm key · cool fill · hot rim ---------- */
+var studio = new T.Group();     // hidden during the widget pass
+scene.add(studio);
+
+var hemi = new T.HemisphereLight(LC(0x3A4763), LC(0x120C08), envFallback ? 0.72 : 0.60);
+scene.add(hemi);
+
+var keyLight = new T.DirectionalLight(LC(0xFFD7A2), envFallback ? 3.20 : 2.70);
+keyLight.position.set(2.7, 3.7, 3.3);
+keyLight.castShadow = true;
+keyLight.shadow.mapSize.width = 2048;
+keyLight.shadow.mapSize.height = 2048;
+keyLight.shadow.camera.near = 0.5;
+keyLight.shadow.camera.far = 14;
+keyLight.shadow.camera.left = -2.6; keyLight.shadow.camera.right = 2.6;
+keyLight.shadow.camera.top = 3.2; keyLight.shadow.camera.bottom = -0.6;
+keyLight.shadow.bias = -0.0009;
+keyLight.shadow.radius = 3.2;
+keyLight.userData.base = keyLight.intensity;   /* animated ±2 % in tick() */
+scene.add(keyLight);
+
+var fillLight = new T.DirectionalLight(LC(0x9FB4FF), envFallback ? 0.72 : 0.64);
+fillLight.position.set(-3.4, 1.5, 2.6);
+scene.add(fillLight);
+
+var rimLight = new T.SpotLight(LC(0xFFE2AF), envFallback ? 4.80 : 4.30, 14, 0.72, 0.62, 1.2);
+rimLight.position.set(-0.7, 3.1, -3.6);
+rimLight.target.position.set(0, 1.25, 0);
+scene.add(rimLight); scene.add(rimLight.target);
+
+var rimCool = new T.DirectionalLight(LC(0xB79CFF), envFallback ? 0.82 : 0.74);
+rimCool.position.set(-2.6, 1.9, -3.2);
+scene.add(rimCool);
+
+var bounce = new T.PointLight(LC(0xFFC489), envFallback ? 1.05 : 0.92, 4.5, 2);
+bounce.position.set(0.2, 0.55, 1.35);
+scene.add(bounce);
+
+/* ---------- studio floor, backdrop, rings ---------- */
+var floor = new T.Mesh(
+  new T.CircleGeometry(7, 64),
+  new T.MeshStandardMaterial({ color: LC(0x09090B), roughness: 0.46, metalness: 0.52, envMapIntensity: 0.70 })
+);
+floor.rotation.x = -Math.PI / 2;
+floor.receiveShadow = true;
+studio.add(floor);
+
+var poolTex = radialTex('rgba(200,169,106,0.30)', 'rgba(200,169,106,0.05)', 512, 0.30);
+var pool = new T.Mesh(new T.CircleGeometry(2.1, 48), new T.MeshBasicMaterial({
+  map: poolTex, transparent: true, blending: T.AdditiveBlending, depthWrite: false, opacity: 0.85
+}));
+pool.rotation.x = -Math.PI / 2; pool.position.y = 0.004;
+studio.add(pool);
+
+var ringMat = new T.MeshBasicMaterial({ color: LC(0xC8A96A), transparent: true, opacity: 0.30, blending: T.AdditiveBlending, depthWrite: false });
+var ring1 = new T.Mesh(new T.RingGeometry(1.52, 1.545, 128), ringMat);
+ring1.rotation.x = -Math.PI / 2; ring1.position.y = 0.006;
+studio.add(ring1);
+var ring2 = new T.Mesh(new T.RingGeometry(1.92, 1.935, 128), ringMat.clone());
+ring2.material.opacity = 0.14;
+ring2.rotation.x = -Math.PI / 2; ring2.position.y = 0.006;
+studio.add(ring2);
+
+var backdrop = new T.Mesh(
+  new T.PlaneGeometry(20, 12),
+  new T.MeshBasicMaterial({ map: backdropTex(), side: T.DoubleSide, transparent: true, opacity: 0.9, depthWrite: false })
+);
+backdrop.position.set(0, 4.2, -5.0);
+studio.add(backdrop);
+
+/* ground shadow catcher (soft contact shadow under the character) */
+var contactTex = radialTex('rgba(0,0,0,0.62)', 'rgba(0,0,0,0.18)', 256, 0.35);
+var contact = new T.Mesh(new T.CircleGeometry(0.92, 40), new T.MeshBasicMaterial({
+  map: contactTex, transparent: true, opacity: 0.75, depthWrite: false
+}));
+contact.rotation.x = -Math.PI / 2; contact.position.y = 0.008;
+studio.add(contact);
+
+/* ---------------------------------------------------------------- 6 · sparkles */
+function Sparkles(count, radius, height, color, size) {
+  var geo = new T.BufferGeometry();
+  var arr = new Float32Array(count * 3), seeds = new Float32Array(count);
+  for (var i = 0; i < count; i++) {
+    var a = Math.random() * TAU, r = radius * (0.25 + Math.random() * 0.75);
+    arr[i * 3] = Math.cos(a) * r; arr[i * 3 + 1] = Math.random() * height; arr[i * 3 + 2] = Math.sin(a) * r;
+    seeds[i] = Math.random();
+  }
+  geo.setAttribute('position', new T.BufferAttribute(arr, 3));
+  var mat = new T.PointsMaterial({
+    size: size || 0.035, map: radialTex('rgba(255,240,205,1)', 'rgba(255,205,130,0.25)', 128, 0.22),
+    color: LC(color || 0xFFE0A8), transparent: true, opacity: 0, blending: T.AdditiveBlending,
+    depthWrite: false, sizeAttenuation: true
+  });
+  this.points = new T.Points(geo, mat);
+  this.seeds = seeds; this.height = height; this.count = count;
+  this.intensity = 0;
+}
+Sparkles.prototype.update = function (t, dt) {
+  var pos = this.points.geometry.attributes.position, arr = pos.array;
+  for (var i = 0; i < this.count; i++) {
+    var s = this.seeds[i];
+    arr[i * 3 + 1] += (0.045 + s * 0.10) * dt * (0.4 + this.intensity);
+    if (arr[i * 3 + 1] > this.height) arr[i * 3 + 1] = 0;
+  }
+  pos.needsUpdate = true;
+  this.points.material.opacity = damp(this.points.material.opacity, this.intensity * 0.85, 3, dt);
+  this.points.rotation.y = t * 0.12;
+};
+
+/* ---------------------------------------------------------------- exports (filled later) */
+window.HBStudio = {
+  THREE: T, scene: scene, renderer: renderer, camera: camera, envMap: envMap,
+  utils: {
+    V3: V3, C: C, clamp: clamp, lerp: lerp, damp: damp, capsule: capsule, lathe: lathe,
+    roundedBox: roundedBox, parametric: parametric, ribbon: ribbon, tubeFrom: tubeFrom,
+    fluff: fluff, folds: folds, mesh: mesh, group: group, eyeTex: eyeTex, iridTex: iridTex,
+    radialTex: radialTex, gradTex: gradTex, brocadeTex: brocadeTex, noise3: noise3, scatterRing: scatterRing
+  },
+  mats: {
+    skin: skinMat, gold: goldMat, velvet: velvetMat, silk: silkMat, hair: hairMat,
+    gloss: glossMat, crystal: crystalMat, pearl: pearlMat, matte: matteMat, glow: glowMat
+  },
+  characters: [],
+  buildCharacter: null,
+  progress: progress,
+  studio: studio,
+  lights: { hemi: hemi, key: keyLight, fill: fillLight, rim: rimLight, rimCool: rimCool, bounce: bounce },
+  setBloom: null,          /* filled by 05_app.js when the composer exists */
+  Sparkles: Sparkles
+};
+
+/* continue in 03_rig.js */
+window.__HBS = {
+  envFallback: envFallback,
+  T: T, scene: scene, renderer: renderer, camera: camera, widgetCam: widgetCam, studio: studio,
+  envMap: envMap, V3: V3, C: C, clamp: clamp, lerp: lerp, damp: damp,
+  capsule: capsule, lathe: lathe, roundedBox: roundedBox, parametric: parametric, ribbon: ribbon,
+  tubeFrom: tubeFrom, fluff: fluff, folds: folds, mesh: mesh, group: group, scatterRing: scatterRing,
+  eyeTex: eyeTex, iridTex: iridTex, radialTex: radialTex, gradTex: gradTex, brocadeTex: brocadeTex, noise3: noise3,
+  skinMat: skinMat, goldMat: goldMat, velvetMat: velvetMat, silkMat: silkMat, hairMat: hairMat,
+  glossMat: glossMat, crystalMat: crystalMat, pearlMat: pearlMat, matteMat: matteMat, glowMat: glowMat,
+  Sparkles: Sparkles, progress: progress, offline: offline,
+  keyLight: keyLight, fillLight: fillLight, rimLight: rimLight, hemi: hemi, rimCool: rimCool,
+  bounce: bounce, floor: floor, backdrop: backdrop, ring1: ring1, ring2: ring2, pool: pool
+};
+})();
+
+/* =====================================================================
+   03 · RIG — living character system
+   Gaze tracking · organic blinks · breathing · sway · emotion posing
+   ===================================================================== */
+(function () {
+'use strict';
+var H = window.__HBS, T = H.T;
+var V3 = H.V3, C = H.C, LC = H.C, clamp = H.clamp, lerp = H.lerp, damp = H.damp;
+var capsule = H.capsule, lathe = H.lathe, roundedBox = H.roundedBox, parametric = H.parametric,
+    ribbon = H.ribbon, tubeFrom = H.tubeFrom, fluff = H.fluff, folds = H.folds, mesh = H.mesh, group = H.group;
+var skinMat = H.skinMat, goldMat = H.goldMat, velvetMat = H.velvetMat, silkMat = H.silkMat,
+    hairMat = H.hairMat, glossMat = H.glossMat, crystalMat = H.crystalMat, pearlMat = H.pearlMat,
+    matteMat = H.matteMat, glowMat = H.glowMat;
+var TAU = Math.PI * 2;
+
+/* ------------------------------------------------------------------ constants */
+var LID_OPEN = -0.16;     // upper-lid sweep, fully open
+var LID_SHUT = 1.78;      // upper-lid sweep, fully closed
+var CANON = {             // shared humanoid proportions (metres-ish)
+  hipY: 0.86, chestY: 1.16, shoulderY: 1.29, neckY: 1.38, headY: 1.53,
+  headRX: 0.201, headRY: 0.217, headRZ: 0.199
+};
+
+/* ================================================================== Rig ===== */
+function Rig(cfg) {
+  cfg = cfg || {};
+  this.id = cfg.id || 'rig';
+  this.root = new T.Group();
+  this.body = new T.Group();
+  this.root.add(this.body);
+  this.head = new T.Group();
+  this.head.position.set(0, cfg.headY !== undefined ? cfg.headY : CANON.headY, 0);
+  this.body.add(this.head);
+  this.chest = new T.Group();
+  this.body.add(this.chest);
+
+  this.parts = [];
+  this.gx = 0; this.gy = 0; this.tgx = 0; this.tgy = 0;
+  this.blinkTimer = 1.4 + Math.random() * 2.6;
+  this.blinkActive = false; this.blinkT = 0;
+  this.emotion = 'poise';
+  this.time = 0;
+
+  /* every animated scalar lives here — GSAP tweens this object directly */
+  this.pose = {
+    headRx: 0, headRy: 0, headRz: 0, headY: 0, headZ: 0,
+    bodyRx: 0, bodyRy: 0, bodyRz: 0, bodyY: 0, bodyLean: 0,
+    browL: 0, browR: 0, lidL: 1, lidR: 1,
+    mouthOpen: 0.04, smile: 0.55, eyeX: 0, eyeY: 0,
+    armRx: -0.06, armRy: 0, armRz: 0.14, elbowRx: -0.16, elbowRz: -0.05,
+    armLx: -0.06, armLy: 0, armLz: -0.14, elbowLx: -0.16, elbowLz: 0.05,
+    bounce: 0, glow: 0.3, sparkle: 0, breath: 1
+  };
+
+  /* emotion targets (per-character builders may extend / override these) */
+  this.emotions = {
+    poise: {
+      headRx: 0, headRy: 0, headRz: 0, headY: 0,
+      bodyRx: 0, bodyRy: 0, bodyRz: 0, bodyY: 0,
+      browL: 0, browR: 0, lidL: 1, lidR: 1,
+      mouthOpen: 0.04, smile: 0.55, eyeX: 0, eyeY: 0,
+      armRx: -0.06, armRy: 0, armRz: 0.14, elbowRx: -0.16, elbowRz: -0.05,
+      armLx: -0.06, armLy: 0, armLz: -0.14, elbowLx: -0.16, elbowLz: 0.05,
+      bounce: 0, glow: 0.3, sparkle: 0.06
+    },
+    welcome: {
+      headRx: 0.11, headRy: 0, headRz: 0, headY: -0.018,
+      bodyRx: 0.03, bodyRy: 0, bodyRz: 0, bodyY: -0.008,
+      browL: 0.25, browR: 0.25, lidL: 0.82, lidR: 0.82,
+      mouthOpen: 0.05, smile: 0.95, eyeX: 0, eyeY: 0,
+      armRx: -1.02, armRy: 0, armRz: -0.06, elbowRx: -1.44, elbowRz: -0.32,
+      armLx: -1.02, armLy: 0, armLz: 0.06, elbowLx: -1.44, elbowLz: 0.32,
+      bounce: 0.16, glow: 0.55, sparkle: 0.25
+    },
+    happy: {
+      headRx: -0.05, headRy: 0, headRz: 0.07, headY: 0.012,
+      bodyRx: -0.03, bodyRy: 0, bodyRz: 0, bodyY: 0,
+      browL: 0.55, browR: 0.45, lidL: 0.74, lidR: 0.74,
+      mouthOpen: 0.42, smile: 1.30, eyeX: 0, eyeY: 0.03,
+      armRx: -0.58, armRy: 0, armRz: 0.44, elbowRx: -1.02, elbowRz: -0.18,
+      armLx: -0.58, armLy: 0, armLz: -0.44, elbowLx: -1.02, elbowLz: 0.18,
+      bounce: 1.0, glow: 0.9, sparkle: 1
+    },
+    thinking: {
+      headRx: 0.07, headRy: -0.20, headRz: -0.10, headY: 0,
+      bodyRx: 0.02, bodyRy: 0.10, bodyRz: 0, bodyY: -0.004,
+      browL: 0.62, browR: -0.12, lidL: 0.66, lidR: 0.60,
+      mouthOpen: 0.02, smile: 0.22, eyeX: -0.05, eyeY: -0.11,
+      armRx: -0.86, armRy: 0, armRz: -0.40, elbowRx: -1.86, elbowRz: -0.52,
+      armLx: -0.24, armLy: 0, armLz: -0.22, elbowLx: -0.62, elbowLz: 0.14,
+      bounce: 0, glow: 0.45, sparkle: 0.12
+    },
+    hesitant: {
+      headRx: 0.04, headRy: 0.17, headRz: 0.14, headY: -0.006,
+      bodyRx: 0.06, bodyRy: -0.10, bodyRz: 0, bodyY: -0.014,
+      browL: -0.34, browR: -0.20, lidL: 0.88, lidR: 0.88,
+      mouthOpen: 0.015, smile: -0.18, eyeX: 0.03, eyeY: 0.02,
+      armRx: -0.40, armRy: 0, armRz: -0.26, elbowRx: -0.80, elbowRz: -0.40,
+      armLx: -0.40, armLy: 0, armLz: 0.26, elbowLx: -0.80, elbowLz: 0.40,
+      bounce: 0, glow: 0.20, sparkle: 0
+    }
+  };
+}
+
+Rig.prototype.setEmotion = function (name, dur) {
+  var t = this.emotions[name] ? this.emotions[name] : this.emotions.poise;
+  this.emotion = this.emotions[name] ? name : 'poise';
+  var o = { duration: dur === undefined ? 1.15 : dur, ease: 'power3.out', overwrite: 'auto' };
+  for (var k in t) o[k] = t[k];
+  window.gsap.to(this.pose, o);
+  if (this.onEmotion) this.onEmotion(this.emotion);
+};
+
+Rig.prototype.lookTarget = function (x, y) {
+  this.tgx = clamp(x, -1, 1);
+  this.tgy = clamp(y, -1, 1);
+};
+
+Rig.prototype.collectMaterials = function () {
+  var out = [];
+  this.root.traverse(function (o) {
+    if (o.isMesh || o.isPoints) {
+      var m = o.material;
+      if (!m) return;
+      if (m.__orig === undefined) {
+        m.__orig = { transparent: m.transparent, opacity: m.opacity, depthWrite: m.depthWrite };
+      }
+      out.push(m);
+    }
+  });
+  this.mats = out;
+  return out;
+};
+Rig.prototype.setOpacity = function (v) {
+  if (!this.mats) this.collectMaterials();
+  for (var i = 0; i < this.mats.length; i++) {
+    var m = this.mats[i], o = m.__orig;
+    if (v >= 0.999) { m.transparent = o.transparent; m.opacity = o.opacity; m.depthWrite = o.depthWrite; }
+    else {
+      m.transparent = true;
+      m.opacity = o.opacity * v;
+      m.depthWrite = o.transparent ? false : (v > 0.7);
+    }
+  }
+};
+
+Rig.prototype.update = function (t, dt) {
+  var p = this.pose;
+  this.time = t;
+  this.gx = damp(this.gx, this.tgx, 4.4, dt);
+  this.gy = damp(this.gy, this.tgy, 4.4, dt);
+
+  /* ---- organic blink ---- */
+  this.blinkTimer -= dt;
+  if (this.blinkTimer <= 0 && !this.blinkActive) {
+    this.blinkActive = true; this.blinkT = 0;
+    this.blinkTimer = (Math.random() < 0.2 ? 0.17 : 2.3 + Math.random() * 4.2);
+  }
+  var blinkAmt = 0;
+  if (this.blinkActive) {
+    this.blinkT += dt / 0.17;
+    if (this.blinkT >= 1) { this.blinkActive = false; blinkAmt = 0; }
+    else blinkAmt = Math.sin(this.blinkT * Math.PI);
+  }
+
+  /* ---- breathing + idle sway ---- */
+  var br = Math.sin(t * 1.32) * p.breath;
+  var br2 = Math.sin(t * 1.32 + 0.55) * p.breath;
+  var hop = p.bounce > 0.01 ? Math.abs(Math.sin(t * 4.1)) * 0.05 * p.bounce : 0;
+  var lean = p.bodyLean;
+
+  this.body.rotation.y = p.bodyRy + 0.040 * Math.sin(t * 0.55);
+  this.body.rotation.z = p.bodyRz + 0.019 * Math.sin(t * 0.42 + 1.3);
+  this.body.rotation.x = p.bodyRx + lean + 0.013 * Math.sin(t * 0.71 + 0.4);
+  this.body.position.y = p.bodyY + 0.010 * br + hop;
+  if (this.chest) {
+    this.chest.scale.set(1 + 0.013 * br, 1 + 0.017 * br, 1 + 0.016 * br);
+    this.chest.position.y = (this.chestBaseY || 0) + 0.004 * br2;
+  }
+
+  /* ---- head: emotion + idle + gaze ---- */
+  if (this.head) {
+    this.head.rotation.x = p.headRx + 0.021 * Math.sin(t * 0.93 + 0.4) - this.gy * 0.17;
+    this.head.rotation.y = p.headRy + 0.048 * Math.sin(t * 0.61 + 2.1) + this.gx * 0.34;
+    this.head.rotation.z = p.headRz + 0.023 * Math.sin(t * 0.47) + this.gx * 0.05;
+    this.head.position.y = (this.headY0 || this.head.position.y) + p.headY + 0.006 * Math.sin(t * 1.32 + 1.1) + hop * 0.4;
+  }
+
+  /* ---- eyes ---- */
+  var ex = this.gx * 0.17 + p.eyeX, ey = -this.gy * 0.11 + p.eyeY;
+  if (this.eyeL) this.applyEye(this.eyeL, ex, ey, p.lidL * (1 - blinkAmt), blinkAmt);
+  if (this.eyeR) this.applyEye(this.eyeR, ex, ey, p.lidR * (1 - blinkAmt), blinkAmt);
+
+  /* ---- brows ---- */
+  if (this.browL) this.applyBrow(this.browL, p.browL);
+  if (this.browR) this.applyBrow(this.browR, p.browR);
+
+  /* ---- mouth ---- */
+  if (this.mouth) {
+    var m = this.mouth;
+    m.group.scale.set(1, 1 + p.smile * 0.32, 1);
+    m.group.position.y = m.base.y + p.smile * 0.006;
+    if (m.inner) {
+      m.inner.scale.set(1, 0.16 + p.mouthOpen * 1.15, 1);
+      m.inner.position.y = -0.004 - p.mouthOpen * 0.012;
+      m.inner.visible = p.mouthOpen > 0.05;
+    }
+    if (m.teeth) { m.teeth.visible = p.mouthOpen > 0.18; m.teeth.position.y = m.teethBaseY - p.mouthOpen * 0.006; }
+    if (m.lower) m.lower.position.y = -p.mouthOpen * 0.030;
+  }
+
+  /* ---- arms ---- */
+  if (this.armR) {
+    this.armR.shoulder.rotation.set(p.armRx, p.armRy, p.armRz);
+    this.armR.elbow.rotation.set(p.elbowRx, 0, p.elbowRz);
+  }
+  if (this.armL) {
+    this.armL.shoulder.rotation.set(p.armLx, p.armLy, p.armLz);
+    this.armL.elbow.rotation.set(p.elbowLx, 0, p.elbowLz);
+  }
+
+  if (this.extra) this.extra(t, dt, p);
+};
+
+Rig.prototype.applyEye = function (e, ex, ey, openness, blinkAmt) {
+  e.group.rotation.y = ex;
+  e.group.rotation.x = ey;
+  var o = clamp(openness, 0, 1);
+  e.lid.rotation.x = lerp(LID_SHUT, LID_OPEN, o);
+  if (e.glints) {
+    var vis = blinkAmt < 0.42;
+    for (var i = 0; i < e.glints.length; i++) e.glints[i].visible = vis;
+  }
+};
+Rig.prototype.applyBrow = function (b, v) {
+  b.position.y = b.base.y + v * 0.014;
+  b.rotation.z = b.base.z + v * 0.11;
+};
+
+/* ================================================================ EYE ======= */
+/* A glossy cartoon eye: dark chocolate almond ball + sweeping skin lid
+   + a lash line riding the lid rim + two specular catchlights.           */
+function makeEye(o) {
+  o = o || {};
+  var r = o.r || 0.050;
+  var sx = o.sx || 1.16, sy = o.sy || 1.00, sz = o.sz || 0.90;
+  var g = new T.Group();
+  var lidMat = o.lidMat;
+
+  var ball = new T.Mesh(
+    new T.SphereGeometry(r, 44, 32),
+    new T.MeshPhysicalMaterial({
+      map: o.tex || null, color: LC(o.tex ? 0xffffff : (o.color || 0x2B1409)),
+      roughness: 0.06, metalness: 0.0, clearcoat: 1.0, clearcoatRoughness: 0.025,
+      envMapIntensity: 2.4
+    })
+  );
+  ball.scale.set(sx, sy, sz);
+  g.add(ball);
+
+  /* triple high-contrast anime catchlights */
+  var glints = [];
+  var gs = o.glints || [
+    { x: -0.30, y: 0.36, r: 0.30, o: 1.00 },
+    { x: 0.34, y: -0.24, r: 0.15, o: 0.85 },
+    { x: 0.22, y: 0.38, r: 0.09, o: 0.90 }
+  ];
+  gs.forEach(function (c) {
+    var m = new T.Mesh(
+      new T.SphereGeometry(r * c.r, 14, 12),
+      new T.MeshBasicMaterial({ color: LC(0xffffff), transparent: true, opacity: c.o, depthWrite: false })
+    );
+    m.scale.set(1, 1, 0.45);
+    m.position.set(r * sx * c.x, r * sy * c.y, r * sz * 1.03);
+    m.renderOrder = 3;
+    g.add(m); glints.push(m);
+  });
+
+  /* upper lid — spherical cap that sweeps down over the ball */
+  var lidR = r * 1.06;
+  var theta = o.lidTheta !== undefined ? o.lidTheta : 0.42 * Math.PI;
+  var lid = new T.Mesh(new T.SphereGeometry(lidR, 36, 22, 0, TAU, 0, theta), lidMat);
+  lid.scale.set(sx, sy, sz);
+  lid.rotation.x = LID_OPEN;
+  g.add(lid);
+
+  /* lash line riding the lid rim (inherits lid scale + sweep) */
+  if (o.lashes !== false) {
+    var lashMat = o.lashMat || new T.MeshStandardMaterial({ color: LC(o.lashColor || 0x140C08), roughness: 0.55, metalness: 0.05 });
+    var lash = new T.Mesh(new T.TorusGeometry(lidR * Math.sin(theta), lidR * 0.052, 6, 56), lashMat);
+    lash.rotation.x = Math.PI / 2;
+    lash.position.y = lidR * Math.cos(theta);
+    lid.add(lash);
+  }
+
+  /* lower lid — static, carves the almond aperture */
+  var lowTheta = o.lowTheta !== undefined ? o.lowTheta : 0.30 * Math.PI;
+  var low = new T.Mesh(new T.SphereGeometry(lidR, 36, 22, 0, TAU, 0, lowTheta), lidMat);
+  low.scale.set(sx, sy, sz);
+  low.rotation.x = Math.PI - 0.36;
+  g.add(low);
+
+  return { group: g, ball: ball, lid: lid, low: low, glints: glints, r: r };
+}
+
+/* ============================================================== MOUTH ======= */
+function makeMouth(o) {
+  o = o || {};
+  var lipMat = o.lipMat || silkMat(0xC06A6E, 0.28);
+  var g = new T.Group();
+  var W = o.w || 0.052, thick = o.thick || 0.0122;
+
+  function curve(pts) { return pts.map(function (p) { return V3(p[0], p[1], p[2]); }); }
+
+  var upper = new T.Mesh(tubeFrom(curve([
+    [-W, 0.001, 0.001], [-W * 0.52, 0.019, 0.004], [-0.012, 0.009, 0.005],
+    [0, 0.014, 0.005], [0.012, 0.009, 0.005], [W * 0.52, 0.019, 0.004], [W, 0.001, 0.001]
+  ]), thick, 44, 10, false), lipMat);
+  var lower = new T.Mesh(tubeFrom(curve([
+    [-W, 0.001, 0.001], [-W * 0.5, -0.017, 0.004], [0, -0.026, 0.005], [W * 0.5, -0.017, 0.004], [W, 0.001, 0.001]
+  ]), thick * 1.06, 40, 10, false), lipMat);
+  g.add(upper); g.add(lower);
+
+  var inner = new T.Mesh(new T.SphereGeometry(0.042, 24, 18),
+    new T.MeshStandardMaterial({ color: LC(o.innerColor || 0x3D1015), roughness: 0.42, metalness: 0.0 }));
+  inner.scale.set(1.0, 0.16, 0.5);
+  inner.position.set(0, -0.004, -0.006);
+  g.add(inner);
+
+  var teeth = new T.Mesh(roundedBox(0.046, 0.014, 0.020, 0.005, 3),
+    new T.MeshPhysicalMaterial({ color: LC(0xF6F1E6), roughness: 0.22, clearcoat: 1, clearcoatRoughness: 0.1, envMapIntensity: 1.2 }));
+  teeth.position.set(0, 0.006, -0.002);
+  g.add(teeth);
+
+  return { group: g, upper: upper, lower: lower, inner: inner, teeth: teeth, base: V3(0, 0, 0), teethBaseY: 0.006 };
+}
+
+/* ========================================================== HEAD BASE ======= */
+/* Shared stylised head: skull, jaw, muzzle, ears, nose, blush, brows, hair bed */
+function buildHead(rig, o) {
+  o = o || {};
+  var skin = o.skin;
+  var head = rig.head;
+  var rx = o.rx || CANON.headRX, ry = o.ry || CANON.headRY, rz = o.rz || CANON.headRZ;
+  var R = { x: rx, y: ry, z: rz };
+
+  var skull = new T.Mesh(new T.SphereGeometry(1, 56, 44), skin);
+  skull.scale.set(rx, ry, rz);
+  skull.castShadow = true;
+  head.add(skull);
+  rig.skull = skull;
+
+  var jaw = new T.Mesh(new T.SphereGeometry(1, 40, 32), skin);
+  jaw.scale.set(rx * 0.80, ry * 0.60, rz * 0.78);
+  jaw.position.set(0, -ry * 0.52, rz * 0.10);
+  head.add(jaw);
+
+  if (o.muzzle !== false) {
+    var muz = new T.Mesh(new T.SphereGeometry(1, 36, 28), skin);
+    muz.scale.set(rx * 0.56, ry * 0.40, rz * 0.52);
+    muz.position.set(0, -ry * 0.17, rz * 0.56);
+    head.add(muz);
+  }
+  if (o.chin !== false) {
+    var chin = new T.Mesh(new T.SphereGeometry(1, 28, 22), skin);
+    chin.scale.set(rx * 0.30, ry * 0.20, rz * 0.28);
+    chin.position.set(0, -ry * 0.74, rz * 0.36);
+    head.add(chin);
+  }
+  /* ears */
+  [1, -1].forEach(function (s) {
+    var ear = new T.Mesh(new T.SphereGeometry(1, 24, 20), skin);
+    ear.scale.set(rx * 0.16, ry * 0.42, rz * 0.30);
+    ear.position.set(s * rx * 0.97, -ry * 0.06, -rz * 0.06);
+    ear.rotation.z = -s * 0.16;
+    head.add(ear);
+    if (o.earring) head.add(o.earring(s, ear.position));
+  });
+
+  /* ---- helpers that stick a patch onto the head ellipsoid ---- */
+  function onSurface(x, y, inset) {
+    var k = 1 - (x / rx) * (x / rx) - (y / ry) * (y / ry);
+    var z = rz * Math.sqrt(Math.max(0.0, k));
+    return V3(x, y, z + (inset || 0));
+  }
+  function facePatch(x, y, size, mat, inset, rot) {
+    var p = onSurface(x, y, inset);
+    var n = V3(x / (rx * rx), y / (ry * ry), p.z / (rz * rz)).normalize();
+    var m = new T.Mesh(new T.PlaneGeometry(size, size * (rot ? 1 : 1)), mat);
+    m.position.copy(p);
+    m.quaternion.setFromUnitVectors(V3(0, 0, 1), n);
+    m.rotateZ(rot || 0);
+    m.renderOrder = 2;
+    head.add(m);
+    return m;
+  }
+  rig.onSurface = onSurface;
+  rig.facePatch = facePatch;
+
+  /* ---- nose ---- */
+  var noseP = onSurface(0, -ry * 0.21, -0.004);
+  /* the nose catches the hottest highlight — soften that one lobe only */
+  if (!rig.noseSkin) {
+    rig.noseSkin = skin.clone();
+    rig.noseSkin.roughness = Math.min(0.95, (skin.roughness || 0.58) + 0.16);
+    if (rig.noseSkin.clearcoat !== undefined) rig.noseSkin.clearcoat = 0.12;
+  }
+  var nose = new T.Mesh(new T.SphereGeometry(1, 24, 20), rig.noseSkin);
+  nose.scale.set(rx * 0.155, ry * 0.115, rz * 0.19);
+  nose.position.copy(noseP);
+  head.add(nose);
+  rig.nose = nose;
+  if (o.nostrils !== false) {
+    [1, -1].forEach(function (s) {
+      var n = new T.Mesh(new T.SphereGeometry(rx * 0.030, 12, 10),
+        new T.MeshStandardMaterial({ color: LC(o.nostrilColor || 0x6B3B22), roughness: 0.6 }));
+      n.scale.set(1, 0.7, 0.8);
+      n.position.set(s * rx * 0.062, noseP.y - ry * 0.028, noseP.z + rz * 0.11);
+      head.add(n);
+    });
+  }
+
+  /* ---- blush ---- */
+  if (o.blush) {
+    var bt = H.radialTex(o.blushInner || 'rgba(255,138,130,0.72)', o.blushOuter || 'rgba(255,110,120,0.10)', 256, 0.30);
+    var bm = new T.MeshBasicMaterial({ map: bt, transparent: true, blending: T.AdditiveBlending, depthWrite: false, opacity: o.blushOpacity === undefined ? 0.42 : o.blushOpacity });
+    rig.blushL = facePatch(-rx * 0.56, -ry * 0.20, rx * 0.44, bm, 0.010);
+    rig.blushR = facePatch(rx * 0.56, -ry * 0.20, rx * 0.44, bm, 0.010);
+  }
+
+  /* ---- brows ---- */
+  var browMat = o.browMat || hairMat(o.browColor || 0x1A0F0A, { rough: 0.55 });
+  [1, -1].forEach(function (s) {
+    var p = onSurface(s * rx * 0.42, ry * 0.35, -0.002);
+    var b = new T.Mesh(tubeFrom([
+      V3(-0.038, -0.004, 0), V3(-0.012, 0.014, 0.004), V3(0.016, 0.016, 0.004), V3(0.040, 0.002, 0)
+    ], o.browThick || 0.0088, 26, 8, false), browMat);
+    b.position.copy(p);
+    b.rotation.z = -s * 0.13;
+    b.scale.x = s;
+    b.base = { y: p.y, z: b.rotation.z };
+    head.add(b);
+    if (s > 0) rig.browR = b; else rig.browL = b;
+  });
+
+  return head;
+}
+
+/* ============================================================== HAIR ======== */
+/* Hair shell that hugs the skull ellipsoid exactly, with an artist-controlled
+   hairline (high at the front, low at the back) and volumetric tips.        */
+function hairCap(o) {
+  o = o || {};
+  var rx = o.rx, ry = o.ry, rz = o.rz;
+  var sf = o.startFront, sb = o.startBack, ef = o.endFront, eb = o.endBack;
+  var gap = o.gap !== undefined ? o.gap : 0.012;
+  var bulge = o.bulge !== undefined ? o.bulge : 0.05;
+  var wave = o.wave !== undefined ? o.wave : 0.008;
+  var crown = o.crown || 0;
+  var uSeg = o.useg || 64, vSeg = o.vseg || 40;
+  var dir = V3();
+  return parametric(function (u, v, target) {
+    var a = u * TAU;
+    var f = Math.pow(Math.max(0, Math.cos(a)), 1.25);
+    var s = lerp(sb, sf, f);
+    var e = lerp(eb, ef, f);
+    var polar = s + (e - s) * v;
+    dir.set(Math.sin(a) * Math.sin(polar), Math.cos(polar), Math.cos(a) * Math.sin(polar));
+    var re = 1 / Math.sqrt((dir.x / rx) * (dir.x / rx) + (dir.y / ry) * (dir.y / ry) + (dir.z / rz) * (dir.z / rz));
+    /* At the front the shell hugs the skull and lands ON the hairline (no
+       visor effect); volume only builds where hair hangs free at the back. */
+    var hug = gap * (1 - 0.85 * v * f);
+    var grow = bulge * Math.pow(v, 2.1) * (1 - 0.88 * f);
+    var rr = re + hug + grow
+      + wave * Math.sin(a * 5 + v * 4.2)
+      + crown * Math.pow(Math.max(0, Math.cos(polar)), 3);
+    target.set(dir.x * rr, dir.y * rr, dir.z * rr);
+    return target;
+  }, uSeg, vSeg);
+}
+
+/* a swept strand of hair (used for flyaways, braids, fringes) */
+function strand(pts, r, mat) { return new T.Mesh(tubeFrom(pts, r, 40, 8, false), mat); }
+
+/* ========================================================== HUMANOID ======== */
+/* Skin skeleton + arms + neck that every humanoid character shares.
+   Outfits are added afterwards by each character builder.                  */
+function buildHumanoid(rig, o) {
+  o = o || {};
+  var skin = o.skin;
+  var hipY = CANON.hipY, shY = CANON.shoulderY;
+
+  /* ---- torso (skin base, hidden under the outfit) ---- */
+  var torsoGeo = lathe([
+    [0.02, hipY - 0.10], [0.155, hipY - 0.04], [0.185, hipY], [0.172, 0.94],
+    [0.150, 1.02], [0.158, 1.08], [0.198, 1.19], [0.222, shY - 0.01],
+    [0.150, 1.335], [0.02, 1.36]
+  ], 44, true);
+  torsoGeo.translate(0, -hipY, 0);
+  var torso = new T.Mesh(torsoGeo, skin);
+  torso.position.y = 0;
+  torso.castShadow = true;
+  rig.chest.position.y = hipY;   /* breathing pivots at the waist */
+  rig.chestBaseY = hipY;
+  rig.chest.add(torso);
+  rig.torso = torso;
+
+  /* ---- legs + feet ---- */
+  if (o.legs !== false) {
+    [1, -1].forEach(function (s) {
+      var leg = new T.Mesh(capsule(o.legR || 0.072, 0.80, 18, 8), o.legMat || skin);
+      leg.position.set(s * 0.098, 0.50, 0.005);
+      leg.castShadow = true;
+      rig.body.add(leg);
+      var foot = new T.Mesh(roundedBox(0.105, 0.062, 0.215, 0.028, 4), o.footMat || skin);
+      foot.position.set(s * 0.098, 0.040, 0.052);
+      rig.body.add(foot);
+    });
+  }
+
+  /* ---- neck (long enough to stay visible below the jaw) ---- */
+  var neck = new T.Mesh(capsule(0.058, 0.19, 18, 8), skin);
+  neck.position.set(0, 1.395, 0.006);
+  rig.body.add(neck);
+
+  /* ---- arms ---- */
+  function arm(side) {
+    var shoulder = new T.Group();
+    shoulder.position.set(side * 0.218, shY, 0.004);
+    rig.body.add(shoulder);
+
+    var cap = new T.Mesh(new T.SphereGeometry(0.072, 24, 18), skin);
+    cap.scale.set(1, 0.92, 0.95);
+    shoulder.add(cap);
+
+    var upper = new T.Mesh(capsule(o.armR || 0.050, 0.28, 18, 8), skin);
+    upper.position.y = -0.15;
+    upper.castShadow = true;
+    shoulder.add(upper);
+
+    var elbow = new T.Group();
+    elbow.position.y = -0.285;
+    shoulder.add(elbow);
+    var joint = new T.Mesh(new T.SphereGeometry(0.048, 20, 16), skin);
+    elbow.add(joint);
+
+    var fore = new T.Mesh(capsule((o.armR || 0.050) * 0.86, 0.26, 18, 8), skin);
+    fore.position.y = -0.14;
+    fore.castShadow = true;
+    elbow.add(fore);
+
+    var hand = new T.Group();
+    hand.position.y = -0.278;
+    elbow.add(hand);
+
+    var palm = new T.Mesh(roundedBox(0.068, 0.098, 0.040, 0.020, 4), skin);
+    palm.position.y = -0.045;
+    palm.castShadow = true;
+    hand.add(palm);
+    /* simple fingers */
+    for (var i = 0; i < 4; i++) {
+      var f = new T.Mesh(capsule(0.0105, 0.058, 10, 6), skin);
+      f.position.set(-0.023 + i * 0.0155, -0.104, 0.004);
+      f.rotation.x = 0.22;
+      hand.add(f);
+    }
+    var thumb = new T.Mesh(capsule(0.0115, 0.048, 10, 6), skin);
+    thumb.position.set(-side * 0.030, -0.070, 0.014);
+    thumb.rotation.z = side * 0.55;
+    hand.add(thumb);
+
+    return { shoulder: shoulder, elbow: elbow, hand: hand, upper: upper, fore: fore };
+  }
+  rig.armR = arm(1);
+  rig.armL = arm(-1);
+
+  /* ---- head ----
+     the raw skull is 0.40 x 0.43 m — on a 1.78 m figure that is a 1:4.1
+     chibi ball that swallows the neck whole.  Scaling the whole head group
+     (skull + face + hair cap + jewellery, all of which are its children)
+     to fashion-illustration proportion (~1:5.6) and lifting it clear of the
+     shoulders restores a visible neck and a reading silhouette. */
+  buildHead(rig, o);
+  rig.head.scale.set(1.10, 0.86, 0.90);
+  rig.head.position.set(0, 1.618, 0.004);
+  rig.headY0 = rig.head.position.y;
+  return rig;
+}
+
+/* sculpted hand for Gia / Noor (fingers with crystal nails) */
+function sculptedHand(mat, o) {
+  o = o || {};
+  var g = new T.Group();
+  var nails = o.nails !== false;
+  var palm = new T.Mesh(roundedBox(0.070, 0.092, 0.036, 0.019, 4), mat);
+  palm.castShadow = true;
+  g.add(palm);
+  var nailMat = o.nailMat || crystalMat(0xE9F3FF);
+  var fingers = [
+    { x: -0.0245, len: 0.055, r: 0.0102, rot: 0.16 },
+    { x: -0.0085, len: 0.062, r: 0.0108, rot: 0.10 },
+    { x: 0.0085, len: 0.058, r: 0.0106, rot: 0.08 },
+    { x: 0.0245, len: 0.048, r: 0.0096, rot: 0.14 }
+  ];
+  fingers.forEach(function (f, i) {
+    var knuckle = new T.Group();
+    knuckle.position.set(f.x, -0.046, 0.002);
+    knuckle.rotation.x = f.rot;
+    g.add(knuckle);
+    var p1 = new T.Mesh(capsule(f.r, f.len * 0.55, 10, 6), mat);
+    p1.position.y = -f.len * 0.275;
+    knuckle.add(p1);
+    var j = new T.Group(); j.position.y = -f.len * 0.55; knuckle.add(j);
+    var p2 = new T.Mesh(capsule(f.r * 0.9, f.len * 0.42, 10, 6), mat);
+    p2.position.y = -f.len * 0.21;
+    j.add(p2);
+    if (nails) {
+      var nail = new T.Mesh(new T.SphereGeometry(f.r * 1.02, 14, 12), nailMat);
+      nail.scale.set(0.85, 1.5, 0.42);
+      nail.position.set(0, -f.len * 0.46, f.r * 0.62);
+      j.add(nail);
+      var cr = new T.Mesh(new T.OctahedronGeometry(f.r * 0.72, 0), o.crystalMat || crystalMat(0xDCEFFF));
+      cr.scale.set(1, 0.55, 1.25);
+      cr.position.set(0, -f.len * 0.47, f.r * 0.78);
+      j.add(cr);
+    }
+  });
+  var thumb = new T.Mesh(capsule(0.0118, 0.050, 10, 6), mat);
+  thumb.position.set(-0.032, -0.040, 0.014);
+  thumb.rotation.z = 0.62; thumb.rotation.x = -0.25;
+  g.add(thumb);
+  if (nails) {
+    var tn = new T.Mesh(new T.OctahedronGeometry(0.0088, 0), o.crystalMat || crystalMat(0xDCEFFF));
+    tn.scale.set(1.1, 0.5, 1.3);
+    tn.position.set(-0.044, -0.066, 0.020);
+    g.add(tn);
+  }
+  return g;
+}
+
+/* ========================================================= JEWELLERY ======== */
+function jhumka(scale, goldTone) {
+  var g = new T.Group();
+  var gold = goldMat(goldTone === undefined ? 0 : goldTone);
+  var s = scale || 1;
+  var bell = new T.Mesh(lathe([
+    [0.002, 0.030], [0.010, 0.022], [0.020, 0.008], [0.030, -0.012],
+    [0.036, -0.030], [0.030, -0.040], [0.016, -0.046], [0.004, -0.047]
+  ], 28, true), gold);
+  bell.scale.setScalar(s);
+  g.add(bell);
+  var stud = new T.Mesh(new T.SphereGeometry(0.014 * s, 16, 12), gold);
+  stud.position.y = 0.036 * s;
+  g.add(stud);
+  var ring = new T.Mesh(new T.TorusGeometry(0.014 * s, 0.0032 * s, 8, 20), gold);
+  ring.position.y = 0.050 * s;
+  g.add(ring);
+  /* dangling pearls */
+  for (var i = 0; i < 5; i++) {
+    var a = (i / 5) * TAU;
+    var p = new T.Mesh(new T.SphereGeometry(0.006 * s, 10, 8), pearlMat());
+    p.position.set(Math.cos(a) * 0.032 * s, -0.058 * s, Math.sin(a) * 0.032 * s);
+    g.add(p);
+  }
+  return g;
+}
+
+function choker(radius, o) {
+  o = o || {};
+  var g = new T.Group();
+  var gold = goldMat(o.tone === undefined ? 0 : o.tone);
+  var band = new T.Mesh(new T.TorusGeometry(radius, o.tube || 0.017, 14, 64), gold);
+  band.rotation.x = Math.PI / 2 - 0.12;
+  band.scale.z = 0.82;
+  g.add(band);
+  /* tiered pendant plates */
+  var tiers = o.tiers || 3;
+  for (var i = 0; i < tiers; i++) {
+    var w = (o.w || 0.030) * (1 - i * 0.16);
+    var plate = new T.Mesh(roundedBox(w * 2, 0.016, 0.008, 0.004, 3), gold);
+    plate.position.set(0, -0.020 - i * 0.026, radius * 0.80 + i * 0.006);
+    g.add(plate);
+    if (o.gem) {
+      var gem = new T.Mesh(new T.OctahedronGeometry(0.011, 0), o.gem);
+      gem.scale.set(1, 1.25, 0.7);
+      gem.position.set(0, -0.020 - i * 0.026, radius * 0.84 + i * 0.006);
+      g.add(gem);
+    }
+  }
+  /* beaded fringe */
+  var n = o.beads || 11;
+  for (var j = 0; j < n; j++) {
+    var a = -0.9 + (j / (n - 1)) * 1.8;
+    var b = new T.Mesh(new T.SphereGeometry(0.0068, 10, 8), gold);
+    b.position.set(Math.sin(a) * radius * 0.94, -0.014 - Math.cos(a) * 0.006, Math.cos(a) * radius * 0.78);
+    g.add(b);
+  }
+  return g;
+}
+
+/* maang tikka: forehead pendant + hair-part chain */
+function maangTikka(o) {
+  o = o || {};
+  var g = new T.Group();
+  var gold = goldMat(0);
+  var chain = new T.Mesh(tubeFrom([
+    V3(0, 0.150, 0.050), V3(0, 0.128, 0.068), V3(0, 0.098, 0.078), V3(0, 0.070, 0.082)
+  ], 0.0042, 30, 8, false), gold);
+  g.add(chain);
+  var ring = new T.Mesh(new T.TorusGeometry(0.019, 0.0042, 10, 28), gold);
+  ring.position.set(0, 0.062, 0.080);
+  ring.rotation.x = 0.30;
+  g.add(ring);
+  var ruby = new T.Mesh(new T.OctahedronGeometry(0.016, 1), o.gem || crystalMat(0xC2183A));
+  ruby.material = new T.MeshPhysicalMaterial({
+    color: LC(0xC2183A), roughness: 0.05, metalness: 0.1, clearcoat: 1, clearcoatRoughness: 0.02,
+    envMapIntensity: 2.6, emissive: LC(0x3A0210)
+  });
+  ruby.scale.set(0.85, 1.45, 0.85);
+  ruby.position.set(0, 0.040, 0.082);
+  g.add(ruby);
+  var drop = new T.Mesh(new T.SphereGeometry(0.006, 10, 8), pearlMat());
+  drop.position.set(0, 0.014, 0.084);
+  g.add(drop);
+  /* side strands */
+  [1, -1].forEach(function (s) {
+    var st = new T.Mesh(tubeFrom([
+      V3(s * 0.012, 0.146, 0.052), V3(s * 0.055, 0.140, 0.020), V3(s * 0.086, 0.120, -0.030)
+    ], 0.0030, 24, 6, false), gold);
+    g.add(st);
+  });
+  return g;
+}
+
+/* nath: nose ring + the little chain that hooks to the hair */
+function nath(o) {
+  o = o || {};
+  var g = new T.Group();
+  var gold = goldMat(1);
+  var ring = new T.Mesh(new T.TorusGeometry(o.r || 0.038, 0.0055, 10, 32), gold);
+  ring.rotation.y = Math.PI / 2 - 0.35;
+  g.add(ring);
+  for (var i = 0; i < 5; i++) {
+    var a = -0.7 + (i / 4) * 1.4;
+    var p = new T.Mesh(new T.SphereGeometry(0.0042, 8, 8), pearlMat());
+    p.position.set(-0.030, Math.sin(a) * 0.030, -0.006);
+    g.add(p);
+  }
+  var chain = new T.Mesh(tubeFrom([
+    V3(0.006, 0.030, -0.006), V3(0.05, 0.075, -0.010), V3(0.10, 0.115, -0.030), V3(0.135, 0.145, -0.070)
+  ], 0.0028, 30, 6, false), gold);
+  g.add(chain);
+  return g;
+}
+
+/* gajra: ring of jasmine buds around a bun */
+function gajra(radius, count, o) {
+  o = o || {};
+  var g = new T.Group();
+  var budMat = o.budMat || new T.MeshPhysicalMaterial({
+    color: LC(0xFFFBF2), roughness: 0.42, metalness: 0.0, clearcoat: 0.7,
+    clearcoatRoughness: 0.4, envMapIntensity: 1.2, emissive: LC(0x2A241A)
+  });
+  var core = new T.MeshStandardMaterial({ color: LC(0xF2D98A), roughness: 0.6, emissive: LC(0x1A1408) });
+  var strands = o.strands || 2;
+  for (var s = 0; s < strands; s++) {
+    for (var i = 0; i < count; i++) {
+      var a = (i / count) * TAU + s * 0.16;
+      var y = -s * 0.020;
+      var rr = radius + s * 0.004;
+      var bud = new T.Mesh(new T.SphereGeometry(0.0125, 12, 10), budMat);
+      bud.scale.set(0.85, 1.25, 0.85);
+      bud.position.set(Math.cos(a) * rr, y + Math.sin(a * 3) * 0.004, Math.sin(a) * rr);
+      bud.rotation.z = Math.cos(a) * 0.3;
+      g.add(bud);
+      var c = new T.Mesh(new T.SphereGeometry(0.0055, 8, 8), core);
+      c.position.copy(bud.position);
+      c.position.y += 0.013;
+      g.add(c);
+    }
+  }
+  return g;
+}
+
+/* bangles */
+function bangles(count, radius, o) {
+  o = o || {};
+  var g = new T.Group();
+  for (var i = 0; i < count; i++) {
+    var t = new T.Mesh(new T.TorusGeometry(radius, o.tube || 0.0075, 10, 34),
+      i % 2 ? goldMat(0) : goldMat(1));
+    t.rotation.x = Math.PI / 2;
+    t.position.y = -i * 0.017;
+    t.scale.z = 0.86;
+    g.add(t);
+  }
+  return g;
+}
+
+/* zardozi / crystal scatter on a surface patch */
+function scatterDots(count, radiusFn, dotMat, size) {
+  var g = new T.Group();
+  for (var i = 0; i < count; i++) {
+    var a = Math.random() * TAU, r = radiusFn(i / count, Math.random());
+    var d = new T.Mesh(new T.SphereGeometry(size || 0.0055, 8, 8), dotMat || goldMat(1));
+    d.position.set(Math.cos(a) * r.x, r.y, Math.sin(a) * r.z);
+    d.scale.set(1, 0.55, 1);
+    g.add(d);
+  }
+  return g;
+}
+
+/* ------------------------------------------------------------------ exports */
+window.__HBS.Rig = Rig;
+window.__HBS.makeEye = makeEye;
+window.__HBS.makeMouth = makeMouth;
+window.__HBS.buildHead = buildHead;
+window.__HBS.buildHumanoid = buildHumanoid;
+window.__HBS.hairCap = hairCap;
+window.__HBS.strand = strand;
+window.__HBS.sculptedHand = sculptedHand;
+window.__HBS.CANON = CANON;
+window.__HBS.LID = { open: LID_OPEN, shut: LID_SHUT };
+window.__HBS.jewel = {
+  jhumka: jhumka, choker: choker, maangTikka: maangTikka, nath: nath,
+  gajra: gajra, bangles: bangles, scatterDots: scatterDots
+};
+})();
+
+/* =====================================================================
+   04 · THE FIVE CONCIERGES
+   Each builder is standalone: it returns { meta, rig } and touches no
+   global scene. Detach any one of them with HBStudio.buildCharacter(id).
+   ===================================================================== */
+(function () {
+'use strict';
+var U = window.__HBS, T = U.T;
+var V3 = U.V3, C = U.C, LC = U.C, clamp = U.clamp, lerp = U.lerp;
+var capsule = U.capsule, lathe = U.lathe, roundedBox = U.roundedBox, parametric = U.parametric,
+    ribbon = U.ribbon, tubeFrom = U.tubeFrom, fluff = U.fluff, folds = U.folds, mesh = U.mesh, group = U.group;
+var skinMat = U.skinMat, goldMat = U.goldMat, velvetMat = U.velvetMat, silkMat = U.silkMat,
+    hairMat = U.hairMat, glossMat = U.glossMat, crystalMat = U.crystalMat, pearlMat = U.pearlMat,
+    matteMat = U.matteMat, glowMat = U.glowMat;
+var Rig = U.Rig, makeEye = U.makeEye, makeMouth = U.makeMouth, buildHumanoid = U.buildHumanoid,
+    hairCap = U.hairCap, jewel = U.jewel, CANON = U.CANON, TAU = Math.PI * 2;
+
+/* shared: ellipsoid radius helper for hair + drapes */
+function ellR(dx, dy, dz, rx, ry, rz) {
+  return 1 / Math.sqrt((dx / rx) * (dx / rx) + (dy / ry) * (dy / ry) + (dz / rz) * (dz / rz));
+}
+
+/* =====================================================================
+   01 · ASHA — The Royal Bridal Stylist
+   Honey-wheat skin · crimson velvet · antique gold zardozi
+   ===================================================================== */
+function buildAsha() {
+  var rig = new Rig({ id: 'asha' });
+  var SKIN = 0xBA7742;
+  var skin = skinMat(SKIN, { glow: 0.13, rough: 0.56, cc: 0.32 });
+  var velvet = velvetMat(0x741226, { glow: 0.10 });
+  var velvetDark = velvetMat(0x4E0C1A, { glow: 0.06 });
+  var brocade = silkMat(0xDCC7A4, 0.34);   /* champagne lehenga: breaks the red monolith */
+  var gold = goldMat(0), goldLt = goldMat(1), goldDeep = goldMat(2);
+
+  buildHumanoid(rig, {
+    skin: skin, blush: true,
+    blushInner: 'rgba(255,142,118,0.95)', blushOuter: 'rgba(238,86,104,0.20)', blushOpacity: 0.66,
+    browColor: 0x1A0D07, nostrilColor: 0x7A3A1E, armR: 0.049,
+    legMat: matteMat(0x5A2A16, 0.9), footMat: goldDeep,
+    earring: function (s, p) {
+      var j = jewel.jhumka(1.0, 0);
+      j.position.set(p.x + s * 0.012, p.y - 0.062, p.z + 0.012);
+      rig['jhumka' + (s > 0 ? 'R' : 'L')] = j;
+      return j;
+    }
+  });
+
+  var rx = CANON.headRX, ry = CANON.headRY, rz = CANON.headRZ;
+
+  /* ---------------- eyes ---------------- */
+  var eyeTex = U.eyeTex('#3A1B0B', '#7E4318', '#190903', '#1D0C04', '#DFA860');
+  [1, -1].forEach(function (s) {
+    var e = makeEye({
+      r: 0.065, sx: 1.16, sy: 1.06, sz: 0.92, tex: eyeTex, lidMat: skin,
+      lashColor: 0x150A05,
+      glints: [{ x: -0.30, y: 0.34, r: 0.30, o: 1 }, { x: 0.36, y: -0.24, r: 0.125, o: 0.72 }]
+    });
+    e.group.position.set(s * rx * 0.45, ry * -0.05, rz * 0.82);
+    e.group.rotation.y = s * 0.05;
+    rig.head.add(e.group);
+    rig[s > 0 ? 'eyeR' : 'eyeL'] = e;
+  });
+
+  /* ---------------- mouth ---------------- */
+  var mouth = makeMouth({ lipMat: silkMat(0xC46E6C, 0.24), w: 0.050, thick: 0.0124 });
+  mouth.group.position.set(0, -ry * 0.52, rz * 0.82);
+  mouth.base = mouth.group.position.clone();
+  rig.head.add(mouth.group);
+  rig.mouth = mouth;
+
+  /* ---------------- hair ---------------- */
+  var hairCol = 0x1B1109;
+  var hair = hairMat(hairCol, { rough: 0.36 });
+  var cap = new T.Mesh(hairCap({
+    rx: rx, ry: ry, rz: rz, gap: 0.013, bulge: 0.060, wave: 0.006, crown: 0.010,
+    startFront: 0.02 * Math.PI, startBack: 0.02 * Math.PI,
+    endFront: 0.250 * Math.PI, endBack: 0.92 * Math.PI
+  }), hair);
+  cap.castShadow = true;
+  rig.head.add(cap);
+
+  /* middle parting: two swept strands from the crown to the temples */
+  [1, -1].forEach(function (s) {
+    var st = new T.Mesh(tubeFrom([
+      V3(s * 0.014, ry * 0.92, rz * 0.02), V3(s * 0.075, ry * 0.86, rz * 0.42),
+      V3(s * 0.145, ry * 0.62, rz * 0.66), V3(s * 0.175, ry * 0.24, rz * 0.70)
+    ], 0.016, 34, 10), hair);
+    rig.head.add(st);
+  });
+  /* face-framing tendrils */
+  [1, -1].forEach(function (s) {
+    var t2 = new T.Mesh(tubeFrom([
+      V3(s * rx * 0.80, ry * 0.62, rz * 0.52), V3(s * rx * 0.92, ry * 0.18, rz * 0.60),
+      V3(s * rx * 0.86, -ry * 0.28, rz * 0.56), V3(s * rx * 0.72, -ry * 0.66, rz * 0.40)
+    ], 0.0115, 34, 8), hair);
+    rig.head.add(t2);
+  });
+  /* flyaways */
+  for (var i = 0; i < 5; i++) {
+    var a = -0.6 + Math.random() * 1.2;
+    var fy = new T.Mesh(tubeFrom([
+      V3(Math.sin(a) * 0.05, ry * 0.98, Math.cos(a) * 0.05),
+      V3(Math.sin(a) * 0.13, ry * 1.16, Math.cos(a) * 0.10),
+      V3(Math.sin(a) * 0.20, ry * 1.10, Math.cos(a) * 0.02)
+    ], 0.0042, 20, 6), hair);
+    rig.head.add(fy);
+  }
+  /* low bun + antique gold bun cover */
+  var bun = new T.Mesh(new T.SphereGeometry(0.098, 26, 20), hair);
+  bun.scale.set(1.05, 0.92, 0.92);
+  bun.position.set(0, -ry * 0.10, -rz * 1.16);
+  rig.head.add(bun);
+  var bunRing = new T.Mesh(new T.TorusGeometry(0.082, 0.011, 10, 36), gold);
+  bunRing.position.set(0, -ry * 0.10, -rz * 1.24);
+  bunRing.rotation.x = 0.22;
+  rig.head.add(bunRing);
+  var bunPin = new T.Mesh(new T.CylinderGeometry(0.006, 0.004, 0.18, 10), gold);
+  bunPin.position.set(0, -ry * 0.02, -rz * 1.06);
+  bunPin.rotation.set(1.15, 0, 0.22);
+  rig.head.add(bunPin);
+
+  /* ---------------- maang tikka ---------------- */
+  var tikka = jewel.maangTikka({});
+  tikka.position.set(0, ry * 0.06, rz * 0.02);
+  rig.head.add(tikka);
+  var bindi = new T.Mesh(new T.SphereGeometry(0.011, 14, 12), new T.MeshPhysicalMaterial({
+    color: LC(0xB0142E), roughness: 0.15, clearcoat: 1, clearcoatRoughness: 0.05, envMapIntensity: 1.6, emissive: LC(0x2A0008)
+  }));
+  bindi.scale.set(1, 1, 0.35);
+  var bp = rig.onSurface(0, ry * 0.30, -0.002);
+  bindi.position.copy(bp);
+  rig.head.add(bindi);
+
+  /* ---------------- lehenga (crimson velvet skirt) ---------------- */
+  var skirtGeo = lathe([
+    [0.03, 0.012], [0.24, 0.020], [0.40, 0.075], [0.485, 0.185], [0.525, 0.335],
+    [0.522, 0.470], [0.470, 0.610], [0.375, 0.740], [0.272, 0.845], [0.222, 0.900], [0.205, 0.925]
+  ], 56, true);
+  folds(skirtGeo, 15, 0.020, [0.02, 0.90]);
+  var skirtMat = brocade.clone(); skirtMat.side = T.DoubleSide;
+  var skirt = new T.Mesh(skirtGeo, skirtMat);
+  skirt.castShadow = true; skirt.receiveShadow = true;
+  rig.body.add(skirt);
+
+  /* hem zardozi borders */
+  var hem1 = new T.Mesh(new T.TorusGeometry(0.522, 0.0135, 10, 72), gold);
+  hem1.rotation.x = Math.PI / 2; hem1.position.y = 0.030;
+  rig.body.add(hem1);
+  var hem2 = new T.Mesh(new T.TorusGeometry(0.508, 0.0065, 8, 72), goldLt);
+  hem2.rotation.x = Math.PI / 2; hem2.position.y = 0.072;
+  rig.body.add(hem2);
+  /* scattered zardozi butti on the skirt */
+  var dots = jewel.scatterDots(46, function (t, r) {
+    var y = 0.10 + t * 0.62;
+    var rad = lerp(0.50, 0.26, t) + (r - 0.5) * 0.05;
+    return { x: rad, y: y, z: rad };
+  }, goldLt, 0.0072);
+  rig.body.add(dots);
+  for (var d = 0; d < dots.children.length; d++) {
+    var ang = Math.atan2(dots.children[d].position.z, dots.children[d].position.x);
+    var rr = 0.5 + 0.02 * Math.sin(ang * 15);
+    dots.children[d].position.x = Math.cos(ang) * rr * 1.02;
+    dots.children[d].position.z = Math.sin(ang) * rr * 1.02;
+  }
+
+  /* ---------------- choli (velvet blouse) ---------------- */
+  var choliGeo = lathe([
+    [0.02, 0.845], [0.192, 0.855], [0.196, 0.900], [0.176, 0.965], [0.166, 1.020],
+    [0.178, 1.080], [0.212, 1.180], [0.238, 1.262], [0.196, 1.308], [0.02, 1.318]
+  ], 48, true);
+  var choliMat = velvetMat(0x7E1429, { glow: 0.11 });
+  choliMat.side = T.DoubleSide;
+  var choli = new T.Mesh(choliGeo, choliMat);
+  choli.castShadow = true;
+  rig.body.add(choli);
+
+  var waistBand = new T.Mesh(new T.TorusGeometry(0.196, 0.014, 10, 48), gold);
+  waistBand.rotation.x = Math.PI / 2 - 0.05; waistBand.position.y = 0.880; waistBand.scale.z = 0.9;
+  rig.body.add(waistBand);
+  var neckTrim = new T.Mesh(new T.TorusGeometry(0.126, 0.008, 8, 44), gold);
+  neckTrim.rotation.x = Math.PI / 2 - 0.22; neckTrim.position.y = 1.296; neckTrim.scale.z = 0.78;
+  rig.body.add(neckTrim);
+  /* choli zardozi */
+  var cDots = jewel.scatterDots(30, function (t, r) {
+    return { x: 0.20, y: 0.92 + r * 0.34, z: 0.20 };
+  }, goldLt, 0.0055);
+  rig.body.add(cDots);
+  cDots.children.forEach(function (c, i) {
+    var a2 = (i / cDots.children.length) * TAU;
+    var rad = 0.175 + 0.03 * Math.sin(a2 * 6);
+    c.position.x = Math.cos(a2) * rad;
+    c.position.z = Math.sin(a2) * rad * 0.78;
+    c.position.y = 0.94 + (i % 5) * 0.070;
+  });
+
+  /* ---------------- dupatta: head veil ---------------- */
+  var veilMat = silkMat(0xC9A86A, 0.30);   /* gold tissue, not crimson: no hooded silhouette */
+  veilMat.side = T.DoubleSide;
+  /* drape path: θ sweeps from the front hairline, up over the crown and down
+     the back — so the face is never covered.                                */
+  function veilPoint(u, v, target) {
+    var yaw = (u - 0.5) * 2.10;
+    var th = (0.455 + v * 0.765) * Math.PI;         /* 82° → 220° (front hair stays visible) */
+    var st = Math.sin(th), ct = Math.cos(th);
+    var dx = Math.sin(yaw) * ct, dy = st, dz = Math.cos(yaw) * ct;
+    var re = ellR(dx, dy, dz, rx, ry, rz);
+    var flare = 1 + 0.34 * Math.pow(v, 2.4);
+    var rr = (re + 0.020 + 0.032 * Math.pow(v, 1.7)) * flare;
+    var droop = 0.24 * Math.pow(v, 2.3);
+    var hem = 0.024 * Math.sin(u * Math.PI * 7) * Math.pow(v, 1.7);
+    target.set(dx * rr, dy * rr - droop + hem, dz * rr);
+    return target;
+  }
+  var veil = new T.Mesh(parametric(veilPoint, 80, 50), veilMat);
+  veil.castShadow = true;
+  rig.head.add(veil);
+
+  /* gold border along the veil hem */
+  var borderPts = [], tmp = V3();
+  for (var b = 0; b <= 72; b++) { veilPoint(b / 72, 1.0, tmp); borderPts.push(tmp.clone()); }
+  var veilBorder = new T.Mesh(tubeFrom(borderPts, 0.0062, 120, 8, false), goldLt);
+  rig.head.add(veilBorder);
+
+  /* ---------------- dupatta: stole over the shoulders ---------------- */
+  var stoleCurve = new T.CatmullRomCurve3([
+    V3(0.215, 0.900, 0.255), V3(0.248, 1.075, 0.215), V3(0.262, 1.250, 0.075),
+    V3(0.185, 1.335, -0.075), V3(0.0, 1.352, -0.150), V3(-0.185, 1.335, -0.075),
+    V3(-0.262, 1.250, 0.075), V3(-0.248, 1.075, 0.215), V3(-0.215, 0.900, 0.255)
+  ]);
+  var stole = new T.Mesh(ribbon(stoleCurve, function (u) { return 0.30 + 0.09 * Math.sin(u * Math.PI); }, 110, 8), veilMat);
+  stole.castShadow = true;
+  rig.body.add(stole);
+  var stoleTrim = new T.Mesh(ribbon(stoleCurve, function (u) { return 0.315 + 0.09 * Math.sin(u * Math.PI); }, 110, 3),
+    (function () { var m = goldLt.clone(); m.side = T.DoubleSide; return m; })());
+  stoleTrim.scale.set(1.004, 1.004, 1.004);
+  rig.body.add(stoleTrim);
+
+  /* ---------------- jewellery ---------------- */
+  var neck = jewel.choker(0.108, { w: 0.026, tiers: 3, tone: 0, beads: 13, tube: 0.013 });
+  neck.position.y = 1.318;
+  rig.body.add(neck);
+  var longHar = new T.Mesh(tubeFrom([
+    V3(-0.10, 1.310, 0.085), V3(-0.075, 1.180, 0.150), V3(0.0, 1.130, 0.185),
+    V3(0.075, 1.180, 0.150), V3(0.10, 1.310, 0.085)
+  ], 0.0048, 40, 8), gold);
+  rig.body.add(longHar);
+  var pendant = new T.Mesh(new T.OctahedronGeometry(0.022, 1), new T.MeshPhysicalMaterial({
+    color: LC(0xC2183A), roughness: 0.05, clearcoat: 1, envMapIntensity: 2.4, emissive: LC(0x38020E)
+  }));
+  pendant.scale.set(1, 1.35, 0.6); pendant.position.set(0, 1.118, 0.192);
+  rig.body.add(pendant);
+
+  [rig.armR, rig.armL].forEach(function (a) {
+    var b = jewel.bangles(5, 0.045, { tube: 0.0085 });
+    b.position.y = -0.268;
+    a.elbow.add(b);
+  });
+  var ringR = new T.Mesh(new T.TorusGeometry(0.0135, 0.0035, 8, 20), gold);
+  ringR.position.set(-0.024, -0.098, 0.004); ringR.rotation.x = 1.2;
+  rig.armR.hand.add(ringR);
+
+  /* ---------------- living detail ---------------- */
+  rig.extra = function (t, dt) {
+    var s = Math.sin(t * 1.5), s2 = Math.sin(t * 1.9 + 1);
+    if (rig.jhumkaL) { rig.jhumkaL.rotation.z = 0.07 * s; rig.jhumkaL.rotation.x = 0.05 * s2; }
+    if (rig.jhumkaR) { rig.jhumkaR.rotation.z = -0.07 * s; rig.jhumkaR.rotation.x = 0.05 * s2; }
+  };
+
+  return {
+    id: 'asha',
+    name: 'Asha',
+    title: 'The Royal Bridal Stylist',
+    desc: 'Signature lehengas, zardozi ateliers and the ceremonial drape — Asha walks you through the entire bridal trousseau, from first fabric to final phera.',
+    tags: ['Zardozi', 'Crimson Velvet', 'Ceremony', 'Trousseau'],
+    specs: [['Palette', 'Crimson · Antique Gold'], ['Signature', 'Maang Tikka & Jhumka'], ['Consultation', '45 min · By appointment']],
+    swatch: ['#7A1226', '#D8BC7E'],
+    frame: { fill: 0.72, el: 0.100, fov: 34 },
+    rig: rig
+  };
+}
+
+/* =====================================================================
+   02 · MOCHI — The Luxury Haute Velvet Mascot Bunny
+   Cashmere ivory plush · burgundy satin sash · emerald brooch · boba eyes
+   ===================================================================== */
+function buildMochi() {
+  var rig = new Rig({ id: 'mochi', headY: 1.03 });
+  var FUR = 0xD5D7D9;
+  var furMat = velvetMat(FUR, { glow: 0.08 });
+  furMat.roughness = 1.0; furMat.clearcoat = 0.20; furMat.clearcoatRoughness = 1.0;
+  var furMat2 = furMat.clone();
+  var pinkMat = new T.MeshPhysicalMaterial({ color: LC(0xE8929E), roughness: 0.45, clearcoat: 0.8, clearcoatRoughness: 0.3, envMapIntensity: 1.2, emissive: LC(0x3A0C12) });
+  var satin = silkMat(0x5C1226, 0.24);
+  var gold = goldMat(1), goldLt = goldMat(3);
+  var dark = new T.MeshPhysicalMaterial({ color: LC(0x0B0B0E), roughness: 0.12, clearcoat: 1, clearcoatRoughness: 0.02, envMapIntensity: 2.6 });
+
+  /* ---------------- body ---------------- */
+  var bodyG = new T.Group();
+  bodyG.position.y = 0.0;
+  rig.root.add(bodyG);
+  rig.bodyWrap = bodyG;
+
+  var belly = new T.Mesh(fluff(new T.SphereGeometry(0.365, 48, 36), 0.012, 9), furMat);
+  belly.scale.set(1.0, 0.98, 0.90);
+  belly.position.y = 0.455;
+  belly.castShadow = true; belly.receiveShadow = true;
+  bodyG.add(belly);
+
+  var chestFluff = new T.Mesh(fluff(new T.SphereGeometry(0.20, 32, 24), 0.016, 12), furMat2);
+  chestFluff.position.set(0, 0.66, 0.20);
+  chestFluff.scale.set(1.15, 0.95, 0.75);
+  bodyG.add(chestFluff);
+
+  /* feet */
+  [1, -1].forEach(function (s) {
+    var foot = new T.Mesh(fluff(new T.SphereGeometry(0.115, 26, 20), 0.008, 14), furMat);
+    foot.scale.set(0.82, 0.52, 1.30);
+    foot.position.set(s * 0.165, 0.062, 0.135);
+    foot.castShadow = true;
+    bodyG.add(foot);
+    var pad = new T.Mesh(new T.SphereGeometry(0.045, 16, 14), pinkMat);
+    pad.scale.set(1, 0.55, 1.25);
+    pad.position.set(s * 0.165, 0.055, 0.185);
+    bodyG.add(pad);
+  });
+  /* tail */
+  var tail = new T.Mesh(fluff(new T.SphereGeometry(0.098, 28, 22), 0.026, 16), furMat2);
+  tail.position.set(0, 0.44, -0.375);
+  tail.castShadow = true;
+  bodyG.add(tail);
+
+  /* ---------------- head ---------------- */
+  var head = rig.head;
+  var hR = 0.302;
+  var skull = new T.Mesh(fluff(new T.SphereGeometry(hR, 52, 40), 0.008, 11), furMat);
+  skull.scale.set(1.0, 0.97, 0.95);
+  skull.castShadow = true;
+  head.add(skull);
+
+  var muzzle = new T.Mesh(fluff(new T.SphereGeometry(0.125, 32, 24), 0.006, 16), furMat2);
+  muzzle.scale.set(1.32, 0.86, 0.95);
+  muzzle.position.set(0, -0.062, 0.222);
+  head.add(muzzle);
+
+  /* nose */
+  var nose = new T.Mesh(new T.SphereGeometry(0.030, 20, 16), pinkMat);
+  nose.scale.set(1.35, 0.92, 0.85);
+  nose.position.set(0, -0.024, 0.322);
+  head.add(nose);
+  var noseHighlight = new T.Mesh(new T.SphereGeometry(0.009, 10, 8), new T.MeshBasicMaterial({ color: LC(0xffffff), transparent: true, opacity: 0.65 }));
+  noseHighlight.scale.set(1, 0.7, 0.5);
+  noseHighlight.position.set(-0.012, -0.012, 0.344);
+  head.add(noseHighlight);
+
+  /* mouth — bunny "w" */
+  var mouthG = new T.Group();
+  mouthG.position.set(0, -0.072, 0.298);
+  head.add(mouthG);
+  var lipCurveMat = new T.MeshStandardMaterial({ color: LC(0x4A2A22), roughness: 0.6 });
+  [1, -1].forEach(function (s) {
+    var w = new T.Mesh(tubeFrom([
+      V3(0, 0.0, 0.004), V3(s * 0.020, -0.026, 0.006), V3(s * 0.042, -0.026, 0.004), V3(s * 0.052, -0.004, 0.0)
+    ], 0.0062, 26, 8), lipCurveMat);
+    mouthG.add(w);
+  });
+  var innerM = new T.Mesh(new T.SphereGeometry(0.030, 18, 14), new T.MeshStandardMaterial({ color: LC(0x2A0C10), roughness: 0.5 }));
+  innerM.scale.set(1, 0.35, 0.4);
+  innerM.position.set(0, -0.030, 0.0);
+  mouthG.add(innerM);
+  var teeth = new T.Mesh(roundedBox(0.034, 0.026, 0.012, 0.006, 3),
+    new T.MeshPhysicalMaterial({ color: LC(0xFFFBF2), roughness: 0.22, clearcoat: 1, envMapIntensity: 1.2 }));
+  teeth.position.set(0, -0.024, 0.012);
+  mouthG.add(teeth);
+
+  /* eyes — big glossy boba */
+  var boba = U.eyeTex('#0A0A0D', '#1B1B22', '#000000', '#050506', '#33333E');
+  [1, -1].forEach(function (s) {
+    var e = makeEye({
+      r: 0.088, sx: 1.02, sy: 1.08, sz: 0.98, tex: boba, lidMat: furMat, lashes: false,
+      lidTheta: 0.40 * Math.PI, lowTheta: 0.26 * Math.PI,
+      glints: [{ x: -0.28, y: 0.32, r: 0.24, o: 1 }, { x: 0.30, y: -0.24, r: 0.105, o: 0.8 }]
+    });
+    e.group.position.set(s * 0.126, -0.022, 0.246);
+    rig.head.add(e.group);
+    rig[s > 0 ? 'eyeR' : 'eyeL'] = e;
+  });
+  /* brows: tiny fur tufts */
+  [1, -1].forEach(function (s) {
+    var br = new T.Mesh(tubeFrom([
+      V3(-0.030, -0.004, 0), V3(0, 0.012, 0.004), V3(0.030, -0.002, 0)
+    ], 0.0072, 20, 8), furMat2);
+    br.position.set(s * 0.120, 0.128, 0.238);
+    br.rotation.z = -s * 0.18;
+    br.base = { y: br.position.y, z: br.rotation.z };
+    rig.head.add(br);
+    rig[s > 0 ? 'browR' : 'browL'] = br;
+  });
+
+  /* blush */
+  var bt = U.radialTex('rgba(255,150,160,0.95)', 'rgba(240,90,120,0.20)', 256, 0.34);
+  var bmat = new T.MeshBasicMaterial({ map: bt, transparent: true, blending: T.AdditiveBlending, depthWrite: false, opacity: 0.72 });
+  [1, -1].forEach(function (s) {
+    var b2 = new T.Mesh(new T.PlaneGeometry(0.135, 0.115), bmat);
+    b2.position.set(s * 0.176, -0.048, 0.218);
+    b2.rotation.y = s * 0.55; b2.rotation.z = -s * 0.15;
+    b2.renderOrder = 2;
+    rig.head.add(b2);
+  });
+
+  /* ---------------- ears ---------------- */
+  var earProfile = [
+    [0.004, 0.0], [0.048, 0.020], [0.066, 0.085], [0.068, 0.180], [0.062, 0.275],
+    [0.052, 0.360], [0.038, 0.430], [0.020, 0.478], [0.004, 0.492]
+  ];
+  var innerProfile = [
+    [0.002, 0.030], [0.034, 0.060], [0.046, 0.130], [0.047, 0.220], [0.042, 0.300],
+    [0.032, 0.370], [0.018, 0.420], [0.003, 0.436]
+  ];
+  var innerEarMat = new T.MeshPhysicalMaterial({
+    color: LC(0xE8909C), roughness: 0.55, clearcoat: 0.5, clearcoatRoughness: 0.5,
+    envMapIntensity: 1.0, emissive: LC(0x5A0E16), emissiveIntensity: 1
+  });
+  [1, -1].forEach(function (s) {
+    var earPivot = new T.Group();
+    earPivot.position.set(s * 0.106, 0.208, -0.020);
+    earPivot.scale.set(1.22, 0.80, 1.0);   /* shorter + thicker: plush, not hare */
+    earPivot.rotation.z = -s * 0.15;
+    earPivot.rotation.x = -0.10;
+    rig.head.add(earPivot);
+
+    var ear = new T.Mesh(lathe(earProfile, 34, true), furMat);
+    ear.scale.set(1, 1, 0.62);
+    ear.castShadow = true;
+    earPivot.add(ear);
+
+    var inner = new T.Mesh(lathe(innerProfile, 30, true), innerEarMat);
+    inner.scale.set(0.92, 0.94, 0.55);
+    inner.position.z = 0.020;
+    earPivot.add(inner);
+
+    /* gold-threaded tip */
+    var tip = new T.Mesh(new T.SphereGeometry(0.042, 20, 16), goldLt);
+    tip.scale.set(1, 1.05, 0.66);
+    tip.position.y = 0.452;
+    earPivot.add(tip);
+    var band = new T.Mesh(new T.TorusGeometry(0.048, 0.0065, 8, 28), goldLt);
+    band.rotation.x = Math.PI / 2;
+    band.position.y = 0.330;
+    band.scale.z = 0.66;
+    earPivot.add(band);
+    var band2 = new T.Mesh(new T.TorusGeometry(0.056, 0.0050, 8, 28), gold);
+    band2.rotation.x = Math.PI / 2;
+    band2.position.y = 0.232;
+    band2.scale.z = 0.66;
+    earPivot.add(band2);
+
+    rig[s > 0 ? 'earR' : 'earL'] = earPivot;
+  });
+
+  /* ---------------- arms (stubby plush) ---------------- */
+  function arm(side) {
+    var shoulder = new T.Group();
+    shoulder.position.set(side * 0.315, 0.640, 0.020);
+    bodyG.add(shoulder);
+    var upper = new T.Mesh(capsule(0.072, 0.20, 16, 8), furMat);
+    upper.position.y = -0.10;
+    upper.castShadow = true;
+    shoulder.add(upper);
+    var elbow = new T.Group();
+    elbow.position.y = -0.205;
+    shoulder.add(elbow);
+    var fore = new T.Mesh(capsule(0.062, 0.16, 16, 8), furMat);
+    fore.position.y = -0.082;
+    fore.castShadow = true;
+    elbow.add(fore);
+    var hand = new T.Group();
+    hand.position.y = -0.170;
+    elbow.add(hand);
+    var paw = new T.Mesh(fluff(new T.SphereGeometry(0.072, 22, 18), 0.006, 14), furMat2);
+    paw.scale.set(1, 0.86, 0.9);
+    paw.position.y = -0.030;
+    hand.add(paw);
+    var pad = new T.Mesh(new T.SphereGeometry(0.030, 14, 12), pinkMat);
+    pad.scale.set(1, 0.6, 0.9);
+    pad.position.set(0, -0.040, 0.040);
+    hand.add(pad);
+    return { shoulder: shoulder, elbow: elbow, hand: hand };
+  }
+  rig.armR = arm(1);
+  rig.armL = arm(-1);
+
+  /* ---------------- sash + emerald brooch ---------------- */
+  var sash = new T.Mesh(new T.TorusGeometry(0.335, 0.058, 16, 72), satin);
+  sash.rotation.x = Math.PI / 2 - 0.05;
+  sash.position.y = 0.505;
+  sash.scale.set(1, 1, 0.88);
+  sash.castShadow = true;
+  bodyG.add(sash);
+  var sashTrim = new T.Mesh(new T.TorusGeometry(0.335, 0.012, 8, 72), goldLt);
+  sashTrim.rotation.x = Math.PI / 2 - 0.05;
+  sashTrim.position.y = 0.556;
+  sashTrim.scale.set(1, 1, 0.88);
+  bodyG.add(sashTrim);
+  var sashTrim2 = sashTrim.clone();
+  sashTrim2.position.y = 0.454;
+  bodyG.add(sashTrim2);
+
+  var broochBase = new T.Mesh(new T.CylinderGeometry(0.062, 0.062, 0.018, 24), goldLt);
+  broochBase.rotation.x = Math.PI / 2;
+  broochBase.position.set(0, 0.505, 0.336);
+  bodyG.add(broochBase);
+  var emerald = new T.Mesh(new T.OctahedronGeometry(0.052, 1), new T.MeshPhysicalMaterial({
+    color: LC(0x0E8C5A), roughness: 0.03, metalness: 0.05, clearcoat: 1, clearcoatRoughness: 0.02,
+    envMapIntensity: 3.0, emissive: LC(0x01301C), transparent: true, opacity: 0.94
+  }));
+  emerald.scale.set(1, 1.25, 0.85);
+  emerald.position.set(0, 0.505, 0.352);
+  bodyG.add(emerald);
+  for (var i = 0; i < 8; i++) {
+    var a = (i / 8) * TAU;
+    var prong = new T.Mesh(new T.SphereGeometry(0.009, 10, 8), goldLt);
+    prong.position.set(Math.cos(a) * 0.046, 0.505 + Math.sin(a) * 0.058, 0.348);
+    bodyG.add(prong);
+  }
+
+  /* ---------------- breathing on the belly ---------------- */
+  rig.chest.position.y = 0.455;
+  rig.chestBaseY = 0.455;
+  var bellyScale = belly;
+  rig.body.position.y = 0;
+
+  /* Mochi's body doesn't use the humanoid torso: drive the belly directly */
+  rig.extra = function (t, dt, p) {
+    var br = Math.sin(t * 1.45) * p.breath;
+    bellyScale.scale.set(1 + 0.030 * br, 1 + 0.022 * br, 1 + 0.030 * br);
+    chestFluff.scale.set(1.15 + 0.03 * br, 0.95 + 0.02 * br, 0.75 + 0.02 * br);
+    var sw = Math.sin(t * 1.15), sw2 = Math.sin(t * 1.5 + 0.8);
+    if (rig.earL) { rig.earL.rotation.x = -0.12 + 0.16 * sw - p.bounce * 0.24 * Math.abs(Math.sin(t * 4.1)); rig.earL.rotation.z = 0.15 + 0.09 * sw2; }
+    if (rig.earR) { rig.earR.rotation.x = -0.12 + 0.16 * sw2 - p.bounce * 0.24 * Math.abs(Math.sin(t * 4.1)); rig.earR.rotation.z = -0.15 - 0.09 * sw; }
+    tail.position.x = Math.sin(t * 1.9) * 0.012;
+    tail.rotation.z = Math.sin(t * 1.9) * 0.06;
+    emerald.rotation.y = t * 0.6;
+  };
+
+  /* pose overrides — Mochi is small, so mute the arm sweeps */
+  ['welcome', 'happy', 'thinking', 'hesitant', 'poise'].forEach(function (k) {
+    var e = rig.emotions[k];
+    for (var key in e) {
+      if (key.indexOf('arm') === 0 || key.indexOf('elbow') === 0) e[key] *= 0.72;
+    }
+  });
+
+  return {
+    id: 'mochi',
+    name: 'Mochi',
+    title: 'The Haute Velvet Mascot',
+    desc: 'The atelier’s plush concierge. Mochi greets first-time visitors, hands out swatch books and softens every consultation with a wag of an ear.',
+    tags: ['Cashmere Plush', 'Burgundy Satin', 'Welcome Ritual'],
+    specs: [['Palette', 'Ivory · Burgundy · Emerald'], ['Signature', 'Gold-threaded ears'], ['Consultation', 'Always on duty']],
+    swatch: ['#E8D8C4', '#C86E86'],
+    frame: { fill: 0.64, el: 0.055, fov: 34 },
+    rig: rig
+  };
+}
+
+/* =====================================================================
+   03 · NOOR — The Modern Parisian / Indo-Western Glamour Artist
+   Porcelain skin · obsidian blazer · satin lapels · glowing blending brush
+   ===================================================================== */
+function buildNoor() {
+  var rig = new Rig({ id: 'noor' });
+  var SKIN = 0xE4C0A6;
+  var skin = skinMat(SKIN, { glow: 0.14, rough: 0.48, cc: 0.42 });
+  var obsidian = new T.MeshPhysicalMaterial({ color: LC(0x0C0C10), roughness: 0.58, metalness: 0.08, clearcoat: 0.55, clearcoatRoughness: 0.42, envMapIntensity: 1.0 });
+  var satinLapel = silkMat(0x17171E, 0.16);
+  var shirtMat = silkMat(0x08080A, 0.30);
+  var gold = goldMat(0), goldLt = goldMat(3);
+
+  buildHumanoid(rig, {
+    skin: skin, blush: true, blushOpacity: 0.34,
+    blushInner: 'rgba(226,140,130,0.85)', blushOuter: 'rgba(214,90,100,0.10)',
+    browColor: 0x141118, nostrilColor: 0x8A6A58, armR: 0.047,
+    rx: 0.196, ry: 0.214, rz: 0.192,
+    legMat: obsidian, footMat: new T.MeshPhysicalMaterial({ color: LC(0x101014), roughness: 0.25, clearcoat: 1, envMapIntensity: 1.6 }),
+    earring: function (s, p) {
+      var g = new T.Group();
+      var hoop = new T.Mesh(new T.TorusGeometry(0.026, 0.0042, 8, 28), goldLt);
+      hoop.rotation.y = Math.PI / 2;
+      g.add(hoop);
+      var drop = new T.Mesh(new T.SphereGeometry(0.008, 12, 10), goldLt);
+      drop.position.y = -0.030;
+      g.add(drop);
+      g.position.set(p.x + s * 0.006, p.y - 0.030, p.z + 0.004);
+      return g;
+    }
+  });
+  var rx = 0.196, ry = 0.214, rz = 0.192;
+
+  /* ---------------- eyes ---------------- */
+  var eyeTex = U.eyeTex('#2A1A12', '#4E2C18', '#0A0503', '#160C06', '#B98550');
+  [1, -1].forEach(function (s) {
+    var e = makeEye({
+      r: 0.061, sx: 1.22, sy: 1.05, sz: 0.90, tex: eyeTex, lidMat: skin,
+      lashColor: 0x0E0B0A, lidTheta: 0.40 * Math.PI,
+      glints: [{ x: -0.32, y: 0.32, r: 0.26, o: 1 }, { x: 0.34, y: -0.22, r: 0.11, o: 0.7 }]
+    });
+    e.group.position.set(s * rx * 0.46, ry * -0.04, rz * 0.82);
+    e.group.rotation.y = s * 0.05;
+    rig.head.add(e.group);
+    rig[s > 0 ? 'eyeR' : 'eyeL'] = e;
+  });
+
+  /* ---------------- winged liner ---------------- */
+  [1, -1].forEach(function (s) {
+    var sh = new T.Shape();
+    sh.moveTo(-0.030, 0.004);
+    sh.quadraticCurveTo(0.004, 0.026, 0.042, 0.046);
+    sh.quadraticCurveTo(0.014, 0.018, -0.022, -0.008);
+    sh.quadraticCurveTo(-0.030, -0.004, -0.030, 0.004);
+    var g = new T.ShapeGeometry(sh, 24);
+    var pos = g.attributes.position;
+    for (var i = 0; i < pos.count; i++) {
+      var x = pos.getX(i), y = pos.getY(i);
+      pos.setZ(i, -0.014 * (x * x) * 8);
+    }
+    g.computeVertexNormals();
+    var liner = new T.Mesh(g, new T.MeshPhysicalMaterial({ color: LC(0x08080A), roughness: 0.12, clearcoat: 1, clearcoatRoughness: 0.05, envMapIntensity: 1.8, side: T.DoubleSide }));
+    var p = rig.onSurface(s * rx * 0.52, ry * 0.16, 0.004);
+    liner.position.copy(p);
+    liner.rotation.y = s * 0.30;
+    liner.scale.x = s;
+    rig.head.add(liner);
+
+    /* lower lash flick */
+    var sh2 = new T.Shape();
+    sh2.moveTo(-0.024, -0.004);
+    sh2.quadraticCurveTo(0.010, -0.016, 0.034, -0.004);
+    sh2.quadraticCurveTo(0.006, -0.010, -0.024, -0.004);
+    var l2 = new T.Mesh(new T.ShapeGeometry(sh2, 16), liner.material);
+    l2.position.copy(p);
+    l2.position.y -= 0.062;
+    l2.rotation.y = s * 0.30;
+    l2.scale.x = s;
+    rig.head.add(l2);
+  });
+
+  /* ---------------- contour streak ---------------- */
+  var contTex = U.radialTex('rgba(150,84,66,0.85)', 'rgba(140,70,60,0.06)', 256, 0.32);
+  var contMat = new T.MeshBasicMaterial({ map: contTex, transparent: true, blending: T.AdditiveBlending, depthWrite: false, opacity: 0.42 });
+  [1, -1].forEach(function (s) {
+    var c = rig.facePatch(s * rx * 0.72, -ry * 0.20, rx * 0.92, contMat, -0.003, s * -0.85);
+    c.scale.set(0.52, 1.5, 1);
+  });
+
+  /* ---------------- lips (crimson) ---------------- */
+  var mouth = makeMouth({ lipMat: silkMat(0xB01B2E, 0.18), w: 0.050, thick: 0.0132 });
+  mouth.group.position.set(0, -ry * 0.52, rz * 0.82);
+  mouth.base = mouth.group.position.clone();
+  rig.head.add(mouth.group);
+  rig.mouth = mouth;
+
+  /* ---------------- sleek bob ---------------- */
+  var hairCol = 0x0D0A0C;
+  var hair = hairMat(hairCol, { rough: 0.24 });
+  var cap = new T.Mesh(hairCap({
+    rx: rx, ry: ry, rz: rz, gap: 0.011, bulge: 0.090, wave: 0.0035, crown: 0.008,
+    startFront: 0.02 * Math.PI, startBack: 0.02 * Math.PI,
+    endFront: 0.252 * Math.PI, endBack: 0.70 * Math.PI, useg: 72, vseg: 44
+  }), hair);
+  cap.castShadow = true;
+  rig.head.add(cap);
+
+  /* blunt fringe with a slightly uneven edge */
+  var fringe = new T.Mesh(parametric(function (u, v, target) {
+    var a = (u - 0.5) * 1.95;
+    var edge = 0.235 * Math.PI + 0.022 * Math.PI * Math.sin(u * Math.PI * 3.2) + 0.014 * Math.PI * Math.sin(u * Math.PI * 7);
+    var polar = 0.04 * Math.PI + v * (edge - 0.04 * Math.PI);
+    var sp = Math.sin(polar), cp = Math.cos(polar);
+    var dx = Math.sin(a) * sp, dy = cp, dz = Math.cos(a) * sp;
+    var re = ellR(dx, dy, dz, rx, ry, rz);
+    var rr = re + 0.014 + 0.010 * v;
+    target.set(dx * rr, dy * rr, dz * rr);
+    return target;
+  }, 64, 26), hair);
+  fringe.castShadow = true;
+  rig.head.add(fringe);
+
+  /* side-swept sleek strands hugging the cheeks */
+  [1, -1].forEach(function (s) {
+    var st = new T.Mesh(tubeFrom([
+      V3(s * rx * 0.86, ry * 0.72, rz * 0.42), V3(s * rx * 0.98, ry * 0.30, rz * 0.56),
+      V3(s * rx * 0.92, -ry * 0.22, rz * 0.58), V3(s * rx * 0.80, -ry * 0.58, rz * 0.44)
+    ], 0.0135, 36, 10), hair);
+    rig.head.add(st);
+  });
+
+  /* ---------------- obsidian blazer ---------------- */
+  var blazer = new T.Mesh(roundedBox(0.46, 0.56, 0.29, 0.10, 6), obsidian);
+  blazer.position.set(0, 1.10, 0.006);
+  blazer.castShadow = true; blazer.receiveShadow = true;
+  rig.body.add(blazer);
+
+  var collar = new T.Mesh(lathe([
+    [0.005, 0.0], [0.150, 0.005], [0.160, 0.045], [0.128, 0.090], [0.140, 0.130], [0.020, 0.140]
+  ], 40, true), obsidian);
+  collar.position.y = 1.285;
+  collar.scale.z = 0.86;
+  rig.body.add(collar);
+
+  /* satin lapels — ruled surfaces following the chest */
+  [1, -1].forEach(function (s) {
+    var lapel = new T.Mesh(parametric(function (u, v, target) {
+      var p0 = V3(s * 0.050, 1.320, 0.128);
+      var p1 = V3(s * 0.108, 1.045, 0.150);
+      var p2 = V3(s * 0.190, 1.262, 0.070);
+      var p3 = V3(s * 0.118, 1.010, 0.118);
+      var a = V3().lerpVectors(p0, p1, u), b = V3().lerpVectors(p2, p3, u);
+      target.lerpVectors(a, b, v);
+      target.z += 0.014 * Math.sin(v * Math.PI) + 0.006;
+      target.x += s * 0.006 * Math.sin(v * Math.PI);
+      return target;
+    }, 22, 14), satinLapel);
+    lapel.castShadow = true;
+    rig.body.add(lapel);
+  });
+  /* shirt insert (deep V) */
+  var vShape = new T.Shape();
+  vShape.moveTo(-0.055, 1.330); vShape.lineTo(0.055, 1.330);
+  vShape.lineTo(0.010, 1.030); vShape.lineTo(-0.010, 1.030); vShape.lineTo(-0.055, 1.330);
+  var shirt = new T.Mesh(new T.ShapeGeometry(vShape), shirtMat);
+  shirt.position.z = 0.128;
+  rig.body.add(shirt);
+
+  /* shoulders + sleeves */
+  [1, -1].forEach(function (s) {
+    var sh = new T.Mesh(new T.SphereGeometry(0.088, 24, 18), obsidian);
+    sh.scale.set(1, 0.92, 0.98);
+    sh.position.set(s * 0.212, 1.268, 0.006);
+    sh.castShadow = true;
+    rig.body.add(sh);
+    var sl = new T.Mesh(capsule(0.070, 0.30, 18, 8), obsidian);
+    sl.position.y = -0.16;
+    sl.rotation.z = s * 0.05;
+    sl.castShadow = true;
+    rig[s > 0 ? 'armR' : 'armL'].shoulder.add(sl);
+  });
+
+  /* gold chain + pendant */
+  var chain = new T.Mesh(tubeFrom([
+    V3(-0.085, 1.318, 0.090), V3(-0.055, 1.268, 0.128), V3(0, 1.250, 0.140),
+    V3(0.055, 1.268, 0.128), V3(0.085, 1.318, 0.090)
+  ], 0.0040, 40, 8), goldLt);
+  rig.body.add(chain);
+  var charm = new T.Mesh(new T.TorusGeometry(0.013, 0.004, 8, 22), goldLt);
+  charm.position.set(0, 1.238, 0.142);
+  rig.body.add(charm);
+
+  /* ---------------- glowing blending brush ---------------- */
+  var brush = new T.Group();
+  var handle = new T.Mesh(new T.CylinderGeometry(0.0135, 0.0115, 0.155, 18), goldLt);
+  handle.position.y = -0.030;
+  brush.add(handle);
+  var ferrule = new T.Mesh(new T.CylinderGeometry(0.0155, 0.0155, 0.038, 18), goldMat(0));
+  ferrule.position.y = 0.064;
+  brush.add(ferrule);
+  var bristleGeo = lathe([
+    [0.001, 0.0], [0.014, 0.010], [0.017, 0.040], [0.0145, 0.075], [0.008, 0.100], [0.001, 0.108]
+  ], 22, true);
+  var bristleMat = new T.MeshPhysicalMaterial({
+    color: LC(0xF3E6D2), roughness: 0.72, metalness: 0.0, clearcoat: 0.35,
+    emissive: LC(0xC8A96A), emissiveIntensity: 0.0, envMapIntensity: 1.1
+  });
+  var bristles = new T.Mesh(bristleGeo, bristleMat);
+  bristles.position.y = 0.082;
+  brush.add(bristles);
+  var brushGlow = new T.PointLight(LC(0xFFD9A0), 0.0, 1.4, 2);
+  brushGlow.position.set(0, 0.14, 0);
+  brush.add(brushGlow);
+  var halo = new T.Mesh(new T.SphereGeometry(0.035, 16, 14), new T.MeshBasicMaterial({
+    color: LC(0xFFDCA8), transparent: true, opacity: 0.0, blending: T.AdditiveBlending, depthWrite: false
+  }));
+  halo.position.y = 0.135;
+  brush.add(halo);
+  brush.position.set(0, -0.090, 0.030);
+  brush.rotation.set(-0.35, 0, 0.22);
+  rig.armR.hand.add(brush);
+  rig.brush = brush; rig.brushGlow = brushGlow; rig.bristles = bristles; rig.halo = halo;
+
+  /* trouser crease highlight */
+  [1, -1].forEach(function (s) {
+    var crease = new T.Mesh(new T.BoxGeometry(0.006, 0.62, 0.004), new T.MeshBasicMaterial({ color: LC(0x2A2A34) }));
+    crease.position.set(s * 0.098, 0.52, 0.078);
+    rig.body.add(crease);
+  });
+
+  rig.extra = function (t, dt, p) {
+    var g = p.glow * (0.75 + 0.25 * Math.sin(t * 2.2));
+    bristleMat.emissiveIntensity = g * 1.5;
+    brushGlow.intensity = g * 1.5;
+    halo.material.opacity = g * 0.32;
+    halo.scale.setScalar(1 + 0.12 * Math.sin(t * 2.2));
+  };
+
+  return {
+    id: 'noor',
+    name: 'Noor',
+    title: 'The Indo-Western Glamour Artist',
+    desc: 'Parisian contour, razor winged liner, red-carpet finish. Noor builds the modern reception look — and blends it until the light obeys her.',
+    tags: ['Contour', 'Satin Lapel', 'Editorial', 'Reception Glam'],
+    specs: [['Palette', 'Obsidian · Champagne'], ['Signature', 'Gilded blending brush'], ['Consultation', '60 min · Trial + Look']],
+    swatch: ['#101014', '#E2CFA0'],
+    frame: { fill: 0.72, el: 0.095, fov: 34 },
+    rig: rig
+  };
+}
+
+/* =====================================================================
+   04 · TARA — The Sacred Heritage Saree Drape & Henna Guru
+   Emerald + marigold silk · temple choker · nath · jasmine gajra bun
+   ===================================================================== */
+function buildTara() {
+  var rig = new Rig({ id: 'tara' });
+  var SKIN = 0xB87F4C;
+  var skin = skinMat(SKIN, { glow: 0.13, rough: 0.58, cc: 0.30 });
+  var emerald = silkMat(0x11604A, 0.30);
+  var emeraldDeep = silkMat(0x0A3C30, 0.34);
+  var marigold = silkMat(0xE8A03C, 0.26);
+  var gold = goldMat(0), goldLt = goldMat(1), goldAntique = goldMat(2);
+  var gemMat = new T.MeshPhysicalMaterial({ color: LC(0x0E8C5A), roughness: 0.04, clearcoat: 1, envMapIntensity: 2.6, emissive: LC(0x02281A) });
+
+  buildHumanoid(rig, {
+    skin: skin, blush: true, blushOpacity: 0.48,
+    blushInner: 'rgba(255,150,120,0.85)', blushOuter: 'rgba(232,110,90,0.14)',
+    browColor: 0x1A0F08, nostrilColor: 0x6E3A1E, armR: 0.050,
+    legMat: skinMat(SKIN, { glow: 0.10 }), footMat: goldAntique,
+    earring: function (s, p) {
+      var j = jewel.jhumka(0.92, 2);
+      j.position.set(p.x + s * 0.010, p.y - 0.058, p.z + 0.010);
+      rig['jhumka' + (s > 0 ? 'R' : 'L')] = j;
+      return j;
+    }
+  });
+  var rx = CANON.headRX, ry = CANON.headRY, rz = CANON.headRZ;
+
+  /* ---------------- eyes ---------------- */
+  var eyeTex = U.eyeTex('#2E1608', '#6B3A16', '#150702', '#1A0B03', '#D09A55');
+  [1, -1].forEach(function (s) {
+    var e = makeEye({
+      r: 0.064, sx: 1.18, sy: 1.06, sz: 0.92, tex: eyeTex, lidMat: skin,
+      lashColor: 0x160B05,
+      glints: [{ x: -0.30, y: 0.34, r: 0.29, o: 1 }, { x: 0.35, y: -0.23, r: 0.12, o: 0.72 }]
+    });
+    e.group.position.set(s * rx * 0.45, ry * -0.05, rz * 0.82);
+    e.group.rotation.y = s * 0.05;
+    rig.head.add(e.group);
+    rig[s > 0 ? 'eyeR' : 'eyeL'] = e;
+  });
+
+  /* kohl waterline (a soft dark rim under the eye) */
+  [1, -1].forEach(function (s) {
+    var kohl = new T.Mesh(new T.TorusGeometry(0.030, 0.0042, 8, 30, Math.PI * 0.9), new T.MeshStandardMaterial({ color: LC(0x1A0E08), roughness: 0.7 }));
+    kohl.rotation.set(Math.PI / 2 - 0.25, 0, Math.PI * 0.05);
+    var p = rig.onSurface(s * rx * 0.42, ry * 0.02, 0.004);
+    kohl.position.copy(p);
+    kohl.position.y -= 0.050;
+    rig.head.add(kohl);
+  });
+
+  /* ---------------- mouth ---------------- */
+  var mouth = makeMouth({ lipMat: silkMat(0xB54A4E, 0.24), w: 0.050, thick: 0.0126 });
+  mouth.group.position.set(0, -ry * 0.52, rz * 0.82);
+  mouth.base = mouth.group.position.clone();
+  rig.head.add(mouth.group);
+  rig.mouth = mouth;
+
+  /* ---------------- hair: pulled back + braided bun ---------------- */
+  var hairCol = 0x140C08;
+  var hair = hairMat(hairCol, { rough: 0.34 });
+  var cap = new T.Mesh(hairCap({
+    rx: rx, ry: ry, rz: rz, gap: 0.009, bulge: 0.020, wave: 0.002, crown: 0.004,
+    startFront: 0.02 * Math.PI, startBack: 0.02 * Math.PI,
+    endFront: 0.248 * Math.PI, endBack: 0.72 * Math.PI
+  }), hair);
+  cap.castShadow = true;
+  rig.head.add(cap);
+  /* centre parting strand */
+  var part = new T.Mesh(tubeFrom([
+    V3(0, ry * 0.95, rz * 0.10), V3(0, ry * 0.90, rz * 0.30), V3(0, ry * 0.80, rz * 0.52)
+  ], 0.008, 20, 8), hair);
+  rig.head.add(part);
+
+  /* bun */
+  var bun = new T.Mesh(new T.SphereGeometry(0.108, 28, 22), hair);
+  bun.scale.set(1.06, 0.94, 0.94);
+  bun.position.set(0, ry * 0.02, -rz * 1.10);
+  bun.castShadow = true;
+  rig.head.add(bun);
+  /* braided plait wrapping down the back */
+  var braidPts = [];
+  for (var i = 0; i <= 28; i++) {
+    var u = i / 28;
+    braidPts.push(V3(
+      Math.sin(u * 9.5) * 0.036 * (1 - u * 0.4),
+      ry * 0.02 - u * 0.62,
+      -rz * 1.06 - u * 0.06 + Math.sin(u * 9.5) * 0.008
+    ));
+  }
+  var braid = new T.Mesh(tubeFrom(braidPts, 0.026, 90, 10), hair);
+  braid.castShadow = true;
+  rig.head.add(braid);
+  for (var j = 0; j < 7; j++) {
+    var u2 = 0.10 + j * 0.12;
+    var ring = new T.Mesh(new T.TorusGeometry(0.028, 0.005, 8, 22), goldLt);
+    var pt = braidPts[Math.round(u2 * 28)];
+    ring.position.copy(pt);
+    ring.rotation.x = Math.PI / 2 + 0.2;
+    rig.head.add(ring);
+  }
+  /* gajra around the bun */
+  var gajra = jewel.gajra(0.118, 16, { strands: 2 });
+  gajra.position.copy(bun.position);
+  rig.head.add(gajra);
+  /* jasmine strands hanging beside the face */
+  [1, -1].forEach(function (s) {
+    var st = new T.Mesh(tubeFrom([
+      V3(s * rx * 0.70, ry * 0.55, -rz * 0.10), V3(s * rx * 0.86, ry * 0.20, -rz * 0.30),
+      V3(s * rx * 0.80, -ry * 0.16, -rz * 0.55)
+    ], 0.0075, 26, 6), hair);
+    rig.head.add(st);
+    for (var k = 0; k < 4; k++) {
+      var u3 = 0.25 + k * 0.22;
+      var bud = new T.Mesh(new T.SphereGeometry(0.011, 10, 8), new T.MeshPhysicalMaterial({
+        color: LC(0xFFFBF0), roughness: 0.4, clearcoat: 0.7, envMapIntensity: 1.2, emissive: LC(0x2A2418)
+      }));
+      bud.scale.set(0.85, 1.2, 0.85);
+      bud.position.set(s * rx * (0.78 + 0.06 * Math.sin(k)), ry * 0.30 - k * 0.10, -rz * (0.20 + k * 0.10));
+      rig.head.add(bud);
+    }
+  });
+
+  /* ---------------- bindi + tilak ---------------- */
+  var bindi = new T.Mesh(new T.SphereGeometry(0.013, 16, 14), new T.MeshPhysicalMaterial({
+    color: LC(0xB0142E), roughness: 0.1, clearcoat: 1, clearcoatRoughness: 0.03, envMapIntensity: 2.0, emissive: LC(0x36000E)
+  }));
+  bindi.scale.set(1, 1, 0.30);
+  var bp = rig.onSurface(0, ry * 0.30, -0.002);
+  bindi.position.copy(bp);
+  rig.head.add(bindi);
+  var tilak = new T.Mesh(new T.BoxGeometry(0.006, 0.055, 0.002), new T.MeshBasicMaterial({ color: LC(0xC2183A), transparent: true, opacity: 0.85 }));
+  tilak.position.copy(bp);
+  tilak.position.y += 0.052;
+  tilak.rotation.z = 0.0;
+  rig.head.add(tilak);
+
+  /* ---------------- saree (emerald silk skirt) ---------------- */
+  var sareeTex = (function () {
+    var c = document.createElement('canvas'); c.width = 512; c.height = 128;
+    var g = c.getContext('2d');
+    g.fillStyle = '#11604A'; g.fillRect(0, 0, 512, 128);
+    var grd = g.createLinearGradient(0, 0, 0, 128);
+    grd.addColorStop(0, 'rgba(232,160,60,0.95)');
+    grd.addColorStop(0.13, 'rgba(232,160,60,0.85)');
+    grd.addColorStop(0.20, 'rgba(232,160,60,0)');
+    grd.addColorStop(0.80, 'rgba(232,160,60,0)');
+    grd.addColorStop(0.90, 'rgba(232,160,60,0.85)');
+    grd.addColorStop(1, 'rgba(232,160,60,0.95)');
+    g.fillStyle = grd; g.fillRect(0, 0, 512, 128);
+    g.fillStyle = 'rgba(240,200,110,0.9)';
+    for (var i = 0; i < 40; i++) {
+      var x = (i * 97) % 512, y = 20 + ((i * 53) % 88);
+      g.beginPath(); g.arc(x, y, 2.6, 0, TAU); g.fill();
+      g.beginPath(); g.arc(x + 3, y + 3, 1.4, 0, TAU); g.fill();
+    }
+    var t = new T.CanvasTexture(c);
+    t.encoding = T.sRGBEncoding; t.wrapS = t.wrapT = T.RepeatWrapping;
+    t.repeat.set(3, 1);
+    return t;
+  })();
+  var sareeMat = silkMat(0xffffff, 0.30);
+  sareeMat.map = sareeTex;
+  sareeMat.side = T.DoubleSide;
+
+  var sareeGeo = lathe([
+    [0.03, 0.012], [0.22, 0.020], [0.36, 0.080], [0.44, 0.190], [0.478, 0.330],
+    [0.470, 0.470], [0.415, 0.620], [0.320, 0.760], [0.250, 0.855], [0.215, 0.905]
+  ], 56, true);
+  folds(sareeGeo, 18, 0.026, [0.02, 0.90]);
+  var saree = new T.Mesh(sareeGeo, sareeMat);
+  saree.castShadow = true; saree.receiveShadow = true;
+  rig.body.add(saree);
+
+  /* pleat fan at the waist front */
+  var pleat = new T.Mesh(parametric(function (u, v, target) {
+    var x = (u - 0.5) * 0.30;
+    var y = 0.90 - v * 0.34;
+    var z = 0.20 - v * 0.13 + 0.022 * Math.sin(u * Math.PI * 9);
+    target.set(x, y, z);
+    return target;
+  }, 40, 20), sareeMat);
+  rig.body.add(pleat);
+  for (var pf = 0; pf < 9; pf++) {
+    var px = -0.135 + pf * 0.0337;
+    var fold = new T.Mesh(new T.BoxGeometry(0.004, 0.30, 0.006), marigold);
+    fold.position.set(px, 0.745, 0.148 - 0.10);
+    fold.rotation.x = -0.28;
+    rig.body.add(fold);
+  }
+
+  /* hem + waist borders */
+  var hem = new T.Mesh(new T.TorusGeometry(0.474, 0.0125, 10, 72), marigold);
+  hem.rotation.x = Math.PI / 2; hem.position.y = 0.028;
+  rig.body.add(hem);
+  var kamar = new T.Mesh(new T.TorusGeometry(0.212, 0.016, 12, 52), gold);
+  kamar.rotation.x = Math.PI / 2 - 0.04; kamar.position.y = 0.898; kamar.scale.z = 0.88;
+  rig.body.add(kamar);
+  var kamarPendant = new T.Mesh(new T.OctahedronGeometry(0.020, 1), gemMat);
+  kamarPendant.scale.set(1, 1.2, 0.6);
+  kamarPendant.position.set(0, 0.878, 0.196);
+  rig.body.add(kamarPendant);
+
+  /* ---------------- blouse ---------------- */
+  var blouseGeo = lathe([
+    [0.02, 0.845], [0.190, 0.855], [0.194, 0.900], [0.174, 0.965], [0.164, 1.020],
+    [0.176, 1.080], [0.210, 1.175], [0.232, 1.250], [0.180, 1.292], [0.02, 1.302]
+  ], 46, true);
+  var blouseMat = silkMat(0x0E5E48, 0.28);
+  blouseMat.side = T.DoubleSide;
+  var blouse = new T.Mesh(blouseGeo, blouseMat);
+  blouse.castShadow = true;
+  rig.body.add(blouse);
+  var bTrim = new T.Mesh(new T.TorusGeometry(0.128, 0.0075, 8, 44), marigold);
+  bTrim.rotation.x = Math.PI / 2 - 0.20; bTrim.position.y = 1.282; bTrim.scale.z = 0.76;
+  rig.body.add(bTrim);
+  var bTrim2 = new T.Mesh(new T.TorusGeometry(0.192, 0.0075, 8, 48), marigold);
+  bTrim2.rotation.x = Math.PI / 2 - 0.04; bTrim2.position.y = 0.872; bTrim2.scale.z = 0.9;
+  rig.body.add(bTrim2);
+  /* elbow-length sleeves */
+  [1, -1].forEach(function (s) {
+    var sl = new T.Mesh(capsule(0.062, 0.20, 16, 8), blouseMat);
+    sl.position.y = -0.105;
+    sl.castShadow = true;
+    rig[s > 0 ? 'armR' : 'armL'].shoulder.add(sl);
+    var cuff = new T.Mesh(new T.TorusGeometry(0.060, 0.007, 8, 26), marigold);
+    cuff.rotation.x = Math.PI / 2; cuff.position.y = -0.205;
+    rig[s > 0 ? 'armR' : 'armL'].shoulder.add(cuff);
+  });
+
+  /* ---------------- pallu (draped over the left shoulder) ---------------- */
+  var palluCurve = new T.CatmullRomCurve3([
+    V3(0.150, 0.870, 0.260), V3(0.205, 1.010, 0.225), V3(0.250, 1.180, 0.120),
+    V3(0.235, 1.320, -0.020), V3(0.110, 1.372, -0.130), V3(-0.050, 1.372, -0.168),
+    V3(-0.190, 1.300, -0.190), V3(-0.245, 1.120, -0.185), V3(-0.250, 0.930, -0.150),
+    V3(-0.235, 0.760, -0.105)
+  ]);
+  var palluMat = silkMat(0xffffff, 0.28);
+  palluMat.map = sareeTex.clone();
+  palluMat.map.repeat.set(1.6, 1);
+  palluMat.map.needsUpdate = true;
+  palluMat.side = T.DoubleSide;
+  var pallu = new T.Mesh(ribbon(palluCurve, function (u) { return 0.32 + 0.10 * Math.sin(u * Math.PI * 0.9); }, 120, 8), palluMat);
+  pallu.castShadow = true;
+  rig.body.add(pallu);
+  /* gold edge beads along the pallu */
+  for (var pb = 0; pb <= 34; pb++) {
+    var pu = pb / 34;
+    var pp = palluCurve.getPointAt(pu);
+    var bead = new T.Mesh(new T.SphereGeometry(0.0068, 10, 8), goldLt);
+    bead.position.copy(pp);
+    bead.position.x += (pu - 0.5) * 0.20;
+    bead.position.z += 0.02;
+    rig.body.add(bead);
+  }
+
+  /* ---------------- temple jewellery ---------------- */
+  var chokerN = jewel.choker(0.112, { w: 0.032, tiers: 3, tone: 0, beads: 15, tube: 0.014, gem: gemMat });
+  chokerN.position.y = 1.300;
+  rig.body.add(chokerN);
+  var haar = new T.Mesh(tubeFrom([
+    V3(-0.098, 1.292, 0.090), V3(-0.070, 1.170, 0.150), V3(0, 1.128, 0.176),
+    V3(0.070, 1.170, 0.150), V3(0.098, 1.292, 0.090)
+  ], 0.0050, 44, 8), gold);
+  rig.body.add(haar);
+  var locket = new T.Mesh(lathe([
+    [0.001, 0.0], [0.020, 0.004], [0.026, 0.014], [0.020, 0.024], [0.008, 0.030], [0.001, 0.032]
+  ], 24, true), gold);
+  locket.rotation.x = Math.PI;
+  locket.position.set(0, 1.140, 0.178);
+  rig.body.add(locket);
+  var locketGem = new T.Mesh(new T.OctahedronGeometry(0.013, 0), gemMat);
+  locketGem.scale.set(1, 1.2, 0.6);
+  locketGem.position.set(0, 1.126, 0.186);
+  rig.body.add(locketGem);
+
+  /* nath (nose ring + chain) */
+  var nath = jewel.nath({ r: 0.034 });
+  nath.position.set(0.026, -0.052, 0.182);
+  nath.rotation.y = -0.35;
+  rig.head.add(nath);
+
+  /* bangles */
+  [rig.armR, rig.armL].forEach(function (a) {
+    var g1 = jewel.bangles(3, 0.048, { tube: 0.008 });
+    g1.position.y = -0.268;
+    a.elbow.add(g1);
+    var glass = new T.Mesh(new T.TorusGeometry(0.048, 0.009, 10, 34), new T.MeshPhysicalMaterial({
+      color: LC(0x0E7A52), roughness: 0.08, clearcoat: 1, envMapIntensity: 2.2, transparent: true, opacity: 0.9
+    }));
+    glass.rotation.x = Math.PI / 2; glass.position.y = -0.226; glass.scale.z = 0.88;
+    a.elbow.add(glass);
+  });
+
+  /* mehndi on the hands */
+  var hennaMat = new T.MeshStandardMaterial({ color: LC(0x7A3A1E), roughness: 0.75, transparent: true, opacity: 0.85 });
+  [rig.armR, rig.armL].forEach(function (a) {
+    var h1 = new T.Mesh(new T.SphereGeometry(0.038, 20, 16), hennaMat);
+    h1.scale.set(1, 1.25, 0.32);
+    h1.position.set(0, -0.048, -0.020);
+    a.hand.add(h1);
+    for (var d = 0; d < 7; d++) {
+      var dot = new T.Mesh(new T.SphereGeometry(0.0055, 8, 8), hennaMat);
+      var ang = (d / 7) * TAU;
+      dot.position.set(Math.cos(ang) * 0.026, -0.070 + Math.sin(ang) * 0.018, 0.018);
+      a.hand.add(dot);
+    }
+  });
+
+  rig.extra = function (t, dt) {
+    var s = Math.sin(t * 1.5), s2 = Math.sin(t * 1.9 + 1);
+    if (rig.jhumkaL) { rig.jhumkaL.rotation.z = 0.07 * s; }
+    if (rig.jhumkaR) { rig.jhumkaR.rotation.z = -0.07 * s; }
+    gajra.rotation.y = Math.sin(t * 0.6) * 0.03;
+    braid.rotation.z = Math.sin(t * 0.7) * 0.012;
+  };
+
+  return {
+    id: 'tara',
+    name: 'Tara',
+    title: 'The Heritage Saree & Henna Guru',
+    desc: 'Kanjeevaram drapes, temple jewellery and ritual mehndi. Tara holds the sacred thread of the ceremony — and knows every regional drape by heart.',
+    tags: ['Emerald Silk', 'Temple Jewels', 'Mehndi', 'Gajra'],
+    specs: [['Palette', 'Emerald · Marigold'], ['Signature', 'Nath & gajra bun'], ['Consultation', '90 min · Drape + Mehndi']],
+    swatch: ['#0E5E48', '#E8A03C'],
+    frame: { fill: 0.72, el: 0.095, fov: 34 },
+    rig: rig
+  };
+}
+
+/* =====================================================================
+   05 · GIA — The Avant-Garde Editorial Nail & Crystal Beauty Icon
+   Iridescent pastel-rose hair · holographic skin · crystal nail couture
+   ===================================================================== */
+function buildGia() {
+  var rig = new Rig({ id: 'gia' });
+  var SKIN = 0xEDCDBC;
+  var skin = skinMat(SKIN, { glow: 0.15, rough: 0.44, cc: 0.48 });
+  var gold = goldMat(1), goldLt = goldMat(3);
+  var irid = U.iridTex(512);
+  var holoMat = new T.MeshPhysicalMaterial({
+    map: irid, color: LC(0xF6C8D6), roughness: 0.24, metalness: 0.55,
+    clearcoat: 1.0, clearcoatRoughness: 0.12, envMapIntensity: 2.0
+  });
+  var bustierMat = new T.MeshPhysicalMaterial({
+    map: irid.clone(), color: LC(0xE6D6EC), roughness: 0.22, metalness: 0.42,
+    clearcoat: 1.0, clearcoatRoughness: 0.10, envMapIntensity: 2.2
+  });
+  bustierMat.map.wrapS = bustierMat.map.wrapT = T.RepeatWrapping;
+  bustierMat.map.repeat.set(2, 2);
+  var tulleMat = new T.MeshPhysicalMaterial({
+    color: LC(0xF0DCE6), roughness: 0.85, metalness: 0.0, clearcoat: 0.4,
+    transparent: true, opacity: 0.22, side: T.DoubleSide, depthWrite: false, envMapIntensity: 1.2
+  });
+
+  buildHumanoid(rig, {
+    skin: skin, blush: true, blushOpacity: 0.30,
+    blushInner: 'rgba(255,168,196,0.9)', blushOuter: 'rgba(198,150,255,0.12)',
+    browColor: 0xC79AB0, nostrilColor: 0xC08A8A, armR: 0.046,
+    rx: 0.198, ry: 0.216, rz: 0.194,
+    legMat: skin, footMat: new T.MeshPhysicalMaterial({ color: LC(0xE8DCE8), roughness: 0.2, clearcoat: 1, envMapIntensity: 2 }),
+    earring: function (s, p) {
+      var g = new T.Group();
+      var stud = new T.Mesh(new T.SphereGeometry(0.010, 12, 10), goldLt);
+      g.add(stud);
+      var drop = new T.Mesh(new T.OctahedronGeometry(0.016, 0), crystalMat(0xE4F0FF));
+      drop.scale.set(0.8, 1.35, 0.8);
+      drop.position.y = -0.036;
+      g.add(drop);
+      g.position.set(p.x + s * 0.004, p.y - 0.026, p.z + 0.004);
+      return g;
+    }
+  });
+  var rx = 0.198, ry = 0.216, rz = 0.194;
+
+  /* ---------------- eyes (soft lilac-gray) ---------------- */
+  var eyeTex = U.eyeTex('#4A4048', '#8E7FA6', '#161018', '#2A202C', '#C8B8DC');
+  [1, -1].forEach(function (s) {
+    var e = makeEye({
+      r: 0.062, sx: 1.20, sy: 1.04, sz: 0.90, tex: eyeTex, lidMat: skin,
+      lashColor: 0x2A1E28, lidTheta: 0.44 * Math.PI,
+      glints: [{ x: -0.30, y: 0.34, r: 0.28, o: 1 }, { x: 0.34, y: -0.22, r: 0.12, o: 0.75 }]
+    });
+    e.group.position.set(s * rx * 0.46, ry * -0.04, rz * 0.82);
+    e.group.rotation.y = s * 0.05;
+    rig.head.add(e.group);
+    rig[s > 0 ? 'eyeR' : 'eyeL'] = e;
+  });
+
+  /* ---------------- holographic lid + cheek highlights ---------------- */
+  var holoPatchMat = new T.MeshBasicMaterial({
+    map: irid.clone(), transparent: true, opacity: 0.42, blending: T.AdditiveBlending,
+    depthWrite: false, side: T.DoubleSide
+  });
+  rig.holoTex = holoPatchMat.map;
+  [1, -1].forEach(function (s) {
+    var lid = rig.facePatch(s * rx * 0.46, ry * 0.20, rx * 0.70, holoPatchMat, 0.004, s * 0.35);
+    lid.scale.set(1.25, 0.62, 1);
+    var cheek = rig.facePatch(s * rx * 0.74, -ry * 0.10, rx * 0.80, holoPatchMat, 0.004, s * -0.6);
+    cheek.scale.set(0.55, 1.35, 1);
+    var temple = rig.facePatch(s * rx * 0.86, ry * 0.46, rx * 0.44, holoPatchMat, 0.004, s * 0.9);
+    temple.scale.set(0.5, 1.1, 1);
+  });
+
+  /* ---------------- pearl face stickers ---------------- */
+  [1, -1].forEach(function (s) {
+    [[0.40, -0.20], [0.52, -0.28], [0.30, -0.30], [0.62, -0.14], [0.86, 0.38], [0.94, 0.28]].forEach(function (pp, i) {
+      var pearl = new T.Mesh(new T.SphereGeometry(0.0072 - (i % 3) * 0.0012, 12, 10), pearlMat());
+      var p = rig.onSurface(s * rx * pp[0], ry * pp[1], 0.008);
+      pearl.position.copy(p);
+      pearl.scale.set(1, 1, 0.62);
+      rig.head.add(pearl);
+      if (i < 2) {
+        var tiny = new T.Mesh(new T.OctahedronGeometry(0.0045, 0), crystalMat(0xEAF6FF));
+        tiny.position.copy(p);
+        tiny.position.x += s * 0.016;
+        tiny.position.y += 0.010;
+        rig.head.add(tiny);
+      }
+    });
+  });
+  /* forehead crystal cluster */
+  var fc = rig.onSurface(0, ry * 0.44, 0.008);
+  [[0, 0], [-0.022, -0.016], [0.022, -0.016], [0, 0.024]].forEach(function (o, i) {
+    var cr = new T.Mesh(new T.OctahedronGeometry(0.0075, 0), crystalMat(0xE8F4FF));
+    cr.position.set(fc.x + o[0], fc.y + o[1], fc.z);
+    cr.scale.set(1, 1.1, 0.6);
+    rig.head.add(cr);
+  });
+
+  /* ---------------- lips (glossy rose) ---------------- */
+  var mouth = makeMouth({ lipMat: silkMat(0xDC9098, 0.10), w: 0.047, thick: 0.0120 });
+  mouth.group.position.set(0, -ry * 0.52, rz * 0.82);
+  mouth.base = mouth.group.position.clone();
+  rig.head.add(mouth.group);
+  rig.mouth = mouth;
+
+  /* ---------------- iridescent hair + dual high buns ---------------- */
+  var hair2 = new T.MeshPhysicalMaterial({
+    map: irid.clone(), color: LC(0xF6C2D2), roughness: 0.26, metalness: 0.5,
+    clearcoat: 1.0, clearcoatRoughness: 0.12, envMapIntensity: 2.1
+  });
+  rig.hairTex = hair2.map;
+  var cap = new T.Mesh(hairCap({
+    rx: rx, ry: ry, rz: rz, gap: 0.010, bulge: 0.032, wave: 0.004, crown: 0.006,
+    startFront: 0.02 * Math.PI, startBack: 0.02 * Math.PI,
+    endFront: 0.252 * Math.PI, endBack: 0.74 * Math.PI
+  }), hair2);
+  cap.castShadow = true;
+  rig.head.add(cap);
+
+  [1, -1].forEach(function (s) {
+    var pivot = new T.Group();
+    pivot.position.set(s * rx * 0.86, ry * 0.92, -rz * 0.16);
+    pivot.rotation.z = -s * 0.22;
+    rig.head.add(pivot);
+    rig[s > 0 ? 'bunR' : 'bunL'] = pivot;
+
+    var bun = new T.Mesh(new T.SphereGeometry(0.098, 30, 24), hair2);
+    bun.scale.set(1, 0.94, 0.94);
+    bun.castShadow = true;
+    pivot.add(bun);
+    /* swirl wrap */
+    var pts = [];
+    for (var i = 0; i <= 40; i++) {
+      var u = i / 40;
+      var a = u * TAU * 2.4;
+      var rr = 0.086 * (1 - u * 0.42);
+      pts.push(V3(Math.cos(a) * rr, Math.sin(u * Math.PI) * 0.075 - 0.010, Math.sin(a) * rr));
+    }
+    var swirl = new T.Mesh(tubeFrom(pts, 0.014, 90, 8), hair2);
+    pivot.add(swirl);
+    /* scrunchie */
+    var tie = new T.Mesh(new T.TorusGeometry(0.062, 0.013, 10, 30), new T.MeshPhysicalMaterial({
+      color: LC(0xF2E2EC), roughness: 0.32, metalness: 0.25, clearcoat: 1, envMapIntensity: 2.0
+    }));
+    tie.rotation.x = Math.PI / 2;
+    tie.position.y = -0.052;
+    pivot.add(tie);
+    /* crystal pins */
+    for (var k = 0; k < 3; k++) {
+      var pin = new T.Mesh(new T.OctahedronGeometry(0.010, 0), crystalMat(0xEAF6FF));
+      var ang = k * 2.1;
+      pin.position.set(Math.cos(ang) * 0.055, 0.030 + k * 0.008, Math.sin(ang) * 0.055);
+      pin.scale.set(0.8, 1.4, 0.8);
+      pivot.add(pin);
+    }
+    /* flyaway strands */
+    for (var f = 0; f < 3; f++) {
+      var st = new T.Mesh(tubeFrom([
+        V3(0, 0.06, 0), V3(s * (0.04 + f * 0.02), 0.16, 0.02), V3(s * (0.06 + f * 0.03), 0.20, -0.02)
+      ], 0.0055, 18, 6), hair2);
+      pivot.add(st);
+    }
+  });
+  /* face-framing wavy strands */
+  [1, -1].forEach(function (s) {
+    var st2 = new T.Mesh(tubeFrom([
+      V3(s * rx * 0.80, ry * 0.66, rz * 0.42), V3(s * rx * 0.96, ry * 0.24, rz * 0.52),
+      V3(s * rx * 0.88, -ry * 0.24, rz * 0.52), V3(s * rx * 0.74, -ry * 0.62, rz * 0.38)
+    ], 0.0125, 34, 8), hair2);
+    rig.head.add(st2);
+  });
+
+  /* ---------------- iridescent bustier + tulle ---------------- */
+  var bustier = new T.Mesh(lathe([
+    [0.02, 0.860], [0.188, 0.872], [0.192, 0.920], [0.172, 0.985], [0.162, 1.040],
+    [0.174, 1.100], [0.206, 1.190], [0.226, 1.258], [0.170, 1.300], [0.02, 1.312]
+  ], 48, true), bustierMat);
+  bustier.castShadow = true;
+  rig.body.add(bustier);
+  var sweetheart = new T.Mesh(new T.TorusGeometry(0.128, 0.008, 8, 44), goldLt);
+  sweetheart.rotation.x = Math.PI / 2 - 0.24; sweetheart.position.y = 1.288; sweetheart.scale.z = 0.74;
+  rig.body.add(sweetheart);
+  /* corset seams */
+  for (var cs = 0; cs < 8; cs++) {
+    var a2 = -1.9 + cs * 0.54;
+    var seam = new T.Mesh(new T.BoxGeometry(0.003, 0.36, 0.003), goldLt);
+    var rr2 = 0.198;
+    seam.position.set(Math.sin(a2) * rr2, 1.06, Math.cos(a2) * rr2 * 0.72);
+    seam.rotation.x = 0.06;
+    rig.body.add(seam);
+  }
+
+  /* tulle shrug + skirt */
+  var shrug = new T.Mesh(new T.SphereGeometry(0.30, 40, 30), tulleMat);
+  shrug.scale.set(1.25, 0.86, 1.0);
+  shrug.position.set(0, 1.22, 0);
+  rig.body.add(shrug);
+  var tulleSkirt = new T.Mesh(fluff(new T.SphereGeometry(0.52, 48, 30), 0.014, 7), tulleMat);
+  tulleSkirt.scale.set(1, 0.78, 1);
+  tulleSkirt.position.y = 0.52;
+  rig.body.add(tulleSkirt);
+  var tulleSkirt2 = new T.Mesh(fluff(new T.SphereGeometry(0.40, 40, 26), 0.010, 9), tulleMat);
+  tulleSkirt2.scale.set(1, 0.72, 1);
+  tulleSkirt2.position.y = 0.60;
+  rig.body.add(tulleSkirt2);
+  /* pearl waist chain */
+  var waist = new T.Mesh(new T.TorusGeometry(0.204, 0.008, 8, 50), goldLt);
+  waist.rotation.x = Math.PI / 2 - 0.05; waist.position.y = 0.905; waist.scale.z = 0.88;
+  rig.body.add(waist);
+  for (var pw = 0; pw < 16; pw++) {
+    var pa = (pw / 16) * TAU;
+    var pearl = new T.Mesh(new T.SphereGeometry(0.011, 12, 10), pearlMat());
+    pearl.position.set(Math.cos(pa) * 0.204, 0.905 - 0.014, Math.sin(pa) * 0.204 * 0.88);
+    rig.body.add(pearl);
+  }
+
+  /* ---------------- sculpted hands with crystal nails ---------------- */
+  [rig.armR, rig.armL].forEach(function (a) {
+    while (a.hand.children.length) a.hand.remove(a.hand.children[0]);
+    var h = U.sculptedHand(skin, { nails: true, nailMat: crystalMat(0xE6EEF8), crystalMat: crystalMat(0xDCEFFF) });
+    h.position.y = -0.052;
+    h.rotation.x = -0.12;
+    a.hand.add(h);
+  });
+
+  /* pearl choker */
+  for (var pc = 0; pc < 18; pc++) {
+    var pca = -2.2 + (pc / 17) * 4.4;
+    var pp2 = new T.Mesh(new T.SphereGeometry(0.0105, 12, 10), pearlMat());
+    pp2.position.set(Math.sin(pca) * 0.112, 1.316 - Math.cos(pca) * 0.006, Math.cos(pca) * 0.098);
+    rig.body.add(pp2);
+  }
+  var pendant2 = new T.Mesh(new T.OctahedronGeometry(0.016, 0), crystalMat(0xEAF4FF));
+  pendant2.position.set(0, 1.300, 0.112);
+  pendant2.scale.set(0.85, 1.3, 0.85);
+  rig.body.add(pendant2);
+
+  /* ---------------- pose overrides: hands showcase the nails ---------------- */
+  rig.emotions.poise.armRx = -0.92; rig.emotions.poise.armRz = -0.34;
+  rig.emotions.poise.elbowRx = -1.74; rig.emotions.poise.elbowRz = -0.52;
+  rig.emotions.poise.armLx = -0.30; rig.emotions.poise.armLz = -0.30;
+  rig.emotions.poise.elbowLx = -0.62; rig.emotions.poise.elbowLz = 0.10;
+  rig.emotions.thinking.armRx = -1.05; rig.emotions.thinking.armRz = -0.46;
+  rig.emotions.thinking.elbowRx = -1.95; rig.emotions.thinking.elbowRz = -0.62;
+  rig.emotions.happy.armRx = -0.86; rig.emotions.happy.armRz = -0.30;
+  rig.emotions.happy.elbowRx = -1.62; rig.emotions.happy.elbowRz = -0.40;
+  rig.emotions.hesitant.armRx = -0.72; rig.emotions.hesitant.armRz = -0.24;
+  rig.emotions.hesitant.elbowRx = -1.34; rig.emotions.hesitant.elbowRz = -0.30;
+
+  rig.extra = function (t, dt, p) {
+    if (rig.holoTex) { rig.holoTex.offset.x = (t * 0.035) % 1; rig.holoTex.offset.y = Math.sin(t * 0.2) * 0.05; }
+    if (rig.hairTex) { rig.hairTex.offset.x = (t * 0.018) % 1; }
+    holoPatchMat.opacity = 0.30 + 0.14 * Math.sin(t * 1.6) + p.glow * 0.10;
+    var b = Math.sin(t * 0.9);
+    if (rig.bunL) rig.bunL.rotation.x = 0.05 * b;
+    if (rig.bunR) rig.bunR.rotation.x = 0.05 * Math.sin(t * 0.9 + 1.2);
+    tulleSkirt.rotation.y = t * 0.05;
+    tulleSkirt2.rotation.y = -t * 0.04;
+  };
+
+  return {
+    id: 'gia',
+    name: 'Gia',
+    title: 'The Avant-Garde Nail & Crystal Icon',
+    desc: 'Sculpted crystal nail couture, holographic skin and pearl detailing. Gia builds the editorial look that breaks the feed — and the rulebook.',
+    tags: ['Crystal Nails', 'Holographic', 'Gen-Z Couture', 'Editorial'],
+    specs: [['Palette', 'Pastel Rose · Chrome'], ['Signature', 'Dual buns & pearl stickers'], ['Consultation', '75 min · Nail + Face']],
+    swatch: ['#F2B8CC', '#BFD8FF'],
+    frame: { fill: 0.72, el: 0.090, fov: 34 },
+    rig: rig
+  };
+}
+
+/* ------------------------------------------------------------------ export */
+
+/* =====================================================================
+   06 · MEERA — The Couture Hair & Makeup Artist
+   Pixar-style cute: widest eyes of the five, tiny nose, small mouth,
+   glossy black bob with a blunt fringe.
+   ===================================================================== */
+function buildMeera() {
+  var rig = new Rig({ id: 'meera' });
+  var SKIN = 0xE0A97E;
+  var skin = skinMat(SKIN, { glow: 0.13, rough: 0.56, cc: 0.32 });
+  var black = hairMat(0x0B0806, { rough: 0.30 });
+  var ink = silkMat(0x16161C, 0.30);
+  var ivory = silkMat(0xDFD4C0, 0.36);   /* keeps her off the black backdrop */
+  var gold = goldMat(0), goldLt = goldMat(1);
+
+  buildHumanoid(rig, {
+    skin: skin, blush: true,
+    blushInner: 'rgba(255,148,128,0.92)', blushOuter: 'rgba(240,108,128,0.18)', blushOpacity: 0.60,
+    browColor: 0x140B06, nostrilColor: 0x8A4A28, armR: 0.048,
+    legMat: matteMat(0x2A2A32, 0.9), footMat: goldLt
+  });
+
+  var rx = CANON.headRX, ry = CANON.headRY, rz = CANON.headRZ;
+
+  /* ---------------- eyes: biggest of the five ---------------- */
+  var eyeTex = U.eyeTex('#3A1B0B', '#8A4A1E', '#190903', '#1D0C04', '#E8B870');
+  [1, -1].forEach(function (s) {
+    var e = makeEye({
+      r: 0.072, sx: 1.18, sy: 1.10, sz: 0.94, tex: eyeTex, lidMat: skin,
+      lashColor: 0x120A05,
+      glints: [{ x: -0.30, y: 0.34, r: 0.32, o: 1 }, { x: 0.36, y: -0.24, r: 0.130, o: 0.75 }]
+    });
+    e.group.position.set(s * rx * 0.44, ry * -0.05, rz * 0.84);
+    e.group.rotation.y = s * 0.05;
+    rig.head.add(e.group);
+    rig[s > 0 ? 'eyeR' : 'eyeL'] = e;
+  });
+
+  /* ---------------- tiny nose + small mouth (cute canon) ---------------- */
+  var mouth = makeMouth({ lipMat: silkMat(0xC4706E, 0.24), w: 0.044, thick: 0.0112 });
+  mouth.group.position.set(0, -ry * 0.52, rz * 0.84);
+  mouth.base = mouth.group.position.clone();
+  rig.head.add(mouth.group);
+  rig.mouth = mouth;
+
+  /* ---------------- glossy black bob ---------------- */
+  var cap = new T.Mesh(hairCap({
+    rx: rx, ry: ry, rz: rz, gap: 0.012, bulge: 0.055, wave: 0.005, crown: 0.010,
+    startFront: 0.02 * Math.PI, startBack: 0.02 * Math.PI,
+    endFront: 0.30 * Math.PI, endBack: 0.90 * Math.PI
+  }), black);
+  cap.castShadow = true;
+  rig.head.add(cap);
+
+  /* back mass — pushed behind the face plane so it never covers the features */
+  var backHair = new T.Mesh(lathe([
+    [0.03, 0.40], [0.17, 0.38], [0.25, 0.26], [0.28, 0.06], [0.275, -0.14],
+    [0.235, -0.30], [0.155, -0.40], [0.04, -0.43]
+  ], 44, true), black);
+  backHair.position.set(0, ry * 0.06, -rz * 0.55);
+  backHair.scale.set(1.0, 1.0, 0.70);
+  backHair.castShadow = true;
+  rig.head.add(backHair);
+
+  /* blunt fringe + face-framing side panels */
+  [1, -1].forEach(function (s) {
+    var fr = new T.Mesh(tubeFrom([
+      V3(s * 0.010, ry * 0.80, rz * 0.62), V3(s * 0.070, ry * 0.74, rz * 0.80),
+      V3(s * 0.135, ry * 0.60, rz * 0.86), V3(s * 0.170, ry * 0.40, rz * 0.80)
+    ], 0.014, 30, 8), black);
+    rig.head.add(fr);
+    var side = new T.Mesh(tubeFrom([
+      V3(s * rx * 0.86, ry * 0.42, rz * 0.30), V3(s * rx * 0.98, ry * 0.00, rz * 0.28),
+      V3(s * rx * 0.94, -ry * 0.34, rz * 0.22), V3(s * rx * 0.80, -ry * 0.62, rz * 0.14)
+    ], 0.019, 34, 8), black);
+    side.castShadow = true;
+    rig.head.add(side);
+  });
+
+  /* ---------------- charcoal couture gown ---------------- */
+  var gown2 = ivory.clone(); gown2.side = T.DoubleSide;
+  var skirtGeo = lathe([
+    [0.03, 0.012], [0.22, 0.020], [0.34, 0.090], [0.40, 0.230], [0.415, 0.400],
+    [0.385, 0.560], [0.310, 0.720], [0.240, 0.850], [0.205, 0.925], [0.195, 0.960]
+  ], 52, true);
+  folds(skirtGeo, 14, 0.016, [0.02, 0.90]);
+  var skirt = new T.Mesh(skirtGeo, gown2);
+  skirt.castShadow = true; skirt.receiveShadow = true;
+  rig.body.add(skirt);
+
+  var bodice = new T.Mesh(lathe([
+    [0.200, 0.845], [0.188, 0.930], [0.165, 1.010], [0.176, 1.070],
+    [0.212, 1.180], [0.238, 1.278], [0.215, 1.300]
+  ], 44, true), ink);
+  bodice.castShadow = true;
+  rig.body.add(bodice);
+
+  var belt = new T.Mesh(new T.TorusGeometry(0.215, 0.011, 10, 64), goldLt);
+  belt.rotation.x = Math.PI / 2; belt.position.y = 0.90;
+  rig.body.add(belt);
+
+  /* crystal hair pin */
+  var pin = new T.Mesh(new T.SphereGeometry(0.016, 16, 12), gold);
+  pin.position.set(rx * 0.62, ry * 0.72, rz * 0.42);
+  rig.head.add(pin);
+
+  rig.extra = function (t) {
+    var s = Math.sin(t * 1.5);
+    if (this.earL) this.earL.rotation.z = 0;
+    if (pin) pin.rotation.y = s * 0.5;
+  };
+
+  return {
+    id: 'meera',
+    name: 'Meera',
+    title: 'The Couture Hair & Makeup Artist',
+    desc: 'Blowouts, bridal partings and the 14-hour hold — Meera designs the hair and beauty look that survives the phera, the photos and the after-party.',
+    tags: ['Hair Couture', 'Bridal Beauty', 'Long-Wear', 'Editorial'],
+    specs: [['Palette', 'Ivory · Ink Black · Gold'], ['Signature', 'Glossy Bob & Blunt Fringe'], ['Consultation', '60 min · Trial included']],
+    swatch: ['#DFD4C0', '#16161C'],
+    frame: { fill: 0.72, el: 0.100, fov: 34 },
+    rig: rig
+  };
+}
+
+/* =====================================================================
+   07 · CHERRY — The Glow-Berry Skincare Concierge
+   A whole-body fruit mascot: the berry itself carries the face,
+   yellow seeds, green calyx, stubby arms and feet.
+   ===================================================================== */
+function buildCherry() {
+  var rig = new Rig({ id: 'cherry', headY: 0.54 });
+  var BERRY = 0xD42A3C;
+  var berryMat = silkMat(BERRY, 0.34);
+  var berryDeep = silkMat(0x9E1526, 0.38);
+  var seedMat = new T.MeshPhysicalMaterial({
+    color: LC(0xF5D777), roughness: 0.30, clearcoat: 1, clearcoatRoughness: 0.08, envMapIntensity: 1.2
+  });
+  var leafMat = silkMat(0x4E9B3F, 0.42);
+  var stemMat = matteMat(0x6B4A2A, 0.85);
+  var goldLt = goldMat(1);
+
+  /* ---------------- the berry (head-local) ----------------
+     modelled as an ellipsoid centred at y=-0.015, a=0.355, b=0.425 */
+  var berry = new T.Mesh(lathe([
+    [0.02, -0.44], [0.10, -0.43], [0.19, -0.39], [0.28, -0.32], [0.335, -0.21],
+    [0.355, -0.06], [0.350, 0.08], [0.325, 0.20], [0.275, 0.30], [0.195, 0.37],
+    [0.10, 0.40], [0.03, 0.41]
+  ], 56, true), berryMat);
+  berry.castShadow = true; berry.receiveShadow = true;
+  rig.head.add(berry);
+
+  function surfR(y) {
+    return 0.355 * Math.sqrt(Math.max(0, 1 - Math.pow((y + 0.015) / 0.425, 2)));
+  }
+
+  /* ---------------- seeds, skipping the face panel ---------------- */
+  var seedGeo = new T.SphereGeometry(0.0135, 10, 8);
+  for (var ri = 0; ri < 10; ri++) {
+    var tt = ri / 9;
+    var y = -0.36 + tt * 0.70;
+    var rm = surfR(y);
+    if (rm < 0.06) continue;
+    for (var k = 0; k < 7; k++) {
+      var ang = (k / 7) * TAU + ri * 0.42;
+      var px = Math.sin(ang) * (rm - 0.012), pz = Math.cos(ang) * (rm - 0.012);
+      if (pz > 0.10 && Math.abs(px) < 0.21 && y > -0.18 && y < 0.17) continue;  /* face */
+      var sd = new T.Mesh(seedGeo, seedMat);
+      sd.position.set(px, y, pz);
+      sd.scale.set(1, 0.62, 0.62);
+      sd.lookAt(0, y, 0);
+      rig.head.add(sd);
+    }
+  }
+
+  /* ---------------- calyx + stem ---------------- */
+  var leafGeo = new T.SphereGeometry(0.10, 14, 10);
+  for (var li = 0; li < 6; li++) {
+    var la = (li / 6) * TAU + 0.30;
+    var leaf = new T.Mesh(leafGeo, leafMat);
+    leaf.scale.set(0.72, 0.22, 1.25);
+    leaf.position.set(Math.sin(la) * 0.150, 0.395, Math.cos(la) * 0.150);
+    leaf.rotation.y = la;
+    leaf.rotation.z = -0.42;
+    leaf.castShadow = true;
+    rig.head.add(leaf);
+  }
+  var stem = new T.Mesh(capsule(0.020, 0.10, 12, 8), stemMat);
+  stem.position.set(0, 0.465, 0);
+  stem.rotation.z = 0.14;
+  rig.head.add(stem);
+
+  /* ---------------- big glossy eyes ---------------- */
+  var boba2 = U.eyeTex('#12121A', '#26262F', '#050507', '#08080B', '#3A3A48');
+  [1, -1].forEach(function (s) {
+    var e = makeEye({
+      r: 0.082, sx: 1.04, sy: 1.10, sz: 0.98, tex: boba2, lidMat: berryMat, lashes: false,
+      lidTheta: 0.42 * Math.PI, lowTheta: 0.26 * Math.PI,
+      glints: [{ x: -0.28, y: 0.32, r: 0.26, o: 1 }, { x: 0.30, y: -0.24, r: 0.110, o: 0.8 }]
+    });
+    e.group.position.set(s * 0.115, 0.010, 0.300);
+    rig.head.add(e.group);
+    rig[s > 0 ? 'eyeR' : 'eyeL'] = e;
+  });
+
+  /* ---------------- small smile ---------------- */
+  var mouth = makeMouth({ lipMat: silkMat(0xB03344, 0.24), w: 0.046, thick: 0.0115 });
+  mouth.group.position.set(0, -0.115, 0.335);
+  mouth.base = mouth.group.position.clone();
+  rig.head.add(mouth.group);
+  rig.mouth = mouth;
+
+  /* ---------------- blush ---------------- */
+  var blushMat = new T.MeshBasicMaterial({ color: LC(0xE86A7C), transparent: true, opacity: 0.32 });
+  [1, -1].forEach(function (s) {
+    var bl = new T.Mesh(new T.CircleGeometry(0.050, 20), blushMat);
+    bl.position.set(s * 0.175, -0.055, 0.315);
+    bl.rotation.y = s * 0.45;
+    rig.head.add(bl);
+  });
+
+  /* ---------------- stubby arms + feet (world space, under the berry) ---- */
+  [1, -1].forEach(function (s) {
+    var arm = new T.Mesh(capsule(0.036, 0.13, 14, 8), berryMat);
+    arm.position.set(s * 0.340, 0.40, 0.030);
+    arm.rotation.z = s * 0.90;
+    arm.castShadow = true;
+    rig.body.add(arm);
+    var foot = new T.Mesh(new T.SphereGeometry(0.062, 16, 12), berryDeep);
+    foot.scale.set(1, 0.55, 1.35);
+    foot.position.set(s * 0.135, 0.055, 0.050);
+    foot.castShadow = true;
+    rig.body.add(foot);
+  });
+
+  /* a gold-leaf brooch, so she still reads as studio staff */
+  var brooch = new T.Mesh(new T.TorusGeometry(0.030, 0.0075, 8, 24), goldLt);
+  brooch.position.set(0.155, 0.30, 0.300);
+  brooch.rotation.y = 0.5;
+  rig.head.add(brooch);
+
+  rig.extra = function (t) {
+    var b = Math.sin(t * 1.7);
+    if (this.earL) this.earL.rotation.z = 0;
+    stem.rotation.z = 0.14 + b * 0.05;
+    for (var i = 0; i < 6; i++) { /* leaves are children 1..6 after the berry */ }
+  };
+
+  return {
+    id: 'cherry',
+    name: 'Cherry',
+    title: 'The Glow-Berry Skincare Concierge',
+    desc: 'Berry enzymes, vitamin-C facials and pre-bridal skin prep — Cherry builds the 90-day glow plan that makes the makeup sit like glass.',
+    tags: ['Skincare', 'Vitamin C', 'Pre-Bridal', 'Glow Plan'],
+    specs: [['Palette', 'Berry Red · Leaf Green'], ['Signature', 'Seed-Dot Detailing'], ['Consultation', '30 min · Skin analysis']],
+    swatch: ['#D42A3C', '#4E9B3F'],
+    frame: { fill: 0.70, el: 0.060, fov: 34 },
+    rig: rig
+  };
+}
+
+
+/* =====================================================================
+   FULL-GLTF MODE — proper rigged models replace the procedural bodies.
+   Each entry is an auto-scaled, auto-planted skinned mesh with its own
+   skeleton and animation clips.
+   ===================================================================== */
+var GLTF_ROSTER = [
+  { id:'asha',   url:'models/Michelle.glb',        h:1.76, rate:0.12, reskin:{ skin:0xC98F63, cloth:0x7A1226, metal:0xD8BC7E }, name:'Asha',   title:'The Royal Bridal Stylist',
+    desc:'Signature lehengas, zardozi ateliers and the ceremonial drape — Asha walks you through the entire bridal trousseau, from first fabric to final phera.',
+    tags:['Zardozi','Crimson Velvet','Ceremony','Trousseau'],
+    specs:[['Palette','Crimson · Antique Gold'],['Signature','Maang Tikka & Jhumka'],['Consultation','45 min · By appointment']],
+    swatch:['#7A1226','#D8BC7E'], frame:{fill:0.72,el:0.100,fov:34} },
+
+  { id:'mochi',  url:'models/Fox.glb',             h:1.05, name:'Mochi',  title:'The Haute Velvet Mascot',
+    desc:'The studio mascot — Mochi guides first-time brides through the atelier, and knows exactly which velvet reads best under mandap lighting.',
+    tags:['Mascot','Plush','Atelier Guide','Velvet'],
+    specs:[['Palette','Ivory · Burgundy'],['Signature','Boba Eyes & Sash'],['Consultation','Drop-in']],
+    swatch:['#D5D7D9','#5C1226'], frame:{fill:0.64,el:0.055,fov:34} },
+
+  { id:'noor',   url:'models/Soldier.glb',         h:1.76, couture:{ kind:'lehenga', cloth:0x11604A }, name:'Noor',   title:'The Indo-Western Glamour Artist',
+    desc:'Gowns with a banarasi spine, corsetry with dupatta drama — Noor builds the fusion look that photographs like a film still.',
+    tags:['Indo-Western','Gowns','Fusion','Corsetry'],
+    specs:[['Palette','Emerald · Marigold'],['Signature','Dupatta Draping'],['Consultation','50 min']],
+    swatch:['#11604A','#E8A03C'], frame:{fill:0.72,el:0.095,fov:34} },
+
+  { id:'tara',   url:'models/RobotExpressive.glb', h:1.70, couture:{ kind:'saree', cloth:0x0E5E48 }, name:'Tara',   title:'The Heritage Saree & Henna Guru',
+    desc:'Nine yards, twelve drapes and mehndi that stains deep — Tara carries the classical vocabulary, from Kanjeevaram to the Bengaal atpourey.',
+    tags:['Saree','Henna','Heritage','Classical'],
+    specs:[['Palette','Emerald · Vermilion'],['Signature','Nine-Yard Drape'],['Consultation','60 min']],
+    swatch:['#0E5E48','#C2452D'], frame:{fill:0.72,el:0.095,fov:34} },
+
+  { id:'gia',    url:'models/Xbot.glb',            h:1.78, reskin:{ skin:0xE0A97E, cloth:0xE7B7C4, metal:0x8E7CC3 }, name:'Gia',    title:'The Avant-Garde Nail & Crystal Icon',
+    desc:'Sculpted gel, chrome powders and crystal nail couture — Gia treats the hands as the final accessory of the bridal look.',
+    tags:['Nail Couture','Chrome','Crystal','Avant-Garde'],
+    specs:[['Palette','Pastel Rose · Iridescent'],['Signature','Crystal Nail Couture'],['Consultation','40 min']],
+    swatch:['#E7B7C4','#8E7CC3'], frame:{fill:0.72,el:0.090,fov:34} },
+
+  { id:'meera',  url:'models/Flamingo.glb',        h:1.30, jewels:{ metal:1, gem:0xE8C26A }, name:'Meera',  title:'The Couture Hair & Makeup Artist',
+    desc:'Blowouts, bridal partings and the 14-hour hold — Meera designs the hair and beauty look that survives the phera, the photos and the after-party.',
+    tags:['Hair Couture','Bridal Beauty','Long-Wear','Editorial'],
+    specs:[['Palette','Ivory · Ink Black · Gold'],['Signature','Glossy Bob & Blunt Fringe'],['Consultation','60 min · Trial included']],
+    swatch:['#DFD4C0','#16161C'], frame:{fill:0.70,el:0.070,fov:34} },
+
+  { id:'cherry', url:'models/Parrot.glb',          h:1.00, jewels:{ metal:0, gem:0xE24A5E }, name:'Cherry', title:'The Glow-Berry Skincare Concierge',
+    desc:'Berry enzymes, vitamin-C facials and pre-bridal skin prep — Cherry builds the 90-day glow plan that makes the makeup sit like glass.',
+    tags:['Skincare','Vitamin C','Pre-Bridal','Glow Plan'],
+    specs:[['Palette','Berry Red · Leaf Green'],['Signature','Seed-Dot Detailing'],['Consultation','30 min · Skin analysis']],
+    swatch:['#D42A3C','#4E9B3F'], frame:{fill:0.70,el:0.060,fov:34} }
+];
+
+/* emotion -> animation-clip preference, used when a model ships named clips */
+var CLIP_WANT = { poise:['idle','Idle','IDLE','standing','Standing','survey','Survey'],
+                  joy:['wave','Wave','jump','Jump','dance','Dance','run','Run'],
+                  serenity:['walk','Walk','idle','Idle','survey','Survey'],
+                  smoulder:['no','No','punch','Punch','thumbsUp','ThumbsUp','idle','Idle'] };
+
+function pickClip(clips, want) {
+  if (!clips || !clips.length) return null;
+  for (var i = 0; i < want.length; i++) {
+    for (var j = 0; j < clips.length; j++) if (clips[j].name === want[i]) return clips[j].name;
+  }
+  return clips[0].name;
+}
+
+
+/* ------------------------------------------------- couture & re-skin ------ */
+function reskinModel(root, cfg) {
+  var mSkin  = new T.MeshPhysicalMaterial({ color: LC(cfg.skin),  roughness: 0.52, clearcoat: 0.30, clearcoatRoughness: 0.45, envMapIntensity: 1.10 });
+  var mCloth = new T.MeshPhysicalMaterial({ color: LC(cfg.cloth), roughness: 0.62, envMapIntensity: 1.35 });
+  var mMetal = new T.MeshPhysicalMaterial({ color: LC(cfg.metal), roughness: 0.24, metalness: 0.92, envMapIntensity: 1.45 });
+  root.traverse(function (o) {
+    if (!o.isMesh) return;
+    var ms = Array.isArray(o.material) ? o.material : [o.material];
+    for (var i = 0; i < ms.length; i++) if (ms[i] && ms[i].map) return;   /* keep textured parts */
+    var n = (o.name || '').toLowerCase();
+    if (/head|face|skin|body|neck|hand/.test(n)) o.material = mSkin;
+    else if (/hair|helmet|boot|shoe|glove|belt|strap|buckle/.test(n)) o.material = mMetal;
+    else o.material = mCloth;
+  });
+}
+
+/* Skirt hung at the waist, sized in metres, then divided by the model's
+   auto-scale so it survives being parented into a scaled rig. */
+/* A jewelled collar + gem brooch, for characters too small or feathered
+   for a full couture skirt. Sized in metres, counter-scaled by the rig. */
+function addJewels(model, cfg, k) {
+  var box = new T.Box3().setFromObject(model);
+  var h = box.max.y - box.min.y;
+  var rad = Math.max(0.045, h * 0.085);
+  var g = new T.Group();
+
+  var collar = new T.Mesh(new T.TorusGeometry(rad, rad * 0.15, 12, 40), goldMat(cfg.metal === undefined ? 1 : cfg.metal));
+  collar.rotation.x = Math.PI / 2 - 0.20;
+  collar.castShadow = true;
+  g.add(collar);
+
+  var ring2 = new T.Mesh(new T.TorusGeometry(rad * 1.22, rad * 0.055, 10, 44), goldMat(0));
+  ring2.rotation.x = Math.PI / 2 - 0.20;
+  ring2.position.y = -rad * 0.42;
+  g.add(ring2);
+
+  var gem = new T.Mesh(new T.SphereGeometry(rad * 0.40, 20, 16), crystalMat(cfg.gem || 0xE8C26A));
+  gem.position.set(0, -rad * 0.98, rad * 0.62);
+  g.add(gem);
+
+  var holder = new T.Group();
+  holder.add(g);
+  holder.scale.setScalar(1 / k);
+  holder.position.y = box.min.y + h * 0.70;
+  model.add(holder);
+  return holder;
+}
+
+function addCouture(model, cfg, k) {
+  var box = new T.Box3().setFromObject(model);
+  var waistY = box.min.y + (box.max.y - box.min.y) * 0.52;
+  var profile = cfg.kind === 'saree'
+    ? [[0.03, 0.012], [0.20, 0.020], [0.30, 0.070], [0.36, 0.200], [0.385, 0.400],
+       [0.345, 0.600], [0.280, 0.760], [0.225, 0.880], [0.200, 0.950]]
+    : [[0.03, 0.012], [0.22, 0.020], [0.34, 0.090], [0.40, 0.230], [0.415, 0.400],
+       [0.385, 0.560], [0.310, 0.720], [0.240, 0.850], [0.205, 0.925], [0.195, 0.960]];
+  var skirtGeo = lathe(profile, 48, true);
+  folds(skirtGeo, 14, 0.018, [0.02, 0.90]);
+  var sm = silkMat(cfg.cloth, 0.32); sm.side = T.DoubleSide;
+  var skirt = new T.Mesh(skirtGeo, sm);
+  skirt.castShadow = true; skirt.receiveShadow = true;
+
+  var holder = new T.Group();
+  holder.add(skirt);
+  holder.scale.setScalar(1 / k);
+  holder.position.y = waistY;
+  model.add(holder);
+
+  var beltGeo = new T.TorusGeometry(0.215, 0.011, 10, 60);
+  var belt = new T.Mesh(beltGeo, goldMat(1));
+  belt.rotation.x = Math.PI / 2;
+  var bh = new T.Group();
+  bh.add(belt);
+  bh.scale.setScalar(1 / k);
+  bh.position.y = waistY + 0.86 / 1;
+  model.add(bh);
+  return holder;
+}
+
+function makeGLTFCharacter(cfg) {
+  var rig = new Rig({ id: cfg.id });
+  var c = {
+    id: cfg.id, name: cfg.name, title: cfg.title, desc: cfg.desc,
+    tags: cfg.tags, specs: cfg.specs, swatch: cfg.swatch, frame: cfg.frame,
+    rig: rig, ready: false, error: null, _rate: cfg.rate || 1, _targetH: cfg.h,
+    _mixer: null, _actions: {}, _active: null, _clips: null
+  };
+
+  c.playClip = function (name) {
+    if (!this._mixer || !name || !this._actions[name]) return;
+    if (this._active && this._active !== name) this._actions[this._active].stop();
+    var a = this._actions[name];
+    a.reset().fadeIn(0.45).play();
+    a.setEffectiveTimeScale(this._rate || 1);
+    this._active = name;
+  };
+  c.setEmotionClip = function (emo) {
+    this.playClip(pickClip(this._clips, CLIP_WANT[emo] || CLIP_WANT.poise));
+  };
+  c.updateModel = function (dt) {
+    if (this._mixer) this._mixer.update(dt);
+    /* some clips (Michelle's samba) carry root translation — pin the model's
+       horizontal position so it cannot dance out of the framed area */
+    if (this._root) {
+      this._root.position.x = this._baseX;
+      this._root.position.z = this._baseZ;
+    }
+  };
+
+  if (typeof T.GLTFLoader === 'undefined') { c.error = 'GLTFLoader unavailable'; return c; }
+  new T.GLTFLoader().load(cfg.url, function (gltf) {
+    var m = gltf.scene;
+    m.traverse(function (o) { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+    /* auto-scale to a target height, then plant on the floor and centre —
+       the source models come in wildly different unit scales */
+    var b = new T.Box3().setFromObject(m);
+    var hh = b.max.y - b.min.y;
+    if (hh > 1e-4) m.scale.multiplyScalar(cfg.h / hh);
+    b.setFromObject(m);
+    m.position.set(-(b.max.x + b.min.x) / 2, -b.min.y, -(b.max.z + b.min.z) / 2);
+    var k = cfg.h / (hh > 1e-4 ? hh : 1);
+    if (cfg.reskin)  { try { reskinModel(m, cfg.reskin); } catch (e) {} }
+    if (cfg.couture) { try { addCouture(m, cfg.couture, k); } catch (e) {} }
+    if (cfg.jewels)  { try { addJewels(m, cfg.jewels, k); }  catch (e) {} }
+    /* imported PBR materials are authored for brighter rigs — lift their
+       environment response so they do not read as black silhouettes */
+    m.traverse(function (o) {
+      if (!o.isMesh) return;
+      var ms = Array.isArray(o.material) ? o.material : [o.material];
+      for (var i = 0; i < ms.length; i++) {
+        var mm = ms[i]; if (!mm) continue;
+        if ('envMapIntensity' in mm) mm.envMapIntensity = Math.max(mm.envMapIntensity || 0, 1.55);
+        if (mm.isMeshStandardMaterial && !mm.map) { /* flat-shaded rigs: lift base response */
+          mm.roughness = Math.min(mm.roughness, 0.72);
+        }
+      }
+    });
+    rig.body.add(m);
+    c._mixer = new T.AnimationMixer(m);
+    if (gltf.animations && gltf.animations.length) {
+      c._clips = gltf.animations;
+      for (var i = 0; i < gltf.animations.length; i++) {
+        c._actions[gltf.animations[i].name] = c._mixer.clipAction(gltf.animations[i]);
+      }
+      c.playClip(pickClip(c._clips, CLIP_WANT.poise));
+    }
+    c._root = m; c._baseX = m.position.x; c._baseZ = m.position.z;
+    c.ready = true;
+    /* the box used for the initial fit is the BIND pose; morph/rig animation
+       can change the real silhouette a lot (the birds were scaled to specks).
+       Re-fit once the clip has posed the model so the authored height is real. */
+    setTimeout(function () {
+      try {
+        var b2 = new T.Box3().setFromObject(m);
+        var h2 = b2.max.y - b2.min.y;
+        if (h2 > 1e-4 && Math.abs(h2 - cfg.h) / cfg.h > 0.10) {
+          m.scale.multiplyScalar(cfg.h / h2);
+          b2.setFromObject(m);
+          m.position.set(-(b2.max.x + b2.min.x) / 2, -b2.min.y, -(b2.max.z + b2.min.z) / 2);
+          c._baseX = m.position.x; c._baseZ = m.position.z;
+          c._h = undefined; c._w = undefined; c._cy = undefined;
+          if (typeof HBS !== 'undefined' && HBS.reframe && window.__HBS_ACTIVE) {
+            if (window.__HBS_ACTIVE() === c) HBS.reframe(0.6);
+          }
+        }
+      } catch (e) {}
+    }, 500);
+    if (typeof c.onReady === 'function') { try { c.onReady(); } catch (e) {} }
+  }, undefined, function () { c.error = 'failed: ' + cfg.url; });
+
+  return c;
+}
+
+function buildAsha() { return makeGLTFCharacter(GLTF_ROSTER[0]); }
+function buildMochi() { return makeGLTFCharacter(GLTF_ROSTER[1]); }
+function buildNoor() { return makeGLTFCharacter(GLTF_ROSTER[2]); }
+function buildTara() { return makeGLTFCharacter(GLTF_ROSTER[3]); }
+function buildGia() { return makeGLTFCharacter(GLTF_ROSTER[4]); }
+function buildMeera() { return makeGLTFCharacter(GLTF_ROSTER[5]); }
+function buildCherry() { return makeGLTFCharacter(GLTF_ROSTER[6]); }
+
+window.__HBS.builders = { asha: buildAsha, mochi: buildMochi, noor: buildNoor, tara: buildTara, gia: buildGia, meera: buildMeera, cherry: buildCherry };
+window.__HBS.GLTF_ROSTER = GLTF_ROSTER;
+})();
+
+/* =====================================================================
+   05 · APPLICATION — camera, transitions, UI, widget, loop
+   ===================================================================== */
+(function () {
+'use strict';
+var U = window.__HBS, T = U.T;
+var V3 = U.V3, C = U.C, LC = U.C, clamp = U.clamp, lerp = U.lerp, damp = U.damp;
+var scene = U.scene, renderer = U.renderer, camera = U.camera, widgetCam = U.widgetCam, studio = U.studio;
+var HBS = window.HBStudio;
+
+var ORDER = ['asha', 'mochi', 'noor', 'tara', 'gia', 'meera', 'cherry'];
+var WIDGET_DIST = { asha: 1.34, mochi: 1.86, noor: 1.30, tara: 1.36, gia: 1.52, meera: 1.34, cherry: 1.05 };
+var WIDGET_LIFT = { asha: 0.02, mochi: 0.13, noor: 0.02, tara: 0.04, gia: 0.06, meera: 0.02, cherry: 0.05 };
+var chars = {};
+var current = null;
+var sweeping = false;
+var dualView = true;
+var autoOrbit = false;
+
+/* ------------------------------------------------------------------ DOM */
+var $ = function (s) { return document.querySelector(s); };
+var dockInner = $('#dockInner'), elName = $('#cName'), elTitle = $('#cTitle'), elDesc = $('#cDesc'),
+    elTags = $('#cTags'), elSpecs = $('#cSpecs'), elIdx = $('#idxNum'), elWidget = $('#widget'),
+    elWName = $('#wName'), elHint = $('#hint'), elFlash = $('#flash'), elGlow = $('#cursorGlow'),
+    btnDual = $('#btnDual'), btnOrbit = $('#btnOrbit'), loader = $('#loader');
+
+/* ------------------------------------------------------------- controls */
+var controls = null;
+var camState = { az: 0.20, el: 0.10, dist: 3.6, ty: 1.14 };
+var smoothCam = { az: 0.20, el: 0.10, dist: 3.6, ty: 1.14 };
+
+if (T.OrbitControls) {
+  controls = new T.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.075;
+  controls.enablePan = false;
+  controls.rotateSpeed = 0.62;
+  controls.zoomSpeed = 0.72;
+  controls.minDistance = 1.35;
+  controls.maxDistance = 6.2;
+  controls.minPolarAngle = 0.55;
+  controls.maxPolarAngle = 1.60;
+  controls.autoRotateSpeed = 0.55;
+  controls.target.set(0, 1.14, 0);
+} else {
+  /* ultra-light fallback drag-orbit so the page still works without the CDN extra */
+  (function () {
+    var down = false, lx = 0, ly = 0;
+    var el = renderer.domElement;
+    el.addEventListener('pointerdown', function (e) { down = true; lx = e.clientX; ly = e.clientY; el.setPointerCapture(e.pointerId); });
+    el.addEventListener('pointerup', function (e) { down = false; });
+    el.addEventListener('pointermove', function (e) {
+      if (!down) return;
+      camState.az -= (e.clientX - lx) * 0.006;
+      camState.el = clamp(camState.el + (e.clientY - ly) * 0.004, -0.12, 0.85);
+      lx = e.clientX; ly = e.clientY;
+    });
+    el.addEventListener('wheel', function (e) { camState.dist = clamp(camState.dist + e.deltaY * 0.0016, 1.4, 6); e.preventDefault(); }, { passive: false });
+  })();
+}
+
+/* Measure each character once, then frame it from its real bounding box so
+   nobody is ever cropped — works for the 1.78 m humans and 1.58 m bunny.     */
+function measure(c) {
+  if (c._h !== undefined) return c;
+  c.rig.root.updateMatrixWorld(true);
+  var box = new T.Box3().setFromObject(c.rig.root);
+  /* models stream in async — a measurement of an empty box must not be cached,
+     or the camera keeps framing a 0.6 m object at floor level for ever */
+  if (box.isEmpty()) return c;
+  var s2 = box.getSize(new T.Vector3()), ctr = box.getCenter(new T.Vector3());
+  /* Box3.setFromObject uses the BIND pose, which morph-animated models
+     (flamingo, parrot) inflate badly — the camera then framed a phantom size
+     and they rendered as specks. We auto-scale each model to a known height,
+     so trust that over the raw box when they disagree. */
+  var th = c._targetH;
+  c._h = th || Math.max(s2.y, 0.6);
+  c._w = Math.min(Math.max(s2.x, 0.4), c._h * 1.25);
+  c._cy = (th && Math.abs(s2.y - th) > th * 0.45) ? th * 0.52 : ctr.y;
+  return c;
+}
+function cyOf(c) {
+  return (c._cy !== undefined) ? c._cy : (c._targetH ? c._targetH * 0.52 : 0.90);
+}
+function fitDist(c) {
+  measure(c);
+  var f = c.frame;
+  if (f.fov && camera.fov !== f.fov) { camera.fov = f.fov; camera.updateProjectionMatrix(); }
+  var h = (c._h !== undefined) ? c._h : (c._targetH || 1.75);
+  var w = (c._w !== undefined) ? c._w : 0.55;
+  var tan = Math.tan((camera.fov * Math.PI / 180) / 2);
+  var dH = (h / f.fill / 2) / tan;
+  /* cap the width term: spread-wing models (flamingo, parrot) are far wider
+     than tall and were pushing the camera so far back they read as specks */
+  var vw = Math.max(Math.min(w, h * 0.95) / 0.74, h * 0.40);
+  var dW = (vw / 2) / (tan * camera.aspect);
+  var d = Math.max(dH, dW);
+  if (window.innerWidth < 860) d *= 0.94;
+  return clamp(d, 1.6, 9);
+}
+function readCam() {
+  if (!controls) return;
+  var o = V3().copy(camera.position).sub(controls.target);
+  camState.dist = o.length();
+  camState.el = Math.asin(clamp(o.y / camState.dist, -1, 1));
+  camState.az = Math.atan2(o.x, o.z);
+  camState.ty = controls.target.y;
+}
+function applyCam() {
+  var d = camState.dist, e = camState.el, a = camState.az;
+  var h = d * Math.cos(e);
+  camera.position.set(Math.sin(a) * h, camState.ty + d * Math.sin(e), Math.cos(a) * h);
+  if (controls) { controls.target.y = camState.ty; controls.target.x = 0; controls.target.z = 0; }
+  camera.lookAt(0, camState.ty, 0);
+}
+
+/* --------------------------------------------------------------- composer */
+var composer = null, bloom = null;
+if (T.EffectComposer && T.RenderPass && T.UnrealBloomPass) {
+  try {
+    composer = new T.EffectComposer(renderer);
+    composer.addPass(new T.RenderPass(scene, camera));
+    bloom = new T.UnrealBloomPass(new T.Vector2(window.innerWidth, window.innerHeight), 0.40, 0.42, 0.92);
+    composer.addPass(bloom);
+  } catch (e) { composer = null; }
+}
+
+/* ------------------------------------------------------- studio backdrop */
+var backdropDome = new T.Mesh(
+  new T.SphereGeometry(34, 32, 24),
+  new T.ShaderMaterial({
+    side: T.BackSide, depthWrite: false,
+    uniforms: { uTop: { value: U.C(0x191722) }, uBot: { value: U.C(0x050507) }, uWarm: { value: U.C(0x402E1A) } },
+    vertexShader: 'varying vec3 vD; void main(){ vD = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
+    fragmentShader: [
+      'varying vec3 vD; uniform vec3 uTop; uniform vec3 uBot; uniform vec3 uWarm;',
+      'void main(){',
+      '  vec3 d = normalize(vD);',
+      '  float h = clamp(d.y*0.5+0.5, 0.0, 1.0);',
+      '  vec3 c = mix(uBot, uTop, pow(h, 0.85));',
+      '  float g = pow(max(dot(d, normalize(vec3(0.30,0.12,0.94))), 0.0), 4.5);',
+      '  c += uWarm * g * 0.85;',
+      '  float g2 = pow(max(dot(d, normalize(vec3(-0.85,0.10,0.40))), 0.0), 6.0);',
+      '  c += vec3(0.05,0.07,0.14) * g2;',
+      '  gl_FragColor = vec4(c, 1.0);',
+      '}'
+    ].join('\n')
+  })
+);
+backdropDome.renderOrder = -10;
+studio.add(backdropDome);
+
+/* ------------------------------------------------------------- characters */
+function buildOne(id) {
+  if (chars[id]) return chars[id];
+  var c = U.builders[id]();
+  c.rig.root.visible = false;
+  c.rig.collectMaterials();
+  scene.add(c.rig.root);
+  chars[id] = c;
+  /* models stream in asynchronously — re-measure once one lands */
+  if (typeof c.ready === 'boolean') {
+    c.onReady = function () {
+      try { c.rig.collectMaterials(); } catch (e) {}
+      /* the camera was framed against an empty rig — re-aim it now the
+         geometry exists, whether this is the boot character or a later switch */
+      try {
+        c._h = undefined; c._w = undefined; c._cy = undefined;
+        if (!current || current === c) reframeCurrent(current ? 1.2 : 0);
+      } catch (e) {}
+    };
+  }
+  return c;
+}
+
+/* ------------------------------------------------------------- switching */
+function reframeCurrent(dur) {
+  if (!current) return;
+  current._h = undefined; current._w = undefined; current._cy = undefined;
+  measure(current);
+  var d = fitDist(current), f = current.frame;
+  if (dur) {
+    sweeping = true;
+    window.gsap.to(camState, {
+      dist: d, el: f.el, ty: cyOf(current), duration: dur, ease: 'power3.inOut',
+      onComplete: function () { sweeping = false; readCam(); }
+    });
+  } else {
+    camState.dist = d; camState.el = f.el; camState.ty = cyOf(current);
+    applyCam(); readCam();
+  }
+}
+HBS.reframe = function (d) { if (current) reframeCurrent(d === undefined ? 1.0 : d); };
+window.__HBS_ACTIVE = function () { return current; };
+
+function switchTo(id, instant) {
+  if (!chars[id]) buildOne(id);
+  if (current && current.id === id) return;
+  var next = chars[id];
+  var first = !current;
+  var prev = current;
+
+  measure(next);
+  var f = next.frame;
+  var toDist = fitDist(next), toEl = f.el, toTy = cyOf(next);
+  var dir = (Math.random() < 0.5 ? 1 : -1);
+
+  if (prev) {
+    sweeping = true;
+    if (controls) controls.enabled = false;
+    var tl = window.gsap.timeline({
+      onComplete: function () {
+        sweeping = false;
+        if (controls) { controls.enabled = true; }
+        readCam();
+      }
+    });
+    tl.to(elFlash, { opacity: 0.85, duration: 0.26, ease: 'power2.out' }, 0);
+    tl.add(function () {
+      prev.rig.root.visible = false;
+      next.rig.root.visible = true;
+      next.rig.root.scale.setScalar(0.88);
+      next.rig.root.position.y = -0.07;
+      window.gsap.to(next.rig.root.scale, { x: 1, y: 1, z: 1, duration: 1.35, ease: 'elastic.out(1, 0.62)' });
+      window.gsap.to(next.rig.root.position, { y: 0, duration: 1.1, ease: 'power3.out' });
+      paintInfo(next);
+    }, 0.16);
+    tl.to(elFlash, { opacity: 0, duration: 0.85, ease: 'power2.inOut' }, 0.30);
+    /* cinematic camera sweep */
+    window.gsap.to(camState, {
+      az: camState.az + dir * 1.15, el: toEl, dist: toDist, ty: toTy,
+      duration: 1.75, ease: 'power3.inOut'
+    });
+    /* ground pulse */
+    pulseRing();
+  } else {
+    next.rig.root.visible = true;
+    paintInfo(next);
+  }
+  current = next;
+  next.rig.setEmotion(next.rig.emotion === 'poise' ? 'poise' : next.rig.emotion, instant ? 0 : 0.9);
+
+  /* pills */
+  Array.prototype.forEach.call(dockInner.children, function (p) {
+    p.classList.toggle('active', p.dataset.id === id);
+  });
+  if (elWName) elWName.textContent = next.name;
+  hideHint();
+}
+
+var pulse = new T.Mesh(new T.RingGeometry(0.55, 0.60, 96), new T.MeshBasicMaterial({
+  color: LC(0xC8A96A), transparent: true, opacity: 0, blending: T.AdditiveBlending, depthWrite: false, side: T.DoubleSide
+}));
+pulse.rotation.x = -Math.PI / 2;
+pulse.position.y = 0.02;
+studio.add(pulse);
+function pulseRing() {
+  window.gsap.killTweensOf(pulse.scale);
+  window.gsap.killTweensOf(pulse.material);
+  pulse.scale.setScalar(0.5);
+  pulse.material.opacity = 0.75;
+  window.gsap.to(pulse.scale, { x: 3.0, y: 3.0, z: 3.0, duration: 1.4, ease: 'power2.out' });
+  window.gsap.to(pulse.material, { opacity: 0, duration: 1.4, ease: 'power2.out' });
+}
+
+function paintInfo(c) {
+  var i = ORDER.indexOf(c.id);
+  elName.textContent = c.name;
+  elTitle.textContent = c.title;
+  elDesc.textContent = c.desc;
+  elIdx.textContent = ('0' + (i + 1)).slice(-2);
+  elTags.innerHTML = c.tags.map(function (t) { return '<span class="tag">' + t + '</span>'; }).join('');
+  elSpecs.innerHTML = c.specs.map(function (s) {
+    return '<div class="spec"><i>' + s[0] + '</i><b>' + s[1] + '</b></div>';
+  }).join('');
+  window.gsap.fromTo([elIdx.parentNode, elName, elTitle, elDesc, elTags, elSpecs],
+    { y: 16, opacity: 0 },
+    { y: 0, opacity: 1, duration: 0.85, stagger: 0.055, ease: 'power3.out', overwrite: true });
+}
+
+/* ------------------------------------------------------------- emotions */
+var emoBtns = Array.prototype.slice.call(document.querySelectorAll('.emo'));
+function setEmotion(name) {
+  if (!current) return;
+  if (current.rig.emotion === name) name = 'poise';
+  current.rig.setEmotion(name, 1.1);
+  emoBtns.forEach(function (b) { b.classList.toggle('active', b.dataset.emo === name); });
+  hideHint();
+}
+emoBtns.forEach(function (b) {
+  b.addEventListener('click', function () { setEmotion(b.dataset.emo); });
+});
+var EMO_CYCLE = ['welcome', 'happy', 'thinking', 'hesitant'];
+
+/* ------------------------------------------------------------- toggles */
+function setDual(on) {
+  dualView = on;
+  elWidget.classList.toggle('on', on);
+  btnDual.classList.toggle('active', on);
+}
+function setOrbit(on) {
+  autoOrbit = on;
+  if (controls) controls.autoRotate = on;
+  btnOrbit.classList.toggle('active', on);
+}
+btnDual.addEventListener('click', function () { setDual(!dualView); });
+btnOrbit.addEventListener('click', function () { setOrbit(!autoOrbit); });
+
+/* ------------------------------------------------------------- pointer */
+var mouse = { x: 0, y: 0 };
+var glowOn = false;
+function pointerMove(cx, cy) {
+  mouse.x = (cx / window.innerWidth) * 2 - 1;
+  mouse.y = -((cy / window.innerHeight) * 2 - 1);
+  if (elGlow) {
+    if (!glowOn) { glowOn = true; elGlow.style.opacity = '1'; }
+    elGlow.style.transform = 'translate3d(' + cx + 'px,' + cy + 'px,0)';
+  }
+}
+window.addEventListener('pointermove', function (e) { pointerMove(e.clientX, e.clientY); }, { passive: true });
+window.addEventListener('pointerdown', function () { hideHint(); });
+window.addEventListener('keydown', function (e) {
+  var k = e.key;
+  if (k >= '1' && k <= '7') { switchTo(ORDER[parseInt(k, 10) - 1]); }
+  if (k === 'h') {
+    document.body.classList.toggle('clean-ui');
+    var cb = document.getElementById('cleanBtn');
+    if (cb) cb.textContent = document.body.classList.contains('clean-ui') ? 'Show UI' : 'Clean view';
+  }
+  else if (k === 'e' || k === 'E') {
+    var i = EMO_CYCLE.indexOf(current ? current.rig.emotion : 'poise');
+    setEmotion(EMO_CYCLE[(i + 1) % EMO_CYCLE.length]);
+  } else if (k === 'd' || k === 'D') { setDual(!dualView); }
+  else if (k === 'o' || k === 'O') { setOrbit(!autoOrbit); }
+});
+
+var hintTimer = setTimeout(hideHint, 9000);
+function hideHint() { if (hintTimer) clearTimeout(hintTimer); elHint.classList.add('hide'); }
+
+/* ------------------------------------------------------------- resize */
+function resize() {
+  var w = window.innerWidth, h = window.innerHeight;
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  if (composer) composer.setSize(w, h);
+  if (bloom) bloom.setSize(w, h);
+  if (current && !sweeping) {
+    camState.dist = fitDist(current);
+  }
+}
+window.addEventListener('resize', resize);
+window.addEventListener('orientationchange', function () { setTimeout(resize, 260); });
+
+function widgetRect() {
+  var wv = elWidget.querySelector('.wv');
+  var r = wv.getBoundingClientRect();
+  return { x: r.left, y: window.innerHeight - r.bottom, w: r.width, h: r.height };
+}
+
+/* ------------------------------------------------------------- loop */
+var clock = new T.Clock();
+var started = false;
+var sparkles = new U.Sparkles(150, 0.85, 2.0, 0xFFDCA0, 0.030);
+sparkles.points.position.y = 0.1;
+scene.add(sparkles.points);
+
+function tick() {
+  requestAnimationFrame(tick);
+  var dt = Math.min(clock.getDelta(), 0.05);
+  var t = clock.elapsedTime;
+
+  /* camera */
+  if (sweeping || !controls) applyCam();
+  else { if (controls) { controls.update(); readCam(); } }
+
+  /* character */
+  if (current) {
+    current.rig.lookTarget(mouse.x, mouse.y);
+    current.rig.update(t, dt);
+    if (current.updateModel) current.updateModel(dt);
+    sparkles.intensity = current.rig.pose.sparkle;
+    sparkles.points.visible = sparkles.points.material.opacity > 0.01 || sparkles.intensity > 0.02;
+  }
+  sparkles.update(t, dt);
+
+  /* widget camera — slow drifting head-and-shoulders framing */
+  if (dualView) {
+    var d = WIDGET_DIST[current ? current.id : 'asha'] || 1.34;
+    var hy = (current ? current.rig.head.position.y : 1.53) + (WIDGET_LIFT[current ? current.id : 'asha'] || 0);
+    var az = Math.sin(t * 0.33) * 0.55 + 0.14;
+    var el = 0.05 + Math.sin(t * 0.47) * 0.035;
+    var hh = d * Math.cos(el);
+    widgetCam.position.set(Math.sin(az) * hh, hy + Math.sin(el) * d - 0.03, Math.cos(az) * hh);
+    widgetCam.lookAt(0, hy - 0.05, 0);
+  }
+
+  /* subtle light breathing */
+  var kb = U.keyLight.userData.base;
+  U.keyLight.intensity = kb * (1 + Math.sin(t * 0.9) * 0.024);
+
+  /* ---- draw ---- */
+  var w = window.innerWidth, h = window.innerHeight;
+  renderer.setScissorTest(false);
+  renderer.setViewport(0, 0, w, h);
+  if (composer) { renderer.clear(true, true, true); composer.render(); }
+  else { renderer.clear(true, true, true); renderer.render(scene, camera); }
+
+  if (dualView) {
+    var r = widgetRect();
+    if (r.w > 12 && r.h > 12) {
+      studio.visible = false;
+      renderer.setViewport(r.x, r.y, r.w, r.h);
+      renderer.setScissor(r.x, r.y, r.w, r.h);
+      renderer.setScissorTest(true);
+      renderer.clear(true, true, false);
+      renderer.render(scene, widgetCam);
+      renderer.setScissorTest(false);
+      studio.visible = true;
+    }
+  }
+}
+
+/* ------------------------------------------------- info card / clean view */
+(function () {
+  var infoEl = document.getElementById('info');
+  var infoTog = document.getElementById('infoToggle');
+  var cleanBtn = document.getElementById('cleanBtn');
+  function setCollapsed(on) {
+    if (!infoEl) return;
+    infoEl.classList.toggle('collapsed', on);
+    if (infoTog) infoTog.textContent = on ? '+' : '\u2013';
+  }
+  if (infoTog) infoTog.addEventListener('click', function () {
+    setCollapsed(!(infoEl && infoEl.classList.contains('collapsed')));
+  });
+  if (cleanBtn) cleanBtn.addEventListener('click', function () {
+    document.body.classList.toggle('clean-ui');
+    cleanBtn.textContent = document.body.classList.contains('clean-ui') ? 'Show UI' : 'Clean view';
+  });
+  /* on short or narrow viewports the card covers the character — open closed */
+  if (window.innerWidth < 1000 || window.innerHeight < 720) setCollapsed(true);
+})();
+
+/* --------------------------------------------------------- selector dock */
+function buildDock() {
+  dockInner.innerHTML = '';
+  ORDER.forEach(function (id, i) {
+    var c = buildOne(id);
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'pill' + (i === 0 ? ' active' : '');
+    b.dataset.id = id;
+    b.innerHTML =
+      '<span class="swatch" style="--c1:' + c.swatch[0] + ';--c2:' + c.swatch[1] + '"></span>' +
+      '<span class="txt"><b>' + c.name + '</b><i>' + c.title.replace(/^The\s+/, '') + '</i></span>' +
+      '<span class="num">' + ('0' + (i + 1)).slice(-2) + '</span>';
+    b.addEventListener('click', function () { switchTo(id); });
+    dockInner.appendChild(b);
+  });
+}
+
+/* ------------------------------------------------------------- boot */
+function boot() {
+  U.progress(0.20);
+  buildOne('asha');
+  U.progress(0.35);
+  buildDock();
+  U.progress(0.55);
+  resize();
+  switchTo('asha', true);
+  /* wide establishing shot, then settle */
+  measure(current);
+  camState.dist = fitDist(current) * 1.5;
+  camState.el = 0.26;
+  camState.az = -0.85;
+  camState.ty = cyOf(current);
+  applyCam();
+  current.rig.root.scale.setScalar(0.92);
+  current.rig.root.position.y = -0.05;
+
+  tick();
+
+  sweeping = true;
+  window.gsap.to(camState, {
+    dist: fitDist(current), el: current.frame.el, az: 0.20, ty: cyOf(current),
+    duration: 2.6, ease: 'power3.inOut',
+    onComplete: function () { sweeping = false; readCam(); }
+  });
+  window.gsap.to(current.rig.root.scale, { x: 1, y: 1, z: 1, duration: 1.8, ease: 'power3.out' });
+  window.gsap.to(current.rig.root.position, { y: 0, duration: 1.4, ease: 'power3.out' });
+
+  setDual(true);
+  U.progress(1);
+
+  setTimeout(function () {
+    loader.classList.add('done');
+    pulseRing();
+  }, 260);
+
+  /* build the remaining concierges in the background */
+  var rest = ORDER.slice(1), i = 0;
+  (function nextBuild() {
+    if (i >= rest.length) { U.progress(1); return; }
+    var id = rest[i++];
+    buildOne(id);
+    U.progress(0.55 + 0.45 * (i / rest.length));
+    setTimeout(nextBuild, 130);
+  })();
+}
+
+/* ------------------------------------------------------------- export API */
+HBS.controls = controls;
+HBS.fitDist = fitDist;
+HBS.measure = measure;
+HBS.readCam = readCam;
+HBS.applyCam = applyCam;
+HBS.camState = camState;
+HBS.frameCharacter = function (id, instant) { switchTo(id, instant); };
+HBS.reframe = function (id, extra) {
+  var c = id ? chars[id] : current; if (!c) return null;
+  var f = c.frame;
+  camState.az = 0; camState.el = f.el; camState.ty = c._cy;
+  camState.dist = fitDist(c) * (extra || 1);
+  applyCam(); readCam(); return camState;
+};
+HBS.setBloom = function (strength, radius, threshold) {
+  if (!bloom) return null;
+  if (strength !== undefined) bloom.strength = strength;
+  if (radius !== undefined) bloom.radius = radius;
+  if (threshold !== undefined) bloom.threshold = threshold;
+  return { strength: bloom.strength, radius: bloom.radius, threshold: bloom.threshold };
+};
+HBS.composer = function () { return composer; };
+HBS.bloomPass = function () { return bloom; };
+
+HBS.CHARACTERS = ORDER;
+HBS.list = function () { return ORDER.slice(); };
+HBS.get = function (id) { return chars[id] || null; };
+HBS.active = function () { return current; };
+HBS.buildCharacter = function (id) {
+  var f = U.builders[id];
+  if (!f) { console.warn('[HBStudio] unknown character "' + id + '" — falling back to asha'); f = U.builders.asha; }
+  var c = f();
+  c.rig.collectMaterials();
+  /* handy standalone helpers on every character object */
+  c.setEmotion = function (n) { c.rig.setEmotion(n); return c; };
+  c.lookAt = function (x, y) { c.rig.lookTarget(x, y); return c; };
+  c.update = function (time, delta) { c.rig.update(time, delta === undefined ? 0.016 : delta); return c; };
+  c.show = function () { c.rig.root.visible = true; return c; };
+  c.hide = function () { c.rig.root.visible = false; return c; };
+  return c;
+};
+HBS.createLights = function (target) {
+  target = target || new T.Scene();
+  target.environment = U.envMap;
+  var hemi = new T.HemisphereLight(LC(0x3A4763), LC(0x120C08), 0.38);
+  var key = new T.DirectionalLight(LC(0xFFD7A2), 2.20); key.position.set(2.7, 3.7, 3.3); key.castShadow = true;
+  var fill = new T.DirectionalLight(LC(0x9FB4FF), 0.50); fill.position.set(-3.4, 1.5, 2.6);
+  var rim = new T.SpotLight(LC(0xFFE2AF), 4.0, 14, 0.72, 0.62, 1.2); rim.position.set(-0.7, 3.1, -3.6);
+  rim.target.position.set(0, 1.25, 0);
+  var rimC = new T.DirectionalLight(LC(0xB79CFF), 0.62); rimC.position.set(-2.6, 1.9, -3.2);
+  var bounce = new T.PointLight(LC(0xFFC489), 0.70, 4.5, 2); bounce.position.set(0.2, 0.55, 1.35);
+  [hemi, key, fill, rim, rim.target, rimC, bounce].forEach(function (l) { target.add(l); });
+  return { hemi: hemi, key: key, fill: fill, rim: rim, rimCool: rimC, bounce: bounce };
+};
+
+/* go */
+if (document.readyState === 'complete' || document.readyState === 'interactive') setTimeout(boot, 60);
+else window.addEventListener('DOMContentLoaded', function () { setTimeout(boot, 60); });
+})();
+</script>
+</body>
+</html>

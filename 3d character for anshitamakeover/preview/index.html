@@ -1,0 +1,1636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#060606">
+  <title>Lumiere Atelier | Bridal &amp; Beauty Concierge</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #060606;
+      --paper: #f3ead9;
+      --muted: #a89d8b;
+      --gold: #c8a96a;
+      --gold-bright: #ead08a;
+      --glass: rgba(15, 14, 12, .7);
+      --line: rgba(200, 169, 106, .3);
+    }
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: var(--ink); color: var(--paper); }
+    body { font-family: 'Outfit', sans-serif; }
+    button { font: inherit; }
+    .serif { font-family: 'Cinzel', serif; }
+    #backdrop {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse at 51% 43%, rgba(97, 67, 34, .22), transparent 39%),
+        radial-gradient(ellipse at 79% 18%, rgba(52, 51, 68, .11), transparent 35%),
+        linear-gradient(180deg, #090908 0%, #070707 56%, #040404 100%);
+    }
+    #backdrop::before {
+      content: ''; position: absolute; inset: 0; opacity: .14;
+      background: repeating-linear-gradient(90deg, transparent 0 119px, rgba(200,169,106,.05) 120px, transparent 121px);
+      mask-image: linear-gradient(90deg, transparent, black 30%, black 70%, transparent);
+    }
+    #stage { position: fixed; inset: 0; z-index: 1; width: 100vw; height: 100vh; display: block; touch-action: none; outline: 0; }
+    #vignette { position: fixed; inset: 0; z-index: 2; pointer-events: none; background: radial-gradient(ellipse at 50% 42%, transparent 43%, rgba(0,0,0,.46) 100%); }
+    #grain { position: fixed; inset: -45%; z-index: 3; pointer-events: none; opacity: .032;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.84' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.65'/%3E%3C/svg%3E");
+      animation: grainShift 8s steps(9) infinite;
+    }
+    @keyframes grainShift { 0%,100%{transform:translate(0,0)} 25%{transform:translate(1%,-2%)} 50%{transform:translate(-2%,1%)} 75%{transform:translate(2%,2%)} }
+    #brand { position: fixed; top: 24px; left: 28px; z-index: 20; display: flex; align-items: center; gap: 13px; pointer-events: none; }
+    .monogram { width: 42px; height: 42px; border: 1px solid var(--line); border-radius: 50%; display: grid; place-items: center; color: var(--gold-bright); font: 500 12px 'Cinzel', serif; letter-spacing: .08em; box-shadow: inset 0 0 18px rgba(200,169,106,.1); }
+    .brand-name { margin: 0; font: 500 15px 'Cinzel', serif; letter-spacing: .3em; color: var(--paper); }
+    .brand-sub { margin: 4px 0 0; font-size: 8px; letter-spacing: .32em; text-transform: uppercase; color: var(--muted); }
+    #modeSwitch { position: fixed; top: 24px; right: 28px; z-index: 21; display: flex; gap: 3px; padding: 4px; border: 1px solid var(--line); border-radius: 99px; background: rgba(12,11,10,.62); backdrop-filter: blur(14px); }
+    .mode-button { border: 0; background: transparent; color: var(--muted); border-radius: 99px; padding: 8px 15px; font-size: 9px; letter-spacing: .2em; text-transform: uppercase; cursor: pointer; transition: .3s ease; }
+    .mode-button:hover { color: var(--paper); }
+    .mode-button.active { color: #14120e; background: linear-gradient(120deg, var(--gold), var(--gold-bright)); box-shadow: 0 4px 15px rgba(200,169,106,.2); }
+
+    #heroCopy { position: fixed; z-index: 12; top: 34%; left: clamp(34px, 8.1vw, 148px); width: min(340px, 28vw); pointer-events: auto; }
+    .overline { display: flex; align-items: center; gap: 11px; color: var(--gold); font-size: 9px; letter-spacing: .32em; text-transform: uppercase; }
+    .overline::before { content: ''; width: 30px; height: 1px; background: var(--gold); opacity: .8; }
+    #heroName { margin: 18px 0 4px; font: 400 clamp(38px, 4.6vw, 68px)/1.06 'Cinzel', serif; letter-spacing: .08em; color: var(--paper); text-shadow: 0 3px 28px rgba(0,0,0,.45); }
+    #heroRole { margin: 0; color: var(--gold-bright); font-size: 10px; letter-spacing: .31em; text-transform: uppercase; }
+    #heroRule { width: 58px; height: 1px; margin: 23px 0 17px; background: linear-gradient(90deg, var(--gold), transparent); }
+    #heroDescription { max-width: 290px; margin: 0; color: rgba(243,234,217,.72); font-size: 14px; font-weight: 300; line-height: 1.8; letter-spacing: .035em; }
+    #consultButton { display: inline-flex; align-items: center; gap: 12px; margin-top: 27px; padding: 11px 0; border: 0; border-bottom: 1px solid rgba(200,169,106,.56); color: var(--paper); background: transparent; font-size: 9px; letter-spacing: .22em; text-transform: uppercase; cursor: pointer; transition: color .3s ease, gap .3s ease; }
+    #consultButton:hover { color: var(--gold-bright); gap: 18px; }
+    #consultButton svg { width: 15px; height: 15px; }
+
+    #emotionDock { position: fixed; z-index: 20; right: 25px; top: 50%; transform: translateY(-25%); display: flex; flex-direction: column; gap: 8px; max-height: 76vh; overflow-y: auto; }
+    .emotion-button { width: 76px; min-height: 67px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; border: 1px solid rgba(200,169,106,.22); border-radius: 13px; background: var(--glass); color: var(--muted); backdrop-filter: blur(12px); cursor: pointer; transition: transform .3s ease, color .3s ease, border-color .3s ease, background .3s ease; }
+    .emotion-button:hover { transform: translateX(-3px); color: var(--paper); border-color: rgba(200,169,106,.6); }
+    .emotion-button.active { color: #14120e; border-color: var(--gold-bright); background: linear-gradient(135deg, var(--gold), var(--gold-bright)); box-shadow: 0 6px 23px rgba(200,169,106,.17); }
+    .emotion-button svg { width: 19px; height: 19px; }
+    .emotion-button span { font-size: 8px; letter-spacing: .15em; text-transform: uppercase; }
+
+    #switcher { position: fixed; z-index: 22; left: 50%; bottom: 17px; transform: translateX(-50%); max-width: calc(100vw - 40px); display: flex; gap: 8px; overflow-x: auto; padding: 6px 7px; scrollbar-width: none; }
+    #switcher::-webkit-scrollbar { display: none; }
+    .character-tab { flex: 0 0 auto; min-width: 91px; padding: 9px 15px 8px; display: flex; flex-direction: column; align-items: center; gap: 3px; color: var(--paper); background: rgba(12,11,10,.7); border: 1px solid rgba(200,169,106,.25); border-radius: 999px; backdrop-filter: blur(13px); cursor: pointer; transition: transform .35s ease, border-color .35s ease, background .35s ease, box-shadow .35s ease; }
+    .character-tab:hover { transform: translateY(-3px); border-color: rgba(200,169,106,.62); }
+    .character-tab.active { border-color: var(--gold); background: rgba(200,169,106,.13); box-shadow: 0 5px 25px rgba(200,169,106,.12), inset 0 0 0 1px rgba(200,169,106,.1); }
+    .tab-dot { width: 6px; height: 6px; border-radius: 50%; margin-bottom: 1px; background: var(--char-color, var(--gold)); box-shadow: 0 0 9px var(--char-color, var(--gold)); }
+    .tab-name { font: 500 12px 'Cinzel', serif; letter-spacing: .13em; }
+    .tab-role { color: var(--muted); font-size: 7px; letter-spacing: .18em; text-transform: uppercase; }
+    .character-tab.active .tab-name { color: var(--gold-bright); }
+
+    #pipFrame { position: fixed; z-index: 18; left: 22px; bottom: 91px; width: 154px; height: 190px; overflow: hidden; border: 1px solid rgba(200,169,106,.55); border-radius: 15px; background: linear-gradient(160deg, rgba(200,169,106,.06), rgba(8,8,8,.12)); box-shadow: 0 18px 50px rgba(0,0,0,.43), inset 0 0 26px rgba(200,169,106,.045); pointer-events: auto; cursor: pointer; transition: border-color .35s ease, box-shadow .35s ease, transform .35s ease; }
+    #pipFrame:hover { transform: translateY(-3px); border-color: var(--gold-bright); box-shadow: 0 18px 50px rgba(0,0,0,.5), 0 0 25px rgba(200,169,106,.12); }
+    #pipTop, #pipBottom { position: absolute; left: 0; right: 0; z-index: 2; display: flex; align-items: center; justify-content: space-between; padding: 10px 11px; pointer-events: none; }
+    #pipTop { top: 0; background: linear-gradient(180deg, rgba(6,6,6,.78), transparent); }
+    #pipBottom { bottom: 0; align-items: flex-end; background: linear-gradient(0deg, rgba(6,6,6,.83), transparent); }
+    .pip-live { display: flex; align-items: center; gap: 6px; color: var(--gold-bright); font-size: 7px; letter-spacing: .22em; }
+    .pip-live i { width: 5px; height: 5px; display: block; border-radius: 50%; background: var(--gold-bright); box-shadow: 0 0 8px var(--gold-bright); animation: pulse 2.2s ease infinite; }
+    #pipName { font: 500 11px 'Cinzel', serif; letter-spacing: .12em; }
+    #pipRole { color: var(--muted); font-size: 7px; letter-spacing: .16em; text-transform: uppercase; }
+    #pipExpand { color: var(--gold-bright); font-size: 8px; letter-spacing: .12em; text-transform: uppercase; }
+    @keyframes pulse { 50% { opacity: .32; } }
+    #hint { position: fixed; z-index: 11; left: 28px; bottom: 25px; color: rgba(168,157,139,.7); font-size: 8px; letter-spacing: .22em; text-transform: uppercase; pointer-events: none; }
+
+    #deskCopy { position: fixed; z-index: 8; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; pointer-events: none; }
+    #deskCopy .desk-ring { position: absolute; width: min(60vmin, 500px); aspect-ratio: 1; border: 1px solid rgba(200,169,106,.15); border-radius: 50%; animation: orbit 34s linear infinite; }
+    #deskCopy .desk-ring::after { content: ''; position: absolute; inset: 12%; border: 1px dashed rgba(200,169,106,.12); border-radius: 50%; }
+    #deskCopy h2 { position: relative; margin: 0 0 9px; font: 400 clamp(22px,3vw,36px) 'Cinzel', serif; letter-spacing: .22em; }
+    #deskCopy p { position: relative; max-width: 300px; margin: 0; color: var(--muted); font-size: 12px; line-height: 1.8; letter-spacing: .06em; }
+    @keyframes orbit { to { transform: rotate(360deg); } }
+    body.widget-mode #deskCopy { display: flex; }
+    body.widget-mode #heroCopy, body.widget-mode #emotionDock, body.widget-mode #switcher, body.widget-mode #pipFrame, body.widget-mode #hint { display: none; }
+    body.widget-mode #stage { z-index: 10; border: 1px solid rgba(200,169,106,.6); border-radius: 21px; overflow: hidden; box-shadow: 0 25px 75px rgba(0,0,0,.65), 0 0 34px rgba(200,169,106,.12); }
+    body.widget-mode #brand { opacity: .6; }
+
+    #toast { position: fixed; z-index: 24; left: 50%; bottom: 89px; max-width: min(580px, 80vw); transform: translate(-50%, 8px); padding: 10px 16px; color: var(--gold-bright); background: rgba(7,7,6,.35); text-align: center; font-size: 12px; line-height: 1.5; letter-spacing: .045em; text-shadow: 0 2px 12px #000; opacity: 0; pointer-events: none; }
+    #fade { position: fixed; inset: 0; z-index: 40; background: #040403; opacity: 0; pointer-events: none; }
+    #sweep { position: fixed; z-index: 41; top: -12%; left: 0; width: 40%; height: 124%; opacity: 0; pointer-events: none; transform: translateX(-130%) skewX(-12deg); background: linear-gradient(90deg, transparent, rgba(234,208,138,.08) 30%, rgba(234,208,138,.62) 50%, rgba(234,208,138,.08) 70%, transparent); }
+    #loading { position: fixed; inset: 0; z-index: 80; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; background: #060606; transition: opacity .75s ease; }
+    #loading.hide { opacity: 0; pointer-events: none; }
+    .loader-ring { width: 42px; height: 42px; border: 1px solid rgba(200,169,106,.23); border-top-color: var(--gold); border-radius: 50%; animation: orbit 1.1s linear infinite; }
+    #loadingText { color: var(--muted); font: 10px 'Cinzel', serif; letter-spacing: .32em; text-transform: uppercase; }
+    #errorText { display: none; max-width: 80vw; color: var(--gold-bright); font-size: 13px; text-align: center; line-height: 1.8; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    button:focus-visible, #pipFrame:focus-visible { outline: 2px solid var(--gold-bright); outline-offset: 3px; }
+
+    @media (max-width: 900px) {
+      #heroCopy { top: 26%; left: 6vw; width: 29vw; }
+      #heroName { font-size: clamp(35px, 6vw, 54px); }
+      #emotionDock { right: 12px; }
+      #pipFrame { left: 13px; width: 125px; height: 162px; bottom: 88px; }
+      #hint { display: none; }
+      .character-tab { min-width: 82px; padding-inline: 12px; }
+    }
+    @media (max-width: 620px) {
+      #brand { top: 14px; left: 13px; gap: 8px; }
+      .monogram { width: 33px; height: 33px; font-size: 10px; }
+      .brand-name { font-size: 11px; letter-spacing: .22em; }
+      .brand-sub { font-size: 6px; letter-spacing: .23em; }
+      #modeSwitch { top: 14px; right: 12px; padding: 3px; }
+      .mode-button { padding: 7px 10px; font-size: 7px; letter-spacing: .14em; }
+      #heroCopy { top: 91px; left: 18px; width: min(255px, 68vw); }
+      .overline { font-size: 7px; letter-spacing: .22em; }
+      .overline::before { width: 19px; }
+      #heroName { margin: 9px 0 4px; font-size: clamp(29px, 10vw, 42px); }
+      #heroRole { font-size: 8px; letter-spacing: .2em; }
+      #heroRule { margin: 12px 0 9px; width: 38px; }
+      #heroDescription { max-width: 230px; font-size: 11px; line-height: 1.55; }
+      #consultButton { margin-top: 10px; padding: 7px 0; font-size: 7px; }
+      #emotionDock { top: auto; right: 8px; bottom: 150px; transform: none; gap: 5px; max-height: 44vh; overflow-y: auto; }
+      .emotion-button { width: 44px; min-height: 43px; gap: 3px; border-radius: 10px; }
+      .emotion-button svg { width: 15px; height: 15px; }
+      .emotion-button span { font-size: 6px; letter-spacing: .08em; }
+      #switcher { left: 0; right: 0; bottom: 6px; transform: none; max-width: 100vw; gap: 5px; padding: 5px 8px; }
+      .character-tab { min-width: 71px; padding: 7px 9px; }
+      .tab-name { font-size: 10px; }
+      .tab-role { font-size: 6px; letter-spacing: .12em; }
+      #pipFrame { left: 8px; bottom: 123px; width: 82px; height: 110px; border-radius: 11px; }
+      #pipTop, #pipBottom { padding: 7px 7px; }
+      .pip-live { font-size: 5px; gap: 4px; }
+      #pipName { font-size: 8px; }
+      #pipRole { font-size: 5px; }
+      #pipExpand { display: none; }
+      #toast { bottom: 83px; font-size: 10px; max-width: 72vw; }
+      body.widget-mode #deskCopy { justify-content: flex-start; padding-top: 23vh; }
+      #deskCopy .desk-ring { width: 70vmin; }
+      #deskCopy h2 { font-size: 19px; letter-spacing: .12em; }
+      #deskCopy p { max-width: 255px; font-size: 10px; }
+    }
+    @media (prefers-reduced-motion: reduce) { *,*::before,*::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; } }
+  </style>
+</head>
+<body>
+  <div id="backdrop" aria-hidden="true"></div>
+  <canvas id="stage" aria-label="Interactive procedural 3D character atelier. Drag to orbit and move the pointer to guide the character's gaze."></canvas>
+  <div id="vignette" aria-hidden="true"></div>
+  <div id="grain" aria-hidden="true"></div>
+
+  <header id="brand">
+    <div class="monogram">ML</div>
+    <div>
+      <p class="brand-name">LUMIÈRE ATELIER</p>
+      <p class="brand-sub">Haute Bridal &amp; Beauty Concierge</p>
+    </div>
+  </header>
+
+  <div id="modeSwitch" role="group" aria-label="Choose display mode">
+    <button class="mode-button active" id="showcaseButton" aria-pressed="true">Atelier</button>
+    <button class="mode-button" id="widgetButton" aria-pressed="false">Pocket</button>
+  </div>
+
+  <main id="heroCopy">
+    <div class="overline">Meet your concierge</div>
+    <h1 id="heroName" class="serif">Asha</h1>
+    <p id="heroRole">Royal bridal stylist</p>
+    <div id="heroRule"></div>
+    <p id="heroDescription">A warm welcome to a world of heirloom detail, velvet and gold.</p>
+    <button id="consultButton">
+      <span>Begin your consultation</span>
+      <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3.5 10h12M10 4.5l5.5 5.5-5.5 5.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </main>
+
+  <div id="emotionDock" role="group" aria-label="Set character expression">
+    <button class="emotion-button active" data-mood="welcome" aria-pressed="true" title="Welcoming">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 3v17M7.5 8.5 12 13l4.5-4.5M5 20h14"/></svg><span>Welcome</span>
+    </button>
+    <button class="emotion-button" data-mood="happy" aria-pressed="false" title="Happy">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M8 14c1.8 2.2 6.2 2.2 8 0M8.5 9.7h.01M15.5 9.7h.01"/></svg><span>Joy</span>
+    </button>
+    <button class="emotion-button" data-mood="thinking" aria-pressed="false" title="Thinking">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5.5A3.5 3.5 0 0 1 8.5 2h7A3.5 3.5 0 0 1 19 5.5v7a3.5 3.5 0 0 1-3.5 3.5H10l-5 4v-7.5z"/><path d="M9 9.3h.01M12 9.3h.01M15 9.3h.01"/></svg><span>Select</span>
+    </button>
+    <button class="emotion-button" data-mood="hesitant" aria-pressed="false" title="Soft empathy">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7.5-4.6-7.5-10A4.2 4.2 0 0 1 12 7a4.2 4.2 0 0 1 7.5 3c0 5.4-7.5 10-7.5 10Z"/><path d="M8.5 12h2M13.5 12h2"/></svg><span>Empathy</span>
+    </button>
+    <button class="emotion-button" data-mood="sad" aria-pressed="false" title="Apology, something unavailable">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M8 15.5c1.8-2 6.2-2 8 0M8.5 9.7h.01M15.5 9.7h.01"/></svg><span>Sorry</span>
+    </button>
+    <button class="emotion-button" data-mood="waiting" aria-pressed="false" title="Waiting while the guest decides">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg><span>Waiting</span>
+    </button>
+    <button class="emotion-button" data-mood="coupon" aria-pressed="false" title="Offering a coupon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v1a2.5 2.5 0 0 0 0 5v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1a2.5 2.5 0 0 0 0-5z"/><path d="M9.5 6.5v11"/></svg><span>Coupon</span>
+    </button>
+    <button class="emotion-button" data-mood="wink" aria-pressed="false" title="Confident wink">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M7.4 9.9c.85-.95 2.1-.95 2.95 0M14.2 9.9h.01M8 14c1.8 2.2 6.2 2.2 8 0"/></svg><span>Wink</span>
+    </button>
+    <button class="emotion-button" data-mood="surprised" aria-pressed="false" title="Delighted surprise">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M8.5 9.5h.01M15.5 9.5h.01"/><circle cx="12" cy="15" r="1.8"/></svg><span>Surprise</span>
+    </button>
+  </div>
+
+  <nav id="switcher" aria-label="Choose a concierge"></nav>
+
+  <button id="pipFrame" type="button" aria-label="Expand the miniature concierge preview to the pocket widget view">
+    <span id="pipTop"><span class="pip-live"><i></i>LIVE</span><span id="pipName" class="serif">ASHA</span></span>
+    <span id="pipBottom"><span id="pipRole">Bridal Stylist</span><span id="pipExpand">Expand</span></span>
+  </button>
+  <div id="hint">Drag to orbit · Move your cursor to meet her gaze</div>
+
+  <section id="deskCopy" aria-hidden="true">
+    <div class="desk-ring"></div>
+    <h2 class="serif">A little atelier, wherever you are</h2>
+    <p>Your concierge is ready in her pocket view. Explore her expression, then return to the full stage.</p>
+  </section>
+  <div id="toast" aria-hidden="true"></div>
+  <div id="fade" aria-hidden="true"></div>
+  <div id="sweep" aria-hidden="true"></div>
+  <div id="loading" role="status"><div class="loader-ring"></div><div id="loadingText">Preparing the atelier</div><div id="errorText"></div></div>
+  <div id="liveStatus" class="sr-only" aria-live="polite"></div>
+  <noscript><div style="position:fixed;inset:0;z-index:99;display:grid;place-items:center;background:#060606;color:#f3ead9;font-family:serif;letter-spacing:.2em">This experience requires JavaScript.</div></noscript>
+
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script>
+  (function () {
+    'use strict';
+
+    const loading = document.getElementById('loading');
+    const loadingText = document.getElementById('loadingText');
+    const errorText = document.getElementById('errorText');
+    const G = window.gsap || null;
+    const REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!window.THREE) {
+      loadingText.style.display = 'none';
+      loading.querySelector('.loader-ring').style.display = 'none';
+      errorText.style.display = 'block';
+      errorText.textContent = 'The 3D atelier could not load. Check your connection and refresh.';
+      return;
+    }
+
+    const THREE = window.THREE;
+    const GOLD = 0xc8a96a;
+    const FLOOR_Y = 0.105;
+    const lerp = (a, b, t) => a + (b - a) * t;
+    const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+    const vec = (x, y, z) => new THREE.Vector3(x, y, z);
+    const colorMat = (color, options = {}) => new THREE.MeshPhysicalMaterial(Object.assign({
+      color: color, roughness: .48, metalness: 0, clearcoat: .16, clearcoatRoughness: .48,
+      envMapIntensity: .85
+    }, options));
+    const standardMat = (color, options = {}) => new THREE.MeshStandardMaterial(Object.assign({
+      color: color, roughness: .55, metalness: 0, envMapIntensity: .7
+    }, options));
+    const goldMat = () => colorMat(0xc8a96a, { metalness: .95, roughness: .25, clearcoat: .8, clearcoatRoughness: .15 });
+    const gemMat = (color) => colorMat(color, { metalness: .12, roughness: .12, clearcoat: 1, clearcoatRoughness: .06 });
+
+    function addMesh(parent, geometry, material, position, scale) {
+      const object = new THREE.Mesh(geometry, material);
+      if (position) object.position.set(position[0], position[1], position[2]);
+      if (scale) object.scale.set(scale[0], scale[1], scale[2]);
+      object.castShadow = true;
+      object.receiveShadow = true;
+      parent.add(object);
+      return object;
+    }
+    function sphere(parent, material, position, scale, segments = 24) {
+      return addMesh(parent, new THREE.SphereGeometry(1, segments, Math.max(12, Math.floor(segments * .7))), material, position, scale);
+    }
+    function cylinder(parent, material, position, radiusTop, radiusBottom, height, segments = 20) {
+      return addMesh(parent, new THREE.CylinderGeometry(radiusTop, radiusBottom, height, segments), material, position);
+    }
+    function lathe(parent, material, points, segments = 40) {
+      const geometry = new THREE.LatheGeometry(points.map(p => new THREE.Vector2(p[0], p[1])), segments);
+      return addMesh(parent, geometry, material);
+    }
+    function tube(parent, points, radius, material, radialSegments = 8) {
+      const curve = new THREE.CatmullRomCurve3(points.map(p => vec(p[0], p[1], p[2])));
+      return addMesh(parent, new THREE.TubeGeometry(curve, Math.max(18, points.length * 8), radius, radialSegments, false), material);
+    }
+    function ribbon(parent, points, width, material, segments = 40) {
+      const curve = new THREE.CatmullRomCurve3(points.map(p => vec(p[0], p[1], p[2])));
+      const samples = curve.getPoints(segments);
+      const positions = [];
+      const indices = [];
+      for (let i = 0; i < samples.length; i++) {
+        const tangent = (i < samples.length - 1 ? samples[i + 1].clone().sub(samples[i]) : samples[i].clone().sub(samples[i - 1])).normalize();
+        const side = new THREE.Vector3().crossVectors(tangent, vec(0, 0, 1));
+        if (side.lengthSq() < .0001) side.set(1, 0, 0);
+        side.normalize().multiplyScalar(width / 2);
+        positions.push(samples[i].x - side.x, samples[i].y - side.y, samples[i].z - side.z);
+        positions.push(samples[i].x + side.x, samples[i].y + side.y, samples[i].z + side.z);
+      }
+      for (let i = 0; i < samples.length - 1; i++) {
+        const a = i * 2;
+        indices.push(a, a + 1, a + 2, a + 1, a + 3, a + 2);
+      }
+      const geometry = new THREE.BufferGeometry();
+      geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+      geometry.setIndex(indices);
+      geometry.computeVertexNormals();
+      const cloth = material.clone();
+      cloth.side = THREE.DoubleSide;
+      return addMesh(parent, geometry, cloth);
+    }
+    function eyePair(parent, options = {}) {
+      const settings = Object.assign({ x: .105, y: .035, z: .24, radius: .07, iris: 0x39251b, dark: false }, options);
+      const eyes = [];
+      [-1, 1].forEach(side => {
+        const eye = new THREE.Group();
+        eye.position.set(side * settings.x, settings.y, settings.z);
+        eye.rotation.y = side * 0.07;
+        eye.rotation.z = side * -0.015;
+        parent.add(eye);
+
+        const r = settings.radius;
+        // 1. Soft glossy porcelain sclera: wider than tall to prevent startled vertical oval look
+        const baseMat = settings.dark
+          ? colorMat(0x101018, { roughness: .04, clearcoat: 1, clearcoatRoughness: .02, envMapIntensity: 1.8 })
+          : colorMat(0xfff8ee, { roughness: .14, clearcoat: 1, clearcoatRoughness: .04, envMapIntensity: 1.2 });
+        sphere(eye, baseMat, [0, 0, 0], [r * 1.15, r * 0.98, r * 0.56], 28);
+
+        const irisGroup = new THREE.Group();
+        eye.add(irisGroup);
+        irisGroup.position.set(0, -0.002, r * 0.44);
+
+        if (!settings.dark) {
+          // Large sweet doe-eyed iris occupying ~88% of vertical eye height
+          const irR = r * 0.88;
+          sphere(irisGroup, colorMat(settings.iris, { roughness: .10, clearcoat: 1, clearcoatRoughness: .03, envMapIntensity: 1.8 }), [0, 0, 0.008], [irR * 0.96, irR * 1.02, 0.04], 22);
+
+          // Limbal ring (classic beauty mark in anime & Disney character art)
+          const limbal = addMesh(irisGroup, new THREE.TorusGeometry(irR * 0.96, 0.004, 8, 32), standardMat(0x110b0e, { roughness: .2 }));
+          limbal.position.z = 0.014;
+
+          // Soft golden interior shimmer ring
+          const irisRing = addMesh(irisGroup, new THREE.TorusGeometry(irR * 0.62, 0.0035, 8, 24), colorMat(0xe8c97a, { roughness: .1, emissive: 0xe8c97a, emissiveIntensity: 0.35 }));
+          irisRing.position.z = 0.018;
+
+          // Inner deep obsidian pupil
+          sphere(irisGroup, standardMat(0x080608, { roughness: .05 }), [0, 0, 0.022], [irR * 0.52, irR * 0.55, 0.025], 18);
+
+          // Triple high-contrast anime catchlights
+          const catchMat = colorMat(0xffffff, { roughness: .01, clearcoat: 1, emissive: 0xffffff, emissiveIntensity: 1.0 });
+          // Primary big sparkle (top-left)
+          const c1 = sphere(irisGroup, catchMat, [-irR * 0.30, irR * 0.32, 0.038], [irR * 0.32, irR * 0.34, 0.018], 14);
+          c1.castShadow = false;
+          // Secondary soft sparkle (bottom-right)
+          const c2 = sphere(irisGroup, catchMat, [irR * 0.32, -irR * 0.24, 0.035], [irR * 0.16, irR * 0.16, 0.014], 12);
+          c2.castShadow = false;
+          // Micro sparkle accent
+          const c3 = sphere(irisGroup, catchMat, [irR * 0.22, irR * 0.38, 0.035], [irR * 0.09, irR * 0.09, 0.012], 10);
+          c3.castShadow = false;
+
+          // Lush soft upper lash line hugging top of eye
+          const linerM = standardMat(0x140e12, { roughness: .3 });
+          const topPts = [
+            [-r * 1.18, -r * 0.15, r * 0.42],
+            [-r * 0.62,  r * 0.72, r * 0.55],
+            [ 0,         r * 0.88, r * 0.58],
+            [ r * 0.62,  r * 0.72, r * 0.55],
+            [ r * 1.18, -r * 0.12, r * 0.42]
+          ];
+          tube(eye, topPts, 0.007, linerM, 6);
+
+          // Subtle winged flick
+          const wingDir = side > 0 ? 1 : -1;
+          const wingPts = [
+            [wingDir * r * 1.12, -r * 0.05, r * 0.42],
+            [wingDir * r * 1.38,  r * 0.18, r * 0.38],
+            [wingDir * r * 1.60,  r * 0.35, r * 0.34]
+          ];
+          tube(eye, wingPts, 0.005, linerM, 6);
+        } else {
+          // Boba plush eye for Mochi with big glossy catchlights
+          sphere(irisGroup, colorMat(0x101018, { roughness: .04, clearcoat: 1, envMapIntensity: 2.0 }), [0, 0, 0.01], [r * 1.25, r * 1.32, 0.18], 22);
+          const bobaCatch = colorMat(0xffffff, { roughness: .01, clearcoat: 1, emissive: 0xffffff, emissiveIntensity: 1.0 });
+          const bc1 = sphere(irisGroup, bobaCatch, [-r * 0.45, r * 0.48, 0.18], [r * 0.45, r * 0.48, 0.12], 14);
+          bc1.castShadow = false;
+          const bc2 = sphere(irisGroup, bobaCatch, [r * 0.45, -r * 0.32, 0.17], [r * 0.22, r * 0.22, 0.10], 12);
+          bc2.castShadow = false;
+          const bc3 = sphere(irisGroup, bobaCatch, [r * 0.32, r * 0.52, 0.17], [r * 0.13, r * 0.13, 0.08], 10);
+          bc3.castShadow = false;
+        }
+
+        eyes.push({ eye: eye, iris: irisGroup, baseY: eye.scale.y });
+      });
+      const api = { moodValue: 1, eyes: eyes };
+      return Object.assign(api, {
+        gaze(x, y) { eyes.forEach(e => { e.iris.position.x = x * .018; e.iris.position.y = -y * .014; }); },
+        blink() {
+          /* reopen to the CURRENT mood, not 1 — blinking used to wipe the
+             squint every couple of seconds */
+          const restore = api.moodValue;
+          eyes.forEach(e => {
+            if (G) G.timeline()
+              .to(e.eye.scale, { y: .09, duration: .075, ease: 'power2.in' })
+              .to(e.eye.scale, { y: restore, duration: .14, ease: 'power2.out' });
+            else e.eye.scale.y = restore;
+          });
+        },
+        mood(value) {
+          const v = (typeof value === 'number') ? value : (value ? .9 : 1);
+          api.moodValue = v;
+          eyes.forEach(e => {
+            if (G) G.to(e.eye.scale, { y: v, duration: .4, ease: 'power2.out', overwrite: true });
+            else e.eye.scale.y = v;
+          });
+        },
+        /* One eye only. Reopens to the CURRENT mood so a wink does not wipe
+           the squint the expression just set. */
+        wink(side) {
+          const e = eyes[side < 0 ? 0 : 1];
+          if (!e || !G) return;
+          G.timeline()
+            .to(e.eye.scale, { y: .10, duration: .14, ease: 'power2.in', overwrite: true }, 0)
+            .to(e.eye.scale, { y: api.moodValue, duration: .24, ease: 'power2.out' }, .62);
+        }
+      });
+    }
+    /* TubeGeometry can only sweep a CONSTANT radius, which makes a mouth read
+       as a bent wire rather than as lips. This sweeps a variable radius so the
+       smile is fat through the middle and drawn to a fine point at each
+       corner -- that taper is most of what makes a smile look "cute". */
+    function taperedTube(curve, tubularSegments, radiusFn, radialSegments) {
+      const frames = curve.computeFrenetFrames(tubularSegments, false);
+      const pos = [], nor = [], uvs = [], idx = [];
+      const P = new THREE.Vector3(), N = new THREE.Vector3();
+      for (let i = 0; i <= tubularSegments; i++) {
+        const t = i / tubularSegments;
+        curve.getPointAt(t, P);
+        const r = Math.max(.0008, radiusFn(t));
+        const Bi = frames.binormals[i], Ni = frames.normals[i];
+        for (let j = 0; j <= radialSegments; j++) {
+          const v = j / radialSegments * Math.PI * 2;
+          const sn = Math.sin(v), cs = -Math.cos(v);
+          N.set(cs * Ni.x + sn * Bi.x, cs * Ni.y + sn * Bi.y, cs * Ni.z + sn * Bi.z).normalize();
+          pos.push(P.x + r * N.x, P.y + r * N.y, P.z + r * N.z);
+          nor.push(N.x, N.y, N.z);
+          uvs.push(t, j / radialSegments);
+        }
+      }
+      for (let i = 1; i <= tubularSegments; i++) {
+        for (let j = 1; j <= radialSegments; j++) {
+          const a = (radialSegments + 1) * (i - 1) + (j - 1);
+          const b = (radialSegments + 1) * i + (j - 1);
+          const c = (radialSegments + 1) * i + j;
+          const d = (radialSegments + 1) * (i - 1) + j;
+          idx.push(a, b, d, b, c, d);
+        }
+      }
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+      geo.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3));
+      geo.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
+      geo.setIndex(idx);
+      return geo;
+    }
+    function smile(parent, position, width, material, face) {
+      const group = new THREE.Group();
+      group.position.set(position[0], position[1], position[2]);
+      parent.add(group);
+      const mesh = addMesh(group, new THREE.BufferGeometry(), material);
+      const state = { c: 1, o: 0 };
+      const SEGS = 12;
+      /* Follow the curvature of the face (or the muzzle, for Mochi) so a wide
+         grin wraps around the cheeks instead of floating out in front of the
+         chin. `face` is { c:[cx,cy,cz], r:[rx,ry,rz] } in headRig space. */
+      function surfaceZ(x, y) {
+        if (!face) return null;
+        const a = (x - face.c[0]) / face.r[0];
+        const b = (y - face.c[1]) / face.r[1];
+        const k = 1 - a * a - b * b;
+        const z = face.c[2] + face.r[2] * Math.sqrt(k > 0 ? k : 0) - position[2] + .006;
+        return Math.max(-.075, Math.min(.075, z));
+      }
+      function build(cAmt, oAmt) {
+        const c = cAmt, o = Math.max(0, oAmt);
+        /* A cute smile is a wide, shallow bowl whose corners flick UP past the
+           mouth line. Both depth and flick scale with the mouth width so the
+           same code reads on a .10 bunny mouth and a .12 human one. */
+        const w = width * (1 + Math.max(0, c - 1) * .14);
+        const depth = c * width * .26;
+        const flick = c * width * .18;
+        const pts = [];
+        for (let i = 0; i <= SEGS; i++) {
+          const u = -1 + (2 * i) / SEGS;
+          const bell = 1 - u * u;
+          const x = u * w * .5;
+          const y = depth * (u * u - 1) + flick * Math.pow(Math.abs(u), 3) - o * width * .34 * bell;
+          const z = surfaceZ(x, position[1] + y);
+          pts.push(vec(x, y, z === null ? .008 * bell : z));
+        }
+        const curve = new THREE.CatmullRomCurve3(pts);
+        const thick = Math.max(.010, width * .125) * (1 + o * .5);
+        const geo = taperedTube(curve, 32, function (t) {
+          return thick * (.18 + .82 * Math.sqrt(Math.max(0, Math.sin(Math.PI * t))));
+        }, 10);
+        if (mesh.geometry) mesh.geometry.dispose();
+        mesh.geometry = geo;
+      }
+      build(state.c, state.o);
+      group.setMood = function (cAmt, oAmt, dur) {
+        const toC = (cAmt === undefined) ? 1 : cAmt, toO = oAmt || 0;
+        if (G && dur !== 0) G.to(state, { c: toC, o: toO, duration: dur || .45,
+          ease: 'power2.out', onUpdate: function () { build(state.c, state.o); } });
+        else { state.c = toC; state.o = toO; build(state.c, state.o); }
+      };
+      return group;
+    }
+    function blush(parent, x, y, z, radius, material) {
+      return sphere(parent, material, [x, y, z], [radius, radius * .63, radius * .22], 16);
+    }
+    function createArms(parent, options) {
+      const config = Object.assign({ x: .24, y: 1.35, z: .02, upper: .27, fore: .24, radius: .045, skinRadius: .05, sleeve: null, skin: null }, options);
+      function make(side) {
+        const shoulder = new THREE.Group();
+        shoulder.position.set(side * config.x, config.y, config.z);
+        shoulder.rotation.z = side * .12;
+        parent.add(shoulder);
+        const upperMat = config.sleeve || config.skin;
+        cylinder(shoulder, upperMat, [0, -config.upper / 2, 0], config.radius, config.radius * .92, config.upper, 14);
+        sphere(shoulder, upperMat, [0, -config.upper, 0], [config.radius, config.radius, config.radius], 14);
+        const elbow = new THREE.Group();
+        elbow.position.y = -config.upper;
+        shoulder.add(elbow);
+        cylinder(elbow, config.skin, [0, -config.fore / 2, 0], config.radius * .83, config.radius * .76, config.fore, 14);
+        const hand = new THREE.Group();
+        hand.position.set(0, -config.fore - config.skinRadius * .2, .008);
+        elbow.add(hand);
+        sphere(hand, config.skin, [0, -.025, 0], [config.skinRadius, config.skinRadius * 1.13, config.skinRadius * .74], 16);
+        return { shoulder: shoulder, elbow: elbow, hand: hand, isWing: false };
+      }
+      return { L: make(-1), R: make(1) };
+    }
+    function eyeBrows(parent, skinMat, hairMat, options = {}) {
+      const y = options.y || .14, z = options.z || .215, x = options.x || .1;
+      const bw = options.w || .045, bh = options.h || .022, br = options.r || .009;
+      const brows = [];
+      [-1, 1].forEach(side => {
+        const pivot = new THREE.Group();
+        pivot.position.set(side * x, y, z);
+        if (options.ry) pivot.rotation.y = side * options.ry;
+        parent.add(pivot);
+        tube(pivot, [[-bw, 0, 0], [0, bh, .004], [bw, 0, 0]], br, hairMat, 7);
+        brows.push({ pivot: pivot, side: side });
+      });
+      return {
+        set(raise, tilt) {
+          brows.forEach(b => {
+            const dy = (raise || 0) * .024;
+            const rz = (tilt || 0) * b.side * .36;
+            if (G) {
+              G.to(b.pivot.position, { y: b.pivot.userData.y0 !== undefined ? b.pivot.userData.y0 + dy : dy,
+                duration: .5, ease: 'power2.out', overwrite: true });
+              G.to(b.pivot.rotation, { z: rz, duration: .5, ease: 'power2.out', overwrite: true });
+            } else { b.pivot.position.y = dy; b.pivot.rotation.z = rz; }
+          });
+        }
+      };
+    }
+    function pearl(parent, pos, radius = .014, material = null) {
+      const m = material || colorMat(0xfff9ef, { roughness: .14, clearcoat: 1, metalness: .05 });
+      const p = sphere(parent, m, pos, [radius, radius, radius], 12);
+      p.castShadow = false;
+      return p;
+    }
+
+    /* STANCE is how they HOLD themselves; the face alone is only half an
+       expression. lean = pitch, stanceY = height, armX = arms forward/back,
+       hip = hip cocked, squash = body volume. */
+    const POSES = {
+      neutral: { lean:  0,     stanceY:  0,     armX:   0,   hip:  0,     squash: 1     },
+      slump:   { lean:  .055,  stanceY: -.035,  armX: -.10,  hip:  .02,   squash: .965  },
+      wait:    { lean: -.015,  stanceY: -.012,  armX:  .04,  hip:  .11,   squash: 1.010 },
+      offer:   { lean: -.070,  stanceY:  .022,  armX:  .58,  hip: -.03,   squash: 1.025 },
+      proud:   { lean: -.035,  stanceY:  .012,  armX:  .12,  hip: -.075,  squash: 1.030 },
+      startle: { lean:  .070,  stanceY:  .026,  armX: -.28,  hip:  0,     squash: .975  }
+    };
+    const MOODS = {
+      welcome:  { left: -1.58, right: 1.58, leftElbow: -.48, rightElbow: -.48,  headZ: 0,     headY: 0,    headX:  0,    brow: .55, browTilt:  0,    eye: 1.00, mouthCurve:  1.00, mouthOpen: 0,    pose:'neutral' },
+      happy:    { left: -2.25, right: 2.25, leftElbow: -.35, rightElbow: -.35,  headZ: -.035, headY: 0,    headX:  0,    brow: .95, browTilt: -.22, eye: .42,  mouthCurve:  1.70, mouthOpen: .60, pose:'proud'   },
+      thinking: { left: -1.05, right: 2.72, leftElbow: -.35, rightElbow: -1.25, headZ: -.12,  headY: .12,  headX:  .03,  brow: .30, browTilt:  .60, eye: .78,  mouthCurve:  .30,  mouthOpen: 0,    pose:'neutral' },
+      hesitant: { left: -.92,  right: .92,  leftElbow: -.2,  rightElbow: -.2,   headZ: .1,    headY: -.08, headX:  .045, brow: -.38, browTilt: -.48, eye: 1.14, mouthCurve: -.40,  mouthOpen: .18, pose:'slump'   },
+      sad:      { left: -.48,  right: .48,  leftElbow: -.10, rightElbow: -.10,  headZ: .02,   headY: .05,  headX:  .12,  brow: -.95, browTilt: .35,  eye: .55,  mouthCurve: -1.20, mouthOpen: .06, pose:'slump'   },
+      waiting:  { left: -1.15, right: 1.15, leftElbow: -.62, rightElbow: -.62,  headZ: .20,   headY: .06,  headX:  .02,  brow: .20, browTilt:  .70, eye: .95,  mouthCurve:  .12,  mouthOpen: .05, pose:'wait'    },
+      coupon:   { left: -2.45, right: 2.45, leftElbow: -.85, rightElbow: -.85,  headZ: -.04,  headY: 0,    headX: -.05,  brow: .80, browTilt: -.10, eye: 1.15, mouthCurve:  1.55, mouthOpen: .30, pose:'offer'   },
+      wink:     { left: -1.90, right: 1.90, leftElbow: -.50, rightElbow: -.50,  headZ: -.06,  headY: .04,  headX: -.02,  brow: .70, browTilt:  .15, eye: 1.00, mouthCurve:  1.25, mouthOpen: .10, pose:'proud', wink:true },
+      surprised:{ left: -2.60, right: 2.60, leftElbow: -1.1, rightElbow: -1.1,  headZ: 0,     headY: 0,    headX: -.04,  brow: 1.15, browTilt: 0,    eye: 1.25, mouthCurve:  .20,  mouthOpen: .55, pose:'startle' }
+    };
+
+    class CharacterBase {
+      constructor(name, role, blurb) {
+        this.name = name;
+        this.role = role;
+        this.blurb = blurb;
+        this.root = new THREE.Group();
+        this.root.position.y = FLOOR_Y;
+        this.bodyGroup = new THREE.Group();
+        this.root.add(this.bodyGroup);
+        this.headRig = new THREE.Group();
+        this.root.add(this.headRig);
+        this.armL = null;
+        this.armR = null;
+        this.eyes = null;
+        this.mouth = null;
+        this.brows = null;
+        this.tickers = [];
+        this.gaze = { x: 0, y: 0 };
+        this.gazeTarget = { x: 0, y: 0 };
+        this.headTarget = { x: 0, y: 0, z: 0 };
+        this.emotion = 'welcome';
+        this.jump = 0;
+        this.blinkTimer = 2.2 + Math.random() * 2.5;
+        this.blinkElapsed = 0;
+        this.breath = 1;
+        this.squash = 1;
+        this.reactions = ['tickle', 'shy', 'bounce', 'spin', 'startle', 'pose'];
+        this.stanceY = 0; this.stepLift = 0; this.stepX = 0;
+        this.hipBase = 0; this.wiggle = 0; this.spin = 0; this.armSwingX = 0;
+        this._stanceHip = 0; this._stanceArmX = 0;
+        this.stepElapsed = 0; this.stepTimer = 4 + Math.random() * 6;
+        this.phase = Math.random() * Math.PI * 2;
+        this.onMood = null;
+        this.onSpark = null;
+      }
+      mount(scene) { scene.add(this.root); return this; }
+      update(dt, time) {
+        const breath = Math.sin(time * 1.85 + this.phase) * .009 * this.breath;
+        const sq = this.squash || 1;
+        this.bodyGroup.scale.set(sq, (1 + breath) / Math.sqrt(sq), sq);
+        this.root.position.y = FLOOR_Y + Math.sin(time * 1.35 + this.phase) * .012 + this.jump + this.stanceY + this.stepLift;
+        /* Locomotion: slow weight shift, gentle body turn, slight drift and
+           hanging arms that sway -- nobody is a static mannequin between poses. */
+        const st = time * .55 + this.phase;
+        this.root.rotation.z = this.hipBase + this.wiggle + Math.sin(st * 1.15) * .012;
+        this.root.rotation.y = this.spin + Math.sin(st * .42) * .035;
+        this.root.position.x = this.stepX + Math.sin(st * .55) * .010;
+        [this.armL, this.armR].forEach((a, i) => { if (a && !a.isWing) a.shoulder.rotation.x = this.armSwingX + Math.sin(st * 1.1 + i * 1.6) * .022; });
+        this.gaze.x = lerp(this.gaze.x, this.gazeTarget.x, Math.min(1, dt * 4));
+        this.gaze.y = lerp(this.gaze.y, this.gazeTarget.y, Math.min(1, dt * 4));
+        this.headRig.rotation.x = this.headTarget.x + this.gaze.y * .11 + Math.sin(time * .5 + this.phase) * .012;
+        this.headRig.rotation.y = this.headTarget.y + this.gaze.x * .18 + Math.sin(time * .36 + this.phase) * .018;
+        this.headRig.rotation.z = this.headTarget.z + Math.sin(time * .65 + this.phase) * .012;
+        if (this.eyes) this.eyes.gaze(this.gaze.x, this.gaze.y);
+        this.blinkElapsed += dt;
+        if (this.blinkElapsed >= this.blinkTimer) {
+          if (this.eyes) this.eyes.blink();
+          this.blinkElapsed = 0;
+          this.blinkTimer = 2.1 + Math.random() * 3.7;
+        }
+        this.stepElapsed += dt;
+        if (this.stepElapsed >= this.stepTimer) {
+          this.stepElapsed = 0; this.stepTimer = 5.5 + Math.random() * 6.5;
+          if (!this._reactBusy) this.twoStep();
+        }
+        this.tickers.forEach(fn => fn(time, dt));
+        if (this.animateExtra) this.animateExtra(time, dt);
+      }
+      poseArm(arm, angle, elbow) {
+        if (!arm) return;
+        if (G) {
+          G.to(arm.shoulder.rotation, { z: angle, duration: .78, ease: 'power3.inOut', overwrite: true });
+          if (arm.elbow) G.to(arm.elbow.rotation, { z: elbow, duration: .78, ease: 'power3.inOut', overwrite: true });
+        } else {
+          arm.shoulder.rotation.z = angle;
+          if (arm.elbow) arm.elbow.rotation.z = elbow;
+        }
+      }
+      flutter(tl, amount, reps) {
+        [this.armL, this.armR].forEach((arm, i) => {
+          if (!arm) return;
+          const z0 = arm.shoulder.rotation.z;
+          const to = arm.isWing ? z0 + amount * .3 : z0 + (arm === this.armL ? -1 : 1) * Math.abs(amount);
+          tl.to(arm.shoulder.rotation, { z: to, duration: .085, repeat: reps, yoyo: true, ease: 'sine.inOut' }, 0);
+        });
+      }
+      /* Poking the character: each tap runs a DIFFERENT reaction from the pool
+         and never the same one twice in a row, so it never reads as a loop. */
+      react() {
+        if (this._reactBusy) return null;
+        const pool = (this.reactions || ['tickle', 'shy', 'bounce']).filter(n => n !== this._lastReact);
+        const name = pool[Math.floor(Math.random() * pool.length)] || 'tickle';
+        this._lastReact = name;
+        this._reactBusy = true;
+        let dur = 1.2;
+        try {
+          const fn = this['react_' + name];
+          dur = (fn ? fn.call(this) : this.react_tickle.call(this)) || 1.2;
+        } catch (e) { dur = 1.2; }
+        window.setTimeout(() => { this._reactBusy = false; }, dur * 1000);
+        return name;
+      }
+      /* "gudi gudi" -- a shivery tickle: whole body wiggles, head lolls, eyes
+         squeeze shut and it giggle-hops. */
+      react_tickle() {
+        const prev = this.emotion;
+        const restore = () => this.setEmotion(prev, false);
+        if (this.eyes) this.eyes.mood(.28);
+        if (this.mouth) this.mouth.setMood(1.8, .45, .18);
+        if (this.brows) this.brows.set(1, 0);
+        if (!G) { window.setTimeout(restore, 900); return 1; }
+        const tl = G.timeline({ onComplete: restore });
+        tl.to(this, { wiggle: .085, duration: .085, repeat: 7, yoyo: true, ease: 'sine.inOut' }, 0)
+          .to(this.headTarget, { z: .10, duration: .085, repeat: 7, yoyo: true, ease: 'sine.inOut' }, 0)
+          .to(this, { squash: 1.06, jump: .05, duration: .085, repeat: 7, yoyo: true, ease: 'sine.inOut' }, 0)
+          .to(this, { wiggle: 0, duration: .3, ease: 'power2.out' }, .74)
+          .to(this.headTarget, { z: 0, duration: .3, ease: 'power2.out' }, .74)
+          .to(this, { squash: 1, jump: 0, duration: .3, ease: 'power2.out' }, .74);
+        this.flutter(tl, .55, 7);
+        return 1.1;
+      }
+      react_shy() {
+        const prev = this.emotion, gx = this.gazeTarget.x, gy = this.gazeTarget.y;
+        if (this.eyes) this.eyes.mood(.82);
+        if (this.mouth) this.mouth.setMood(1.05, .05, .3);
+        if (this.brows) this.brows.set(.72, -.22);
+        if (!G) { window.setTimeout(() => this.setEmotion(prev, false), 1100); return 1.2; }
+        const tl = G.timeline({ onComplete: () => { G.to(this.gazeTarget, { x: gx, y: gy, duration: .5 }); this.setEmotion(prev, false); } });
+        tl.to(this.headTarget, { x: .13, z: .14, duration: .45, ease: 'power2.out' }, 0)
+          .to(this.gazeTarget, { x: -.6, y: -.45, duration: .45, ease: 'power2.out' }, 0)
+          .to(this, { squash: 1.035, duration: .17, repeat: 5, yoyo: true, ease: 'sine.inOut' }, 0)
+          .to(this.headTarget, { x: 0, z: 0, duration: .5, ease: 'power2.inOut' }, 1.1)
+          .to(this.gazeTarget, { x: gx, y: gy, duration: .55, ease: 'power2.inOut' }, 1.1)
+          .to(this, { squash: 1, duration: .35, ease: 'power2.out' }, 1.1);
+        this.flutter(tl, .3, 5);
+        return 1.7;
+      }
+      react_bounce() {
+        const prev = this.emotion;
+        if (this.eyes) this.eyes.mood(.45);
+        if (this.mouth) this.mouth.setMood(1.6, .5, .15);
+        if (!G) { window.setTimeout(() => this.setEmotion(prev, false), 700); return .8; }
+        const tl = G.timeline({ onComplete: () => this.setEmotion(prev, false) });
+        tl.to(this, { jump: .26, duration: .22, ease: 'power2.out' }, 0)
+          .to(this, { jump: 0, duration: .3, ease: 'bounce.out' }, .22)
+          .to(this, { squash: .93, duration: .12, ease: 'power2.out' }, 0)
+          .to(this, { squash: 1.06, duration: .16, ease: 'power2.out' }, .26)
+          .to(this, { squash: 1, duration: .45, ease: 'elastic.out' }, .42);
+        this.flutter(tl, -.6, 3);
+        return 1.05;
+      }
+      /* MOVEMENT: a little two-step shuffle so they shift their weight and
+         take a step instead of standing frozen. stepLift/stepX are properties
+         because update() rewrites root.position every frame. */
+      twoStep() {
+        if (!G) return;
+        const dir = Math.random() < .5 ? -1 : 1;
+        const d = .055 + Math.random() * .05;
+        G.timeline()
+          .to(this, { stepX: dir * d, duration: .32, ease: 'power2.inOut' }, 0)
+          .to(this, { stepLift: .024, duration: .16, ease: 'power2.out' }, 0)
+          .to(this, { stepLift: 0, duration: .22, ease: 'power2.in' }, .16)
+          .to(this, { stepX: dir * d * .3, duration: .3, ease: 'power2.inOut' }, .34)
+          .to(this, { stepLift: .02, duration: .15, ease: 'power2.out' }, .5)
+          .to(this, { stepLift: 0, duration: .22, ease: 'power2.in' }, .65)
+          .to(this, { stepX: 0, duration: .55, ease: 'power2.inOut' }, .85);
+      }
+      react_spin() {
+        const prev = this.emotion, y0 = this.spin || 0;
+        if (this.eyes) this.eyes.mood(.45);
+        if (this.mouth) this.mouth.setMood(1.5, .3, .15);
+        if (this.brows) this.brows.set(.85, 0);
+        if (!G) { window.setTimeout(() => this.setEmotion(prev, false), 700); return .8; }
+        const tl = G.timeline({ onComplete: () => { this.spin = y0; this.setEmotion(prev, false); } });
+        tl.to(this, { spin: y0 + Math.PI * 2, duration: .85, ease: 'power2.inOut' }, 0)
+          .to(this, { jump: .12, duration: .22, ease: 'power2.out' }, .1)
+          .to(this, { jump: 0, duration: .3, ease: 'power2.out' }, .32);
+        this.flutter(tl, -.8, 1);
+        return 1.0;
+      }
+      react_startle() {
+        const prev = this.emotion;
+        if (this.eyes) this.eyes.mood(1.3);
+        if (this.mouth) this.mouth.setMood(.2, .55, .12);
+        if (this.brows) this.brows.set(1.1, 0);
+        if (!G) { window.setTimeout(() => this.setEmotion(prev, false), 800); return .9; }
+        const tl = G.timeline({ onComplete: () => this.setEmotion(prev, false) });
+        tl.to(this, { stepLift: .09, duration: .13, ease: 'power2.out' }, 0)
+          .to(this, { stepLift: 0, duration: .32, ease: 'bounce.out' }, .13)
+          .to(this, { squash: .92, duration: .1, ease: 'power2.out' }, 0)
+          .to(this, { squash: 1, duration: .5, ease: 'elastic.out' }, .18)
+          .to(this, { wiggle: .07, duration: .07, repeat: 5, yoyo: true, ease: 'sine.inOut' }, 0)
+          .to(this, { wiggle: 0, duration: .25, ease: 'power2.out' }, .5);
+        this.flutter(tl, -1.15, 3);
+        return 1.0;
+      }
+      react_pose() {
+        const prev = this.emotion, gx = this.gazeTarget.x;
+        if (this.eyes) this.eyes.mood(.62);
+        if (this.mouth) this.mouth.setMood(1.25, .08, .3);
+        if (this.brows) this.brows.set(.6, .1);
+        if (!G) { window.setTimeout(() => this.setEmotion(prev, false), 1200); return 1.3; }
+        const tl = G.timeline({ onComplete: () => { G.to(this.gazeTarget, { x: gx, duration: .5 }); this.setEmotion(prev, false); } });
+        tl.to(this, { hipBase: -.13, duration: .4, ease: 'power2.out' }, 0)
+          .to(this.headTarget, { x: -.07, y: .18, duration: .45, ease: 'power2.out' }, 0)
+          .to(this.gazeTarget, { x: .5, duration: .45, ease: 'power2.out' }, 0)
+          .to(this, { armSwingX: .24, duration: .4, ease: 'power2.out' }, 0)
+          .to(this, { hipBase: this._stanceHip, duration: .5, ease: 'power2.inOut' }, 1.15)
+          .to(this.headTarget, { x: 0, y: 0, duration: .5, ease: 'power2.inOut' }, 1.15)
+          .to(this.gazeTarget, { x: gx, duration: .5, ease: 'power2.inOut' }, 1.15)
+          .to(this, { armSwingX: this._stanceArmX, duration: .5, ease: 'power2.inOut' }, 1.15);
+        return 1.75;
+      }
+      setEmotion(name, announce = true) {
+        const pose = MOODS[name] || MOODS.welcome;
+        this.emotion = name;
+        this.poseArm(this.armL, pose.left, pose.leftElbow);
+        this.poseArm(this.armR, pose.right, pose.rightElbow);
+        this.headTarget.z = pose.headZ;
+        this.headTarget.y = pose.headY;
+        this.headTarget.x = pose.headX !== undefined ? pose.headX : 0;
+        /* curvature + openness carry far more expression than width ever did */
+        if (this.mouth && this.mouth.setMood) this.mouth.setMood(pose.mouthCurve, pose.mouthOpen);
+        else if (this.mouth && G) G.to(this.mouth.scale, { x: pose.smile || 1, duration: .45, ease: 'power2.out' });
+        /* Whole-body stance: the pose they hold, not just the face. */
+        const stance = POSES[pose.pose] || POSES.neutral;
+        this._stanceHip = stance.hip; this._stanceArmX = stance.armX;
+        if (G) {
+          G.to(this, { stanceY: stance.stanceY, hipBase: stance.hip, duration: .6, ease: 'power2.out' });
+          G.to(this.root.rotation, { x: stance.lean, duration: .6, ease: 'power2.out' });
+          G.to(this, { squash: stance.squash, duration: .6, ease: 'power2.out' });
+        } else {
+          this.stanceY = stance.stanceY; this.hipBase = stance.hip;
+          this.root.rotation.x = stance.lean; this.squash = stance.squash;
+        }
+        this.armSwingX = stance.armX;
+        /* brows are the strongest expression cue and were previously static */
+        if (this.brows) this.brows.set(pose.brow, pose.browTilt);
+        if (this.eyes) this.eyes.mood(pose.eye);
+        if (pose.wink && this.eyes && this.eyes.wink) this.eyes.wink(1);
+        if (name === 'happy') {
+          if (G) G.to(this, { jump: .12, duration: .18, yoyo: true, repeat: 1, ease: 'power2.out' });
+          else this.jump = 0;
+        }
+        if (this.onMood) this.onMood(name);
+        if (announce) announceEmotion(this, name);
+      }
+      dispose() {
+        this.root.traverse(object => {
+          if (object.geometry) object.geometry.dispose();
+          if (object.material) (Array.isArray(object.material) ? object.material : [object.material]).forEach(m => m.dispose());
+        });
+        if (this.root.parent) this.root.parent.remove(this.root);
+      }
+    }
+
+    class AshaCharacter extends CharacterBase {
+      constructor() { super('Asha', 'Royal Bridal Stylist', 'A warm welcome to a world of heirloom detail, velvet and gold.'); this.build(); }
+      build() {
+        const skin = colorMat(0xba7742, { roughness: .48, clearcoat: .34, clearcoatRoughness: .56, sheen: new THREE.Color(0xe7a578), emissive: 0x34170b, emissiveIntensity: .035 });
+        const blushMat = colorMat(0xe88782, { roughness: .62, transparent: true, opacity: .48, sheen: new THREE.Color(0xffb3a5) });
+        const crimson = colorMat(0x741729, { roughness: .62, sheen: new THREE.Color(0xc5515f), clearcoat: .23 });
+        const hair = colorMat(0x241610, { roughness: .3, clearcoat: .8, clearcoatRoughness: .2 });
+        const gold = goldMat(), ruby = gemMat(0x9f1239);
+        lathe(this.bodyGroup, crimson, [[.03,.1],[.54,.12],[.57,.2],[.48,.42],[.35,.7],[.26,1.04],[.22,1.18]], 48);
+        lathe(this.bodyGroup, crimson, [[.03,1.02],[.2,1.03],[.24,1.22],[.22,1.42],[.18,1.5]], 36);
+        for (let i = 0; i < 3; i++) {
+          const trim = addMesh(this.root, new THREE.TorusGeometry(.565 - i*.095, .009, 8, 56), gold);
+          trim.rotation.x = Math.PI / 2;
+          trim.position.y = .15 + i * .15;
+        }
+        for (let i = 0; i < 22; i++) {
+          const a = i / 22 * Math.PI * 2;
+          const bead = sphere(this.bodyGroup, gold, [Math.cos(a)*.49, .42 + (i%3)*.14, Math.sin(a)*.49], [.012,.018,.012], 8);
+        }
+        // The dupatta is built as a custom cloth ribbon with raised gold piping cascading over the shoulder.
+        const drapePoints = [[-.24,1.86,.04],[-.34,1.65,.18],[-.31,1.35,.28],[-.24,.95,.36],[-.18,.58,.42]];
+        ribbon(this.root, drapePoints, .20, crimson, 36);
+        tube(this.root, drapePoints.map(p => [p[0]-.095,p[1],p[2]+.01]), .007, gold);
+        tube(this.root, drapePoints.map(p => [p[0]+.095,p[1],p[2]+.01]), .007, gold);
+        for (let i=0;i<7;i++) pearl(this.root, [-.28 + (i%2)*.05, 1.72-i*.16, .20+i*.028], .011, gold);
+
+        cylinder(this.root, skin, [0,1.48,0], .075,.09,.25,18);
+        this.headRig.position.y = 1.77;
+        sphere(this.headRig, skin, [0,0,0], [.29,.34,.255], 32);
+        sphere(this.headRig, hair, [0,.12,-.035], [.305,.26,.255], 28);
+        sphere(this.headRig, hair, [0,.29,-.035], [.235,.13,.225], 22);
+        // Long side locks frame the face beneath the bridal scarf.
+        [-1,1].forEach(side => sphere(this.headRig, hair, [side*.252,-.18,-.015], [.07,.31,.09], 18));
+        this.eyes = eyePair(this.headRig, {x:.105,y:.035,z:.218,radius:.071,iris:0x402319});
+        this.brows = eyeBrows(this.headRig, skin, hair, {y:.145,z:.216,x:.105});
+        sphere(this.headRig, skin, [0,-.065,.251], [.031,.038,.032], 16);
+        this.mouth = smile(this.headRig, [0,-.198,.229], .122, colorMat(0x762332,{roughness:.38,clearcoat:.45}), {c:[0,0,0],r:[.29,.34,.255]});
+        blush(this.headRig,-.178,-.085,.207,.058,blushMat); blush(this.headRig,.178,-.085,.207,.058,blushMat);
+        // Maang tikka and ruby teardrop.
+        const tikka = addMesh(this.headRig, new THREE.TorusGeometry(.042,.008,8,20), gold);
+        tikka.position.set(0,.245,.237); tikka.rotation.x = .25;
+        sphere(this.headRig, ruby, [0,.184,.255], [.021,.036,.018], 16);
+        sphere(this.headRig, gold, [0,.141,.255], [.009,.013,.01], 10);
+        tube(this.headRig,[[-.27,.17,.01],[-.2,.27,.11],[0,.31,.19],[.2,.27,.11],[.27,.17,.01]],.006,gold);
+        const earringLeft = new THREE.Group(), earringRight = new THREE.Group();
+        [earringLeft,earringRight].forEach((e,i)=>{ e.position.set(i? .28:-.28,-.12,-.01); this.headRig.add(e); sphere(e,gold,[0,-.025,.015],[.023,.04,.022],12); addMesh(e,new THREE.TorusGeometry(.023,.006,8,16),gold).position.set(0,-.075,.018); sphere(e,ruby,[0,-.085,.02],[.012,.018,.012],10); });
+        this.tickers.push((t)=>{ earringLeft.rotation.x=Math.sin(t*1.35)*.13; earringRight.rotation.x=Math.sin(t*1.35+1)*.13; });
+        const arms = createArms(this.root,{x:.235,y:1.37,z:.04,upper:.3,fore:.26,radius:.05,skinRadius:.052,sleeve:crimson,skin:skin});
+        this.armL=arms.L; this.armR=arms.R;
+      }
+    }
+
+    class MochiCharacter extends CharacterBase {
+      constructor() { super('Mochi', 'Velvet Bunny Mascot', 'A cashmere-soft companion with a little emerald sparkle and a very big heart.'); this.earParts=[]; this.build(); }
+      build() {
+        const fur = colorMat(0xf0e7d9,{roughness:.88,sheen:new THREE.Color(0xffddce)});
+        const cream = colorMat(0xfff9ee,{roughness:.82,sheen:new THREE.Color(0xffe7d8)});
+        const chestFur = colorMat(0xf8f1e6,{roughness:.87,sheen:new THREE.Color(0xfff3e4)});
+        const pink = colorMat(0xef9dab,{roughness:.6,sheen:new THREE.Color(0xffc7cf)});
+        const blushMat = colorMat(0xe995a6,{roughness:.7,transparent:true,opacity:.42});
+        const sash = colorMat(0x5b1428,{roughness:.31,sheen:new THREE.Color(0xbf6674)});
+        const gold = goldMat(), emerald = gemMat(0x1b9869);
+        sphere(this.bodyGroup,fur,[0,.67,0],[.48,.54,.43],30);
+        sphere(this.bodyGroup,chestFur,[0,.62,.345],[.24,.28,.10],24);
+        // Pom-pom tail: a core plus a shell of overlapping lobes so the
+        // silhouette scallops like fur instead of reading as one hard ball.
+        // Lobes on the front half sit inside the body, so only the back ones show.
+        const tail=new THREE.Group(); tail.position.set(0,.47,-.375); this.bodyGroup.add(tail);
+        sphere(tail,fur,[0,0,-.02],[.125,.13,.115],20);
+        for(let i=0;i<14;i++){
+          const y=1-(i/13)*2, rr=Math.sqrt(Math.max(0,1-y*y)), a=i*2.39996, d=.072;
+          const rad=.052+(i%3)*.009;
+          sphere(tail,i%4===0?chestFur:fur,[Math.cos(a)*rr*d, y*.085, -.035+Math.sin(a)*rr*d],[rad,rad,rad],12);
+        }
+        this.tickers.push(t=>{ tail.rotation.y=Math.sin(t*1.35)*.11; tail.rotation.x=Math.sin(t*.95)*.05; });
+        [-1,1].forEach(side=>{
+          const foot=sphere(this.bodyGroup,fur,[side*.22,.14,.08],[.18,.12,.22],18);
+          sphere(this.bodyGroup,pink,[side*.22,.13,.24],[.1,.04,.025],14);
+        });
+        this.headRig.position.y=1.28;
+        sphere(this.headRig,fur,[0,0,0],[.405,.405,.37],32);
+        sphere(this.headRig,cream,[0,-.14,.291],[.245,.17,.13],22);
+        [-1,1].forEach(side=>{
+          const ear=new THREE.Group(); ear.position.set(side*.155,.30,-.005); ear.rotation.z=-side*.13; this.headRig.add(ear);
+          // Outer shell: narrow at the base, fullest through the middle, softly
+          // domed at the tip. A single ellipsoid reads as a flat leaf.
+          sphere(ear,fur,[0,.16,0],[.072,.13,.062],18);
+          sphere(ear,fur,[0,.34,0],[.098,.19,.075],20);
+          sphere(ear,fur,[0,.52,0],[.082,.13,.062],18);
+          // Inner cup follows the same taper. It stands ~.006 proud at the
+          // centre line but sinks under the fur at its own edges, so it reads
+          // as a hollow rather than a pink plate glued to the front.
+          sphere(ear,pink,[0,.17,.042],[.040,.095,.026],14);
+          sphere(ear,pink,[0,.35,.051],[.056,.150,.030],16);
+          sphere(ear,pink,[0,.51,.044],[.040,.095,.024],14);
+          this.earParts.push({group:ear,side:side});
+        });
+        this.eyes=eyePair(this.headRig,{x:.147,y:.045,z:.323,radius:.095,dark:true});
+        sphere(this.headRig,pink,[0,-.072,.402],[.045,.033,.027],16);
+        this.mouth=smile(this.headRig,[0,-.158,.418],.100,colorMat(0x9c5662,{roughness:.4}),{c:[0,-.14,.291],r:[.245,.17,.13]});
+        blush(this.headRig,-.25,-.1,.29,.075,blushMat); blush(this.headRig,.25,-.1,.29,.075,blushMat);
+        // Small velvet sash wraps the plump body and meets at an emerald brooch.
+        // Parented to bodyGroup, NOT root: breathing scales bodyGroup every
+        // frame, and a flat ribbon left on root slides against the fur.
+        ribbon(this.bodyGroup,[[-.43,.92,.12],[-.25,.81,.35],[0,.74,.45],[.24,.81,.35],[.43,.92,.12]],.135,sash,30);
+        tube(this.bodyGroup,[[-.43,.92,.13],[-.25,.81,.36],[0,.74,.46],[.24,.81,.36],[.43,.92,.13]],.007,gold);
+        addMesh(this.bodyGroup,new THREE.TorusGeometry(.068,.012,10,24),gold).position.set(0,.76,.46);
+        const jewel=addMesh(this.bodyGroup,new THREE.OctahedronGeometry(.05),emerald); jewel.position.set(0,.76,.48); jewel.scale.y=1.3;
+        const arms=createArms(this.root,{x:.39,y:.82,z:.02,upper:.2,fore:.18,radius:.082,skinRadius:.105,sleeve:fur,skin:fur}); this.armL=arms.L; this.armR=arms.R;
+        this.tickers.push((t)=>this.earParts.forEach(e=>{e.group.rotation.x=Math.sin(t*1.55+e.side)*.075; e.group.rotation.z=-e.side*(.13+Math.sin(t*.7+e.side)*.05);}));
+      }
+    }
+
+    class NoorCharacter extends CharacterBase {
+      constructor() { super('Noor', 'Parisian Glamour Artist', 'Sculpted liner, a satin-lapel blazer and a golden brush for the finishing touch.'); this.build(); }
+      build() {
+        const skin=colorMat(0xf0d4c0,{roughness:.39,clearcoat:.52,clearcoatRoughness:.38,sheen:new THREE.Color(0xf4bfa0),emissive:0x351913,emissiveIntensity:.025});
+        const suit=colorMat(0x101017,{roughness:.4,metalness:.1,sheen:new THREE.Color(0x62617b),clearcoat:.32});
+        const satin=colorMat(0x34333e,{roughness:.26,metalness:.12,sheen:new THREE.Color(0xc2bace)});
+        const hair=colorMat(0x111116,{roughness:.2,clearcoat:1,clearcoatRoughness:.1});
+        const gold=goldMat(), liner=standardMat(0x19131a,{roughness:.2});
+        lathe(this.bodyGroup,suit,[[.19,.12],[.21,.42],[.25,.7],[.26,1.06],[.21,1.2]],38);
+        cylinder(this.root,suit,[-.12,.29,0],.085,.095,.45,16); cylinder(this.root,suit,[.12,.29,0],.085,.095,.45,16);
+        sphere(this.root,standardMat(0x17151c,{roughness:.25}),[-.12,.08,.08],[.115,.05,.18],16);
+        sphere(this.root,standardMat(0x17151c,{roughness:.25}),[.12,.08,.08],[.115,.05,.18],16);
+        // Angular lapels are tiny procedural satin panels, not image textures.
+        const lapelMat=satin.clone(); lapelMat.side=THREE.DoubleSide;
+        function panel(points, material) {
+          const geo=new THREE.BufferGeometry(); geo.setAttribute('position',new THREE.Float32BufferAttribute(points.flat(),3)); geo.setIndex([0,1,2,0,2,3]); geo.computeVertexNormals(); return addMesh(this.bodyGroup,geo,material);
+        }
+        panel.call(this,[[-.03,1.91,.23],[-.21,1.83,.245],[-.16,1.46,.275],[0,1.61,.28]],lapelMat);
+        panel.call(this,[[.03,1.91,.23],[.21,1.83,.245],[.16,1.46,.275],[0,1.61,.28]],lapelMat);
+        cylinder(this.root,skin,[0,1.48,0],.07,.08,.24,16);
+        this.headRig.position.y=1.78;
+        sphere(this.headRig,skin,[0,0,0],[.275,.335,.245],32);
+        sphere(this.headRig,hair,[0,.15,-.035],[.29,.24,.255],28);
+        sphere(this.headRig,hair,[0,.3,.045],[.25,.115,.2],24);
+        [-1,1].forEach(side=>sphere(this.headRig,hair,[side*.24,-.16,-.015],[.075,.28,.105],20));
+        this.eyes=eyePair(this.headRig,{x:.096,y:.04,z:.218,radius:.064,iris:0x533b29});
+        this.brows = eyeBrows(this.headRig,skin,hair,{y:.147,z:.216,x:.096});
+        sphere(this.headRig,skin,[0,-.06,.24],[.025,.032,.027],14);
+        this.mouth=smile(this.headRig,[0,-.188,.22],.104,colorMat(0x963c50,{roughness:.35,clearcoat:.4}),{c:[0,0,0],r:[.275,.335,.245]});
+        const arms=createArms(this.root,{x:.245,y:1.38,z:.045,upper:.29,fore:.26,radius:.052,skinRadius:.05,sleeve:suit,skin:skin}); this.armL=arms.L; this.armR=arms.R;
+        // The brush is assembled in the right hand and gets a warm emissive tip.
+        const brush=new THREE.Group(); this.armR.hand.add(brush); brush.position.set(.015,-.02,.04); brush.rotation.z=-.58; brush.rotation.x=.2;
+        cylinder(brush,gold,[0,-.17,0],.012,.009,.31,12);
+        cylinder(brush,standardMat(0xe4d6c1,{metalness:.9,roughness:.2}),[0,.005,0],.016,.014,.055,12);
+        const bristle=addMesh(brush,new THREE.ConeGeometry(.022,.105,12),standardMat(0x76543b,{roughness:.8})); bristle.position.y=.085;
+        const tip=sphere(brush,colorMat(0xffd27d,{emissive:0xffa52a,emissiveIntensity:.05,roughness:.22}),[0,.135,0],[.025,.018,.025],12);
+        const brushLight=new THREE.PointLight(0xffba56,0,1.15); brushLight.position.set(0,.14,.1); brush.add(brushLight);
+        this.brush={tip:tip,light:brushLight};
+        this.onMood=(mood)=>{
+          const glow=mood==='thinking' ? 1.6 : (mood==='welcome' ? .55 : (mood==='happy' ? 1.1 : .12));
+          if(G){G.to(tip.material,{emissiveIntensity:glow,duration:.45});G.to(brushLight,{intensity:glow*.65,duration:.45});}
+          else {tip.material.emissiveIntensity=glow;brushLight.intensity=glow*.65;}
+        };
+      }
+    }
+
+    class TaraCharacter extends CharacterBase {
+      constructor() { super('Tara', 'Heritage Drape & Henna Guru', 'Emerald silk, temple gold and jasmine flowers guide every graceful detail.'); this.build(); }
+      build() {
+        const skin=colorMat(0xb27a4a,{roughness:.48,clearcoat:.35,sheen:new THREE.Color(0xd59768),emissive:0x351a0d,emissiveIntensity:.03});
+        const emerald=colorMat(0x0c634a,{roughness:.48,sheen:new THREE.Color(0x52bc8f),clearcoat:.25});
+        const marigold=colorMat(0xe49619,{roughness:.5,sheen:new THREE.Color(0xffd28a)});
+        const hair=colorMat(0x21150e,{roughness:.28,clearcoat:.65});
+        const gold=goldMat(), ruby=gemMat(0xb30d3e);
+        lathe(this.bodyGroup,emerald,[[.03,.1],[.57,.12],[.6,.22],[.49,.48],[.34,.75],[.24,1.06],[.2,1.2]],48);
+        lathe(this.bodyGroup,emerald,[[.04,1.02],[.2,1.04],[.235,1.25],[.21,1.43],[.17,1.49]],36);
+        // Marigold silk pallu and zari borders.
+        ribbon(this.root,[[-.29,2.04,.02],[-.42,1.9,.14],[-.35,1.62,.29],[-.27,1.25,.41],[-.2,.83,.49]],.19,marigold,36);
+        tube(this.root,[[-.39,1.99,.03],[-.51,1.83,.16],[-.43,1.58,.31],[-.35,1.22,.43],[-.28,.83,.5]],.008,gold);
+        tube(this.root,[[-.2,2.05,.03],[-.31,1.92,.15],[-.25,1.64,.3],[-.18,1.27,.42],[-.12,.88,.5]],.008,gold);
+        for(let i=0;i<24;i++){
+          const a=i/24*Math.PI*2;
+          sphere(this.bodyGroup,gold,[Math.sin(a)*.54,.3+(i%4)*.115,Math.cos(a)*.54],[.009,.014,.009],8);
+        }
+        const hem=addMesh(this.root,new THREE.TorusGeometry(.565,.012,8,64),gold); hem.rotation.x=Math.PI/2; hem.position.y=.14;
+        cylinder(this.root,skin,[0,1.49,0],.072,.083,.25,16);
+        this.headRig.position.y=1.78;
+        sphere(this.headRig,skin,[0,0,0],[.285,.335,.25],30);
+        sphere(this.headRig,hair,[0,.13,-.04],[.29,.25,.25],26);
+        // Classic braided bun with a jasmine ring.
+        sphere(this.headRig,hair,[0,.25,-.23],[.14,.15,.11],20);
+        for(let i=0;i<6;i++) sphere(this.headRig,hair,[.12,.13-i*.09,-.23],[.044,.06,.045],12);
+        const gajra=new THREE.Group(); gajra.position.set(0,.26,-.19); this.headRig.add(gajra);
+        for(let i=0;i<12;i++){
+          const a=i/12*Math.PI*2;
+          const flowerGroup=new THREE.Group(); flowerGroup.position.set(Math.cos(a)*.145,Math.sin(a)*.105,.035); flowerGroup.rotation.z=a; gajra.add(flowerGroup);
+          for(let k=0;k<5;k++){const b=k/5*Math.PI*2;sphere(flowerGroup,colorMat(0xfffcf4,{roughness:.48,sheen:new THREE.Color(0xffe6ed)}),[Math.cos(b)*.018,Math.sin(b)*.018,0],[.016,.011,.009],8);}
+          sphere(flowerGroup,gold,[0,0,.009],[.006,.006,.006],8);
+        }
+        this.eyes=eyePair(this.headRig,{x:.102,y:.045,z:.218,radius:.068,iris:0x442619});
+        this.brows = eyeBrows(this.headRig,skin,hair,{y:.15,z:.218,x:.102});
+        sphere(this.headRig,ruby,[0,.245,.224],[.016,.024,.012],12);
+        sphere(this.headRig,skin,[0,-.06,.245],[.026,.035,.026],14);
+        this.mouth=smile(this.headRig,[0,-.188,.22],.122,colorMat(0x813041,{roughness:.36}),{c:[0,0,0],r:[.285,.335,.25]});
+        const nath=addMesh(this.headRig,new THREE.TorusGeometry(.025,.005,8,18),gold); nath.position.set(.055,-.07,.245); nath.rotation.y=.25;
+        tube(this.headRig,[[.07,-.07,.247],[.15,-.05,.2],[.22,-.02,.1],[.265,-.03,.015]],.0035,gold,6);
+        const choker=addMesh(this.headRig,new THREE.TorusGeometry(.112,.017,10,32),gold); choker.rotation.x=Math.PI/2; choker.position.set(0,-.3,.005);
+        sphere(this.headRig,ruby,[0,-.32,.113],[.015,.021,.013],12);
+        const jL=new THREE.Group(),jR=new THREE.Group();
+        [jL,jR].forEach((j,i)=>{j.position.set(i ? .26 : -.26,-.12,-.015);this.headRig.add(j);addMesh(j,new THREE.TorusGeometry(.023,.005,8,16),gold).rotation.x=Math.PI/2;sphere(j,ruby,[0,-.063,.01],[.014,.02,.012],10);});
+        this.tickers.push(t=>{jL.rotation.x=Math.sin(t*1.2)*.12;jR.rotation.x=Math.sin(t*1.2+1.1)*.12;});
+        const arms=createArms(this.root,{x:.24,y:1.37,z:.04,upper:.3,fore:.26,radius:.051,skinRadius:.05,sleeve:emerald,skin:skin});this.armL=arms.L;this.armR=arms.R;
+      }
+    }
+
+    class GiaCharacter extends CharacterBase {
+      constructor() { super('Gia', 'Crystal Beauty Icon', 'A high-voltage beauty muse in iridescent rose, pearl stickers and crystal nail art.'); this.shards=[]; this.build(); }
+      build() {
+        const skin=colorMat(0xf0d5ce,{roughness:.36,clearcoat:.58,sheen:new THREE.Color(0xffbfd5),emissive:0x2a1119,emissiveIntensity:.025});
+        const hair=colorMat(0xe69abd,{roughness:.3,metalness:.12,clearcoat:.75,sheen:new THREE.Color(0xd8cbff)});
+        const couture=colorMat(0x181421,{roughness:.3,metalness:.22,clearcoat:.48});
+        const gold=goldMat(), crystal=colorMat(0xf7e6ff,{roughness:.06,metalness:.16,clearcoat:1,transparent:true,opacity:.92});
+        lathe(this.bodyGroup,couture,[[.03,.11],[.51,.13],[.52,.21],[.4,.48],[.29,.77],[.23,1.08],[.2,1.19]],46);
+        lathe(this.bodyGroup,couture,[[.03,1.02],[.2,1.04],[.235,1.28],[.2,1.43],[.17,1.49]],36);
+        const necklace=addMesh(this.root,new THREE.TorusGeometry(.2,.009,8,28),gold); necklace.rotation.x=Math.PI/2; necklace.position.set(0,1.03,.04);
+        sphere(this.root,crystal,[0,1.0,.23],[.025,.035,.012],12);
+        cylinder(this.root,skin,[0,1.49,0],.064,.078,.25,16);
+        this.headRig.position.y=1.79;
+        sphere(this.headRig,skin,[0,0,0],[.27,.34,.235],30);
+        // Twin buns and face-framing strands.
+        [-1,1].forEach(side=>{
+          sphere(this.headRig,hair,[side*.19,.34,-.035],[.13,.14,.12],22);
+          const band=addMesh(this.headRig,new THREE.TorusGeometry(.09,.012,8,20),couture);band.position.set(side*.19,.3,-.035);band.rotation.x=1.25;
+          tube(this.headRig,[[side*.12,.21,.14],[side*.16,.02,.16],[side*.2,-.19,.05]],.027,hair,8);
+        });
+        this.eyes=eyePair(this.headRig,{x:.09,y:.045,z:.203,radius:.06,iris:0x783a59});
+        this.brows = eyeBrows(this.headRig,skin,standardMat(0x3e2534),{y:.15,z:.205,x:.09});
+        sphere(this.headRig,skin,[0,-.07,.224],[.022,.03,.022],12);
+        this.mouth=smile(this.headRig,[0,-.186,.208],.104,colorMat(0xd8517e,{roughness:.32,clearcoat:.55}),{c:[0,0,0],r:[.27,.34,.235]});
+        const blushMat=colorMat(0xf0a4b9,{roughness:.55,transparent:true,opacity:.34});
+        blush(this.headRig,-.15,-.085,.18,.045,blushMat);blush(this.headRig,.15,-.085,.18,.045,blushMat);
+        // Pearls and tiny holographic facets are all individual procedural meshes.
+        [[-.14,.11,.19],[.14,.11,.19],[0,.2,.211],[-.2,-.02,.11],[.2,-.02,.11],[0,-.03,.226]].forEach((p,i)=>pearl(this.headRig,p,i%2 ? .009 : .012));
+        const shardMats=[0xf2d9ff,0xd4f6f0,0xffd8ea].map(c=>colorMat(c,{roughness:.055,metalness:.12,clearcoat:1,transparent:true,opacity:.9}));
+        [[-.29,.12,.08],[.29,.12,.08],[-.2,.3,.04],[.2,.3,.04],[0,.39,.02]].forEach((p,i)=>{
+          const shard=addMesh(this.headRig,new THREE.OctahedronGeometry(.025),shardMats[i%shardMats.length]);shard.position.set(p[0],p[1],p[2]);this.shards.push({mesh:shard,base:vec(p[0],p[1],p[2]),phase:i*1.4,speed:.7+i*.12});
+        });
+        const arms=createArms(this.root,{x:.24,y:1.4,z:.04,upper:.29,fore:.26,radius:.047,skinRadius:.05,sleeve:couture,skin:skin});this.armL=arms.L;this.armR=arms.R;
+        // A raised display hand with four delicate crystal-tipped fingers.
+        const displayHand=new THREE.Group();displayHand.position.set(0,-.035,.07);this.armR.hand.add(displayHand);
+        sphere(displayHand,skin,[0,0,0],[.052,.067,.032],14);
+        for(let i=0;i<4;i++){
+          const finger=new THREE.Group();finger.position.set(-.036+i*.024,.04,.015);finger.rotation.z=(i-1.5)*.08;displayHand.add(finger);
+          cylinder(finger,skin,[0,.047,0],.009,.008,.085,8);
+          const nail=addMesh(finger,new THREE.OctahedronGeometry(.011),crystal);nail.position.set(0,.093,.003);nail.scale.y=1.45;
+        }
+        const thumb=cylinder(displayHand,skin,[.062,.01,.005],.01,.009,.065,8);thumb.rotation.z=-.8;
+        this.animateExtra=(t)=>this.shards.forEach(s=>{
+          const a=t*s.speed+s.phase;s.mesh.position.set(s.base.x+Math.cos(a)*.035,s.base.y+Math.sin(a*1.3)*.022,s.base.z+Math.sin(a)*.025);s.mesh.rotation.y=a*1.2;s.mesh.rotation.x=a*.7;
+        });
+      }
+    }
+
+    class PipCharacter extends CharacterBase {
+      constructor() { super('Pip', 'Celestial Finch Muse', 'A tiny jewel-feathered friend, ready to add a little wonder to your bridal story.'); this.wings=[]; this.build(); }
+      build() {
+        const teal=colorMat(0x48aeb1,{roughness:.38,metalness:.08,clearcoat:.68,clearcoatRoughness:.24,sheen:new THREE.Color(0xb8f3dc)});
+        const tealDeep=colorMat(0x267679,{roughness:.4,metalness:.12,clearcoat:.65,sheen:new THREE.Color(0x8ce2d2)});
+        const belly=colorMat(0xf5dfca,{roughness:.58,sheen:new THREE.Color(0xffecd9)});
+        const beakMat=colorMat(0xf49a68,{roughness:.28,clearcoat:.6,clearcoatRoughness:.2});
+        const gold=goldMat(), coral=gemMat(0xe77773), eyeMat=colorMat(0x11131d,{roughness:.045,clearcoat:1,clearcoatRoughness:.025,envMapIntensity:1.5});
+        // A round, collectible-creature silhouette with an original finch palette.
+        sphere(this.bodyGroup,teal,[0,.72,-.02],[.45,.48,.4],32);
+        sphere(this.bodyGroup,belly,[0,.68,.313],[.31,.34,.13],28);
+        this.headRig.position.y=1.29;
+        sphere(this.headRig,teal,[0,0,0],[.46,.47,.4],32);
+        sphere(this.headRig,belly,[0,-.13,.318],[.3,.235,.13],24);
+        // Oversized glossy eyes with paired glass catchlights.
+        this.eyes=eyePair(this.headRig,{x:.165,y:.06,z:.352,radius:.115,dark:true});
+        // Feather brow tufts. Pip had no brow channel at all, and brows carry
+        // most of an expression -- that is why his face looked frozen.
+        const browMat=colorMat(0x2e7f80,{roughness:.42,metalness:.06,clearcoat:.55});
+        this.brows=eyeBrows(this.headRig,browMat,browMat,{y:.235,z:.340,x:.165,w:.060,h:.030,r:.011,ry:.5});
+        // Soft apricot cheeks and a small split beak.
+        const cheekMat=colorMat(0xf08f85,{roughness:.58,transparent:true,opacity:.55});
+        blush(this.headRig,-.29,-.13,.324,.075,cheekMat);blush(this.headRig,.29,-.13,.324,.075,cheekMat);
+        const beak=new THREE.Group(); beak.position.set(0,-.12,.441); this.headRig.add(beak);
+        sphere(beak,beakMat,[0,0,0],[.105,.075,.105],20);
+        const beakTip=addMesh(beak,new THREE.ConeGeometry(.092,.17,7),beakMat);beakTip.rotation.x=Math.PI/2;beakTip.position.set(0,-.05,.049);
+        sphere(this.headRig,colorMat(0x8f5148,{roughness:.65}),[0,-.265,.396],[.035,.012,.012],12);
+        // Birds have no lips, so Pip's "smile" IS the beak: the lower mandible
+        // (the cone) drops as the mood opens up. Two little arcs on the cheeks
+        // were tried first and read as a moustache, so they are gone.
+        this.mouth={setMood:function(c,o,d){
+          const open=Math.PI/2+Math.max(0,o||0)*.26;
+          const cc=Math.max(-1.2,Math.min(1.8,c||0));
+          if(G){
+            G.to(beakTip.rotation,{x:open,duration:d||.45,ease:'power2.out',overwrite:true});
+            G.to(beak.scale,{x:1+cc*.07,y:1-cc*.045,duration:d||.45,ease:'power2.out'});
+          } else { beakTip.rotation.x=open; beak.scale.set(1+cc*.07,1-cc*.045,1); }
+        }};
+        // Three soft crest plumes and a real 3D crown.
+        const plumeM=colorMat(0x65c2bb,{roughness:.38,metalness:.08,clearcoat:.65,sheen:new THREE.Color(0xffc8b7)});
+        const plumes=[];
+        for(let i=0;i<3;i++){
+          const plume=addMesh(this.headRig,new THREE.ConeGeometry(.07,.23,12),i===1?coral:plumeM);
+          plume.position.set((i-1)*.085,.43+Math.abs(i-1)*.015,-.005);plume.rotation.z=(i-1)*-.25;
+          plumes.push({mesh:plume,baseZ:(i-1)*-.25});
+        }
+        this.plumes=plumes; this.plumeLift=0; this.plumeTarget=.5;
+        // Floating crown, halo-style: it hovers clear of the skull with a real
+        // gap and drifts, while the crest plumes reach up through the open
+        // middle of the ring. Band underside sits .045 above the head top (.47).
+        const CROWN_Y=.535;
+        const crown=new THREE.Group(); crown.position.set(0,CROWN_Y,0); crown.scale.set(1,1,.87); this.headRig.add(crown);
+        const pearlMat=colorMat(0xfff7e8,{roughness:.14,clearcoat:1,clearcoatRoughness:.08});
+        const mint=gemMat(0x8dd4c0);
+        const band=addMesh(crown,new THREE.TorusGeometry(.285,.026,12,40),gold); band.rotation.x=Math.PI/2;
+        const bandTop=addMesh(crown,new THREE.TorusGeometry(.265,.010,10,36),gold); bandTop.rotation.x=Math.PI/2; bandTop.position.y=.042;
+        const POINTS=7;
+        for(let i=0;i<POINTS;i++){
+          const a=(i+.5)/POINTS*Math.PI*2, sx=Math.sin(a)*.280, sz=Math.cos(a)*.280;
+          const pivot=new THREE.Group(); pivot.position.set(sx,.02,sz); pivot.rotation.y=a; crown.add(pivot);
+          const lean=new THREE.Group(); lean.rotation.x=-.08; pivot.add(lean);
+          const spike=addMesh(lean,new THREE.ConeGeometry(.046,.095,4),gold); spike.position.y=.0475; spike.rotation.y=Math.PI/4;
+          sphere(lean,pearlMat,[0,.105,0],[.022,.026,.022],14);
+          sphere(crown,i%2?coral:mint,[sx,.033,sz],[.015,.015,.015],12);
+        }
+        const crownGem=addMesh(crown,new THREE.OctahedronGeometry(.036),mint); crownGem.position.set(0,.010,.320); crownGem.scale.set(.95,1.3,.6);
+        this.crown=crown;
+        this.tickers.push(t=>{ crown.position.y=CROWN_Y+Math.sin(t*1.15)*.014; crown.rotation.y=Math.sin(t*.42)*.10; });
+        // Feathered wings and tail animate independently from the body.
+        const wings=[];
+        [-1,1].forEach(side=>{
+          const wing=new THREE.Group();wing.position.set(side*.36,.78,-.01);this.root.add(wing);
+          sphere(wing,tealDeep,[side*.015,0,0],[.19,.28,.13],22);
+          for(let i=0;i<3;i++){
+            const feather=sphere(wing,i===1?teal:plumeM,[side*(.045+i*.035),-.13-i*.015,.045],[.07,.16,.06],16);
+            feather.rotation.z=side*(.22+i*.12);
+          }
+          wings.push({group:wing,side:side});
+        });
+        this.wings=wings;
+        // Tail: five soft feathers. Each is a LATHED teardrop -- rounded at the
+        // tip AND at the base -- flattened into a blade. Cones came to a hard
+        // point, which is what made the tail look stabby.
+        const tail=new THREE.Group(); tail.position.set(0,.58,-.30); tail.rotation.x=.20; this.root.add(tail);
+        // Profile ends in a true hemispherical cap (last four points sweep a
+        // quarter circle onto the axis) -- a profile that just runs to 0 still
+        // revolves into a cone, which is the pointed look we are removing.
+        const FEATHER=[[.007,0],[.026,.045],[.033,.105],[.031,.165],[.024,.215],[.018,.250],[.0156,.259],[.009,.2656],[0,.268]];
+        const featherGeo=new THREE.LatheGeometry(FEATHER.map(p=>new THREE.Vector2(p[0],p[1])),12);
+        for(let i=0;i<5;i++){
+          const spread=(i-2)*.20, len=1-Math.abs(i-2)*.07;
+          const feather=addMesh(tail,featherGeo,i===2?coral:tealDeep);
+          feather.rotation.set(-Math.PI/2,0,spread);
+          feather.scale.set(.95,len,.40);
+          feather.position.set(Math.sin(spread)*.055,0,-.055-Math.abs(i-2)*.008);
+        }
+        // Gold collar, tiny amethyst pendant and orange toes.
+        const collar=addMesh(this.root,new THREE.TorusGeometry(.25,.022,10,32),gold);collar.position.set(0,1.02,.05);collar.rotation.x=Math.PI/2;
+        const pendant=addMesh(this.root,new THREE.OctahedronGeometry(.045),gemMat(0x9f71bd));pendant.position.set(0,.99,.29);pendant.scale.y=1.25;
+        for(let side of [-1,1]){
+          cylinder(this.root,beakMat,[side*.14,.18,.03],.027,.03,.17,12);
+          sphere(this.root,beakMat,[side*.14,.105,.09],[.08,.045,.13],12);
+          for(let toe=-1;toe<=1;toe++) tube(this.root,[[side*.14,.11,.1],[side*.14+toe*.035,.08,.17]],.012,beakMat,6);
+        }
+        const arms={L:{shoulder:wings[0].group,elbow:null,isWing:true},R:{shoulder:wings[1].group,elbow:null,isWing:true}};this.armL=arms.L;this.armR=arms.R;
+        this.flap=1;
+        this.animateExtra=(t)=>{
+          // Wings also fold in the pose swing, so the "offering" stance reads on
+          // a bird. update() deliberately skips wings, because animateExtra owns
+          // their rotation.x -- so it has to be added here instead.
+          wings.forEach(w=>{
+            w.group.rotation.x=Math.sin(t*(this.emotion==='happy' ? 11 : 2.1)+w.side)*(.035+this.flap*(this.emotion==='happy' ? .18 : .025)) + this.armSwingX*.55;
+          });
+          // Crest: lifts and splays when bright, sweeps back and flattens when sad.
+          this.plumeLift += (this.plumeTarget-this.plumeLift)*.09;
+          this.plumes.forEach(p=>{
+            p.mesh.rotation.z=p.baseZ*(1+this.plumeLift*.5);
+            p.mesh.rotation.x=this.plumeLift<.3 ? (this.plumeLift-.3)*.55 : 0;
+            const s=1+this.plumeLift*.13; p.mesh.scale.set(s,s,s);
+          });
+          tail.rotation.y=Math.sin(t*1.5)*.07;
+        };
+        /* Pip's own poke reaction: a burst of wing-beating and little hopped
+           take-off attempts, head ducked and eyes sliding away = shy. */
+        this.reactions=['shyFly','tickle','spin','startle'];
+        this.react_shyFly=()=>{
+          const prev=this.emotion, flap0=this.flap;
+          this.flap=2.2; this.emotion='happy';
+          if(this.eyes) this.eyes.mood(.5);
+          if(this.onSpark) this.onSpark(vec(0,1.05,.25),10);
+          const restore=()=>{ this.flap=flap0; this.setEmotion(prev,false); };
+          if(!G){ window.setTimeout(restore,1300); return 1.4; }
+          const tl=G.timeline({onComplete:restore});
+          tl.to(this,{jump:.17,duration:.17,repeat:3,yoyo:true,ease:'power2.out'},0)
+            .to(this,{wiggle:-.05,duration:.12,repeat:5,yoyo:true,ease:'sine.inOut'},0)
+            .to(this.headTarget,{x:.15,z:.11,duration:.32,ease:'power2.out'},0)
+            .to(this.gazeTarget,{x:-.45,y:-.5,duration:.32,ease:'power2.out'},0)
+            .to(this.headTarget,{x:0,z:0,duration:.45,ease:'power2.inOut'},1.05)
+            .to(this.gazeTarget,{x:0,y:0,duration:.45,ease:'power2.inOut'},1.05)
+            .to(this,{jump:0,duration:.3,ease:'power2.out'},1.05)
+            .to(this,{wiggle:0,duration:.3,ease:'power2.out'},1.05);
+          return 1.55;
+        };
+        const PLUME_MOOD={happy:1.0,surprised:1.25,coupon:.85,welcome:.55,wink:.7,thinking:.3,waiting:.35,hesitant:.05,sad:-1.0};
+        this.onMood=(mood)=>{
+          this.flap=mood==='happy' ? 1.5 : (mood==='thinking' ? .25 : .65);
+          this.plumeTarget=PLUME_MOOD[mood]!==undefined?PLUME_MOOD[mood]:.5;
+          if((mood==='happy'||mood==='coupon')&&this.onSpark)this.onSpark(vec(.15,1.2,.4),mood==='coupon'?16:12);
+        };
+      }
+    }
+
+    const DEFINITIONS = [
+      { id:'asha', name:'Asha', role:'Bridal Stylist', title:'Royal bridal stylist', blurb:'A warm welcome to a world of heirloom detail, velvet and gold.', color:'#db715b', Character:AshaCharacter, camera:[.2,1.53,5.35], target:[0,1.16,0] },
+      { id:'mochi', name:'Mochi', role:'Velvet Bunny', title:'Luxury velvet mascot', blurb:'A cashmere-soft companion with a little emerald sparkle and a very big heart.', color:'#eee0cb', Character:MochiCharacter, camera:[.2,1.38,4.7], target:[0,1.21,0] },
+      { id:'noor', name:'Noor', role:'Glamour Artist', title:'Parisian glamour artist', blurb:'Sculpted liner, a satin-lapel blazer and a golden brush for the finishing touch.', color:'#9c9bb7', Character:NoorCharacter, camera:[.22,1.56,5.25], target:[0,1.22,0] },
+      { id:'tara', name:'Tara', role:'Heritage Guru', title:'Heritage drape & henna guru', blurb:'Emerald silk, temple gold and jasmine flowers guide every graceful detail.', color:'#4bb28a', Character:TaraCharacter, camera:[.25,1.57,5.45], target:[0,1.2,0] },
+      { id:'gia', name:'Gia', role:'Crystal Icon', title:'Avant-garde crystal beauty icon', blurb:'A high-voltage beauty muse in iridescent rose, pearl stickers and crystal nail art.', color:'#ec9fc6', Character:GiaCharacter, camera:[.2,1.58,5.2], target:[0,1.24,0] },
+      { id:'pip', name:'Pip', role:'Celestial Finch', title:'Celestial finch muse', blurb:'A tiny jewel-feathered friend, ready to add a little wonder to your bridal story.', color:'#76d4c2', Character:PipCharacter, camera:[.1,1.42,4.45], target:[0,1.18,0] }
+    ];
+    const WORDS = {
+      welcome: {
+        Asha:'Asha joins her palms. “Welcome, darling. Shall we begin?”',
+        Mochi:'Mochi gives a little bunny bow and wiggles both ears.',
+        Noor:'Noor offers the golden brush. “Ready when you are.”',
+        Tara:'Tara lifts her palms. “May your day bloom beautifully.”',
+        Gia:'Gia turns her crystal nails to the light. “Let us make it yours.”',
+        Pip:'Pip flutters a tiny wing. A little wonder has arrived.'
+      },
+      happy: {
+        Asha:'“Perfection. Absolutely perfection.”', Mochi:'Mochi bounces with pure bunny joy.', Noor:'Noor flashes a couture smile. The look is yours.',
+        Tara:'Tara beams as her jasmine flowers sway.', Gia:'The crystals catch the light. Deal closed!', Pip:'Pip flaps with delight, crest feathers all a-twinkle.'
+      },
+      thinking: {
+        Asha:'“Let me compare the heirloom details once more…”', Mochi:'Mochi tilts their head, paws hovering thoughtfully.', Noor:'“A touch more blend, then the perfect finish.”',
+        Tara:'“One moment. The jasmine knows just where to begin.”', Gia:'“Considering every possible finish…”', Pip:'Pip studies the choices with one curious head tilt.'
+      },
+      hesitant: {
+        Asha:'“Take all the time you need, dear.”', Mochi:'Mochi lowers their ears softly. There is no rush.', Noor:'Noor lowers the brush, patient and warm.',
+        Tara:'Tara folds her hands and breathes with you.', Gia:'Gia softens her glow and listens.', Pip:'Pip settles close by. The choice can wait.'
+      },
+      sad: {
+        Asha:'“Oh… that slot is gone. My heart sinks a little too.”', Mochi:'Mochi’s ears droop. A small cloud has passed by.',
+        Noor:'“That shade is finished. I am so sorry, truly.”', Tara:'Tara lowers her eyes. “The season moved on without us.”',
+        Gia:'Gia dims her crystals. “Not this time, sadly.”', Pip:'Pip’s crest flattens and the sparkle dims.'
+      },
+      waiting: {
+        Asha:'“Shall I hold this look for you? No rush at all.”', Mochi:'Mochi waits, nose twitching, one ear half-cocked.',
+        Noor:'“Take your time, darling. I will keep the brush warm.”', Tara:'Tara waits softly, jasmine steady in her hands.',
+        Gia:'Gia tilts her head. “Still deciding? I have all day.”', Pip:'Pip hops once, then waits, head tilted.'
+      },
+      coupon: {
+        Asha:'“For you — ten percent on the bridal package today.”', Mochi:'Mochi presents a tiny velvet coupon with both paws.',
+        Noor:'“A little gift: a complimentary touch-up, on the house.”', Tara:'Tara offers a jasmine-wrapped coupon, smiling.',
+        Gia:'“Your first glow-up session — fifteen percent off.”', Pip:'Pip holds up a shimmering coupon in one wing.'
+      },
+      wink: {
+        Asha:'Asha winks. “Trust me, it will be stunning.”', Mochi:'Mochi winks one bright eye and flicks an ear.',
+        Noor:'Noor winks. “That is the couturier’s promise.”', Tara:'Tara winks, and the jasmine seems to glow.',
+        Gia:'Gia winks. “A little secret between us.”', Pip:'Pip winks a glossy eye, crest a-bounce.'
+      },
+      surprised: {
+        Asha:'“Oh! What a bold, beautiful choice.”', Mochi:'Mochi’s ears shoot straight up in surprise.',
+        Noor:'“Mon dieu — I did not see that coming!”', Tara:'Tara’s eyes widen. “What a wonderful turn.”',
+        Gia:'Gia gasps, crystals flashing. “Unexpected. Perfect.”', Pip:'Pip’s crest shoots up with a startled cheep.'
+      }
+    };
+
+    let renderer, scene, camera, controls, pipCamera, clock;
+    let activeId='asha', activeCharacter=null, viewMode='showcase', switching=false;
+    let pointerX=0, pointerY=0, sizeW=0, sizeH=0;
+    let dust, dustGeometry, dustBase, dustSpeed, dustPhase;
+    let sparkles=[], sparklePool=[], sparkleTexture;
+    const raycaster=new THREE.Raycaster();
+    const floorPlane=new THREE.Plane(vec(0,1,0),-1.2);
+    const characters={};
+
+    function makeEnvironment(targetRenderer=renderer) {
+      const canvas=document.createElement('canvas');canvas.width=512;canvas.height=256;
+      const ctx=canvas.getContext('2d');
+      const gradient=ctx.createLinearGradient(0,0,0,256);
+      gradient.addColorStop(0,'#725638');gradient.addColorStop(.32,'#29221a');gradient.addColorStop(.64,'#121211');gradient.addColorStop(1,'#080809');
+      ctx.fillStyle=gradient;ctx.fillRect(0,0,512,256);
+      const boxes=[[85,55,42,130,'rgba(255,227,179,.9)'],[250,26,54,155,'rgba(190,205,255,.72)'],[410,75,38,118,'rgba(255,204,136,.8)'],[330,220,90,12,'rgba(255,244,220,.42)']];
+      boxes.forEach(b=>{const gl=ctx.createLinearGradient(b[0],0,b[0]+b[2],0);gl.addColorStop(0,'rgba(255,255,255,0)');gl.addColorStop(.45,b[4]);gl.addColorStop(1,'rgba(255,255,255,0)');ctx.fillStyle=gl;ctx.fillRect(b[0],b[1],b[2],b[3]);});
+      const texture=new THREE.CanvasTexture(canvas);texture.mapping=THREE.EquirectangularReflectionMapping;texture.encoding=THREE.sRGBEncoding;
+      const pmrem=new THREE.PMREMGenerator(targetRenderer);pmrem.compileEquirectangularShader();
+      const target=pmrem.fromEquirectangular(texture);texture.dispose();pmrem.dispose();
+      return target.texture;
+    }
+    function makeSparkleTexture() {
+      const c=document.createElement('canvas');c.width=c.height=64;
+      const ctx=c.getContext('2d');const g=ctx.createRadialGradient(32,32,0,32,32,32);
+      g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(.24,'rgba(255,240,202,.9)');g.addColorStop(1,'rgba(255,210,128,0)');
+      ctx.fillStyle=g;ctx.fillRect(0,0,64,64);const t=new THREE.CanvasTexture(c);t.encoding=THREE.sRGBEncoding;return t;
+    }
+    function makeDust() {
+      const count=145, positions=new Float32Array(count*3);
+      dustBase=new Float32Array(count*3);dustSpeed=new Float32Array(count);dustPhase=new Float32Array(count);
+      for(let i=0;i<count;i++){
+        const a=Math.random()*Math.PI*2,r=1.5+Math.random()*3.7;
+        dustBase[i*3]=Math.cos(a)*r;dustBase[i*3+1]=.1+Math.random()*3;dustBase[i*3+2]=Math.sin(a)*r*.4;
+        positions[i*3]=dustBase[i*3];positions[i*3+1]=dustBase[i*3+1];positions[i*3+2]=dustBase[i*3+2];
+        dustSpeed[i]=.035+Math.random()*.095;dustPhase[i]=Math.random()*Math.PI*2;
+      }
+      dustGeometry=new THREE.BufferGeometry();dustGeometry.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));
+      dust=new THREE.Points(dustGeometry,new THREE.PointsMaterial({color:0xe5c17b,size:.032,map:sparkleTexture,transparent:true,opacity:.68,depthWrite:false,blending:THREE.AdditiveBlending}));
+      dust.frustumCulled=false;scene.add(dust);
+    }
+    function updateDust(dt,time) {
+      const positions=dustGeometry.attributes.position.array;
+      for(let i=0;i<dustSpeed.length;i++){
+        let y=positions[i*3+1]+dt*dustSpeed[i];if(y>3.7)y=.05;
+        positions[i*3]=dustBase[i*3]+Math.sin(time*.37+dustPhase[i])*.12;
+        positions[i*3+1]=y;positions[i*3+2]=dustBase[i*3+2]+Math.cos(time*.3+dustPhase[i])*.08;
+      }
+      dustGeometry.attributes.position.needsUpdate=true;
+    }
+    function emitSparkles(position,count=10) {
+      if(!scene||!sparkleTexture)return;
+      for(let i=0;i<count;i++){
+        let sprite=sparklePool.pop();
+        if(!sprite){sprite=new THREE.Sprite(new THREE.SpriteMaterial({map:sparkleTexture,color:0xf4d28b,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending}));sprite.scale.setScalar(.075);}
+        sprite.position.set(position.x+(Math.random()-.5)*.14,position.y+(Math.random()-.5)*.12,position.z+(Math.random()-.5)*.12);
+        sprite.userData.velocity=vec((Math.random()-.5)*.9,.55+Math.random()*1.15,(Math.random()-.5)*.7);
+        sprite.userData.life=.55+Math.random()*.6;sprite.material.opacity=1;sprite.visible=true;scene.add(sprite);sparkles.push(sprite);
+      }
+    }
+    function updateSparkles(dt) {
+      for(let i=sparkles.length-1;i>=0;i--){
+        const p=sparkles[i];p.userData.life-=dt;
+        if(p.userData.life<=0){p.visible=false;scene.remove(p);sparklePool.push(p);sparkles.splice(i,1);continue;}
+        p.userData.velocity.y-=1.8*dt;p.position.addScaledVector(p.userData.velocity,dt);p.material.opacity=clamp(p.userData.life,0,1);
+      }
+    }
+    function showError(message) {
+      loadingText.style.display='none';loading.querySelector('.loader-ring').style.display='none';errorText.style.display='block';errorText.textContent=message;
+    }
+    function hideLoader() { loading.classList.add('hide');window.setTimeout(()=>{loading.style.display='none';},800); }
+
+    function updateCharacterCopy(def) {
+      document.getElementById('heroName').textContent=def.name;
+      document.getElementById('heroRole').textContent=def.title;
+      document.getElementById('heroDescription').textContent=def.blurb;
+      document.getElementById('pipName').textContent=def.name.toUpperCase();
+      document.getElementById('pipRole').textContent=def.role;
+    }
+    function announceEmotion(character,mood) {
+      if(!character)return;
+      const words=WORDS[mood]&&WORDS[mood][character.name];
+      const toast=document.getElementById('toast');toast.textContent=words||'';
+      document.getElementById('liveStatus').textContent=words||character.name+' is '+mood+'.';
+      if(G){G.killTweensOf(toast);G.fromTo(toast,{opacity:0,y:8},{opacity:1,y:0,duration:.35,ease:'power2.out'});G.to(toast,{opacity:0,duration:.65,delay:3.1,ease:'power1.in'});}
+      else {toast.style.opacity='1';toast.style.transform='translate(-50%,0)';window.setTimeout(()=>{toast.style.opacity='0';toast.style.transform='translate(-50%,8px)';},3000);}
+    }
+    function selectedDefinition(id) { return DEFINITIONS.find(d=>d.id===id)||DEFINITIONS[0]; }
+    function flyTo(def,duration=1.2) {
+      if(!controls)return;
+      const mobileOffset=window.innerWidth<=620&&viewMode==='showcase'?-.48:0;
+      const target=[def.target[0]+mobileOffset,def.target[1],def.target[2]];
+      if(G){
+        G.to(camera.position,{x:def.camera[0]+mobileOffset,y:def.camera[1],z:def.camera[2],duration:duration,ease:'power3.inOut',overwrite:true});
+        G.to(controls.target,{x:target[0],y:target[1],z:target[2],duration:duration,ease:'power3.inOut',overwrite:true});
+      } else {camera.position.set(def.camera[0],def.camera[1],def.camera[2]);controls.target.set(target[0],target[1],target[2]);}
+    }
+    function switchCharacter(id) {
+      if(switching||id===activeId)return;
+      const def=selectedDefinition(id);switching=true;controls.enabled=false;controls.autoRotate=false;
+      const apply=()=>{
+        characters[activeId].root.visible=false;
+        activeId=id;activeCharacter=characters[id];activeCharacter.root.visible=true;
+        if(G)G.fromTo(activeCharacter.root.scale,{x:.9,y:.9,z:.9},{x:1,y:1,z:1,duration:.72,ease:'back.out(1.25)'});
+        updateCharacterCopy(def);
+        document.querySelectorAll('.character-tab').forEach(b=>{const on=b.dataset.id===id;b.classList.toggle('active',on);b.setAttribute('aria-pressed',on?'true':'false');});
+        activeCharacter.onSpark=(p,n)=>emitSparkles(p,n);
+        activeCharacter.setEmotion(activeCharacter.emotion,false);armIdleChat();
+        document.getElementById('liveStatus').textContent=def.name+', '+def.role+', now in the atelier.';
+        flyTo(def,1.35);
+      };
+      if(G){
+        const tl=G.timeline({onComplete:()=>{switching=false;controls.enabled=true;controls.autoRotate=!REDUCED&&viewMode==='showcase';}});
+        tl.to('#fade',{opacity:.88,duration:.2,ease:'power1.in'})
+          .add(apply)
+          .fromTo('#sweep',{xPercent:-135,opacity:0},{xPercent:260,opacity:.72,duration:.95,ease:'power2.inOut'},'<.04')
+          .to('#fade',{opacity:0,duration:.58,ease:'power1.out'},'<.15')
+          .to('#sweep',{opacity:0,duration:.2},'<');
+      } else {apply();switching=false;controls.enabled=true;controls.autoRotate=!REDUCED&&viewMode==='showcase';}
+    }
+    function setEmotion(mood) {
+      if(!activeCharacter)return;
+      activeCharacter.setEmotion(mood);
+      document.querySelectorAll('.emotion-button').forEach(button=>{
+        const on=button.dataset.mood===mood;button.classList.toggle('active',on);button.setAttribute('aria-pressed',on?'true':'false');
+      });
+      armIdleChat();
+    }
+    /* If the guest stops interacting, the concierge gently switches to the
+       "still deciding" waiting pose on their own. */
+    let idleChatTimer=null;
+    function armIdleChat(){
+      if(idleChatTimer)clearTimeout(idleChatTimer);
+      idleChatTimer=window.setTimeout(()=>{
+        if(viewMode!=='showcase'||!activeCharacter||switching)return;
+        if(activeCharacter.emotion!=='waiting') setEmotion('waiting');
+      },15000);
+    }
+    function resizeStage() {
+      if(!renderer)return;
+      const w=Math.max(1,Math.round(document.getElementById('stage').clientWidth));
+      const h=Math.max(1,Math.round(document.getElementById('stage').clientHeight));
+      if(w!==sizeW||h!==sizeH){
+        sizeW=w;sizeH=h;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();
+        const rect=document.getElementById('pipFrame').getBoundingClientRect();pipCamera.aspect=rect.width/Math.max(1,rect.height);pipCamera.updateProjectionMatrix();
+      }
+    }
+    function setView(mode) {
+      if(mode===viewMode)return;viewMode=mode;
+      const desk=mode==='widget';document.body.classList.toggle('widget-mode',desk);
+      const showcaseButton=document.getElementById('showcaseButton'),widgetButton=document.getElementById('widgetButton');
+      showcaseButton.classList.toggle('active',!desk);widgetButton.classList.toggle('active',desk);
+      showcaseButton.setAttribute('aria-pressed',String(!desk));widgetButton.setAttribute('aria-pressed',String(desk));
+      const canvas=document.getElementById('stage');
+      if(desk){
+        controls.autoRotate=false;
+        const w=Math.min(340,window.innerWidth*.78),h=Math.min(440,window.innerHeight*.56);
+        const x=(window.innerWidth-w)/2,y=(window.innerHeight-h)/2+24;
+        if(G)G.to(canvas,{left:x,top:y,width:w,height:h,borderRadius:21,duration:.82,ease:'power3.inOut'});
+        else Object.assign(canvas.style,{left:x+'px',top:y+'px',width:w+'px',height:h+'px',borderRadius:'21px'});
+        if(G)G.to(camera.position,{x:.1,y:1.48,z:4.2,duration:1,ease:'power3.inOut'});
+        controls.target.set(0,1.18,0);
+        document.getElementById('liveStatus').textContent='Pocket widget view.';
+      } else {
+        if(G)G.to(canvas,{left:0,top:0,width:window.innerWidth,height:window.innerHeight,borderRadius:0,duration:.82,ease:'power3.inOut',onComplete:()=>{canvas.style.transform='none';}});
+        else Object.assign(canvas.style,{left:'0px',top:'0px',width:'100vw',height:'100vh',borderRadius:'0',transform:'none'});
+        canvas.style.transform='none';
+        flyTo(selectedDefinition(activeId),1.1);
+        controls.autoRotate=!REDUCED;
+        document.getElementById('liveStatus').textContent='Full atelier showcase view.';
+      }
+      window.setTimeout(resizeStage,40);
+    }
+
+    function buildStage() {
+      const canvas=document.getElementById('stage');
+      renderer=new THREE.WebGLRenderer({canvas:canvas,antialias:true,alpha:true,powerPreference:'high-performance'});
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));renderer.setSize(window.innerWidth,window.innerHeight,false);
+      renderer.outputEncoding=THREE.sRGBEncoding;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;
+      renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.autoClear=false;renderer.setClearColor(0x000000,0);
+      scene=new THREE.Scene();scene.fog=new THREE.FogExp2(0x080807,.045);scene.environment=makeEnvironment();
+      const mobileOffset=window.innerWidth<=620?-.48:0;
+      camera=new THREE.PerspectiveCamera(39,window.innerWidth/window.innerHeight,.1,70);camera.position.set(.2+mobileOffset,1.53,5.35);
+      controls=new THREE.OrbitControls(camera,canvas);controls.target.set(mobileOffset,1.16,0);controls.enableDamping=true;controls.dampingFactor=.055;controls.enablePan=false;
+      controls.rotateSpeed=.48;controls.minDistance=2.9;controls.maxDistance=7;controls.minPolarAngle=.58;controls.maxPolarAngle=1.54;controls.autoRotate=!REDUCED;controls.autoRotateSpeed=.42;
+      let idleTimer=null;
+      controls.addEventListener('start',()=>{controls.autoRotate=false;if(idleTimer)clearTimeout(idleTimer);});
+      controls.addEventListener('end',()=>{if(idleTimer)clearTimeout(idleTimer);idleTimer=setTimeout(()=>{if(!REDUCED&&viewMode==='showcase')controls.autoRotate=true;},7000);});
+      pipCamera=new THREE.PerspectiveCamera(38,154/190,.1,60);pipCamera.position.set(.05,1.47,3.65);pipCamera.lookAt(0,1.18,0);
+
+      const key=new THREE.DirectionalLight(0xffd9a8,1.25);key.position.set(3.8,5.5,4.1);key.castShadow=true;
+      key.shadow.mapSize.set(1536,1536);key.shadow.camera.left=-3.2;key.shadow.camera.right=3.2;key.shadow.camera.top=4.2;key.shadow.camera.bottom=-1.2;key.shadow.camera.near=.3;key.shadow.camera.far=15;key.shadow.bias=-.00035;scene.add(key);
+      const fill=new THREE.DirectionalLight(0xa6b8dc,.42);fill.position.set(-4,2.7,1.5);scene.add(fill);
+      const rim=new THREE.DirectionalLight(0xffc786,1.6);rim.position.set(-2.5,4.1,-4.6);scene.add(rim);
+      const front=new THREE.PointLight(0xffdfb0,.38,7);front.position.set(.2,2.4,3.7);scene.add(front);
+      scene.add(new THREE.AmbientLight(0x34291e,.55));
+
+      const floor=addMesh(scene,new THREE.CircleGeometry(12,80),standardMat(0x09090b,{roughness:.36,metalness:.45}));floor.rotation.x=-Math.PI/2;floor.position.y=-.015;floor.castShadow=false;floor.receiveShadow=true;
+      const dais=addMesh(scene,new THREE.CylinderGeometry(1.18,1.28,.12,64),standardMat(0x101014,{roughness:.29,metalness:.55}));dais.position.y=.045;
+      const rimRing=addMesh(scene,new THREE.TorusGeometry(1.17,.012,10,88),goldMat());rimRing.rotation.x=Math.PI/2;rimRing.position.y=.108;
+      const innerRing=addMesh(scene,new THREE.TorusGeometry(.99,.004,8,80),standardMat(0x80643b,{metalness:.9,roughness:.38}));innerRing.rotation.x=Math.PI/2;innerRing.position.y=.109;
+      const halo=new THREE.Mesh(new THREE.TorusGeometry(1.24,.006,8,88),new THREE.MeshBasicMaterial({color:0xc8a96a,transparent:true,opacity:.2}));halo.position.set(0,1.36,-.82);scene.add(halo);
+      const halo2=new THREE.Mesh(new THREE.TorusGeometry(1.05,.004,8,88),new THREE.MeshBasicMaterial({color:0x9f8659,transparent:true,opacity:.16}));halo2.position.set(0,1.36,-.83);scene.add(halo2);
+
+      sparkleTexture=makeSparkleTexture();makeDust();
+      DEFINITIONS.forEach(def=>{const character=new def.Character();character.mount(scene);character.root.visible=false;characters[def.id]=character;});
+      activeCharacter=characters[activeId];activeCharacter.root.visible=true;activeCharacter.onSpark=(p,n)=>emitSparkles(p,n);activeCharacter.setEmotion('welcome',false);armIdleChat();
+      updateCharacterCopy(selectedDefinition(activeId));
+      clock=new THREE.Clock();
+
+      const switcher=document.getElementById('switcher');
+      DEFINITIONS.forEach(def=>{
+        const button=document.createElement('button');button.type='button';button.className='character-tab'+(def.id===activeId?' active':'');button.dataset.id=def.id;
+        button.setAttribute('aria-pressed',def.id===activeId?'true':'false');button.setAttribute('aria-label','Meet '+def.name+', '+def.role);
+        button.innerHTML='<span class="tab-dot" style="--char-color:'+def.color+'"></span><span class="tab-name">'+def.name+'</span><span class="tab-role">'+def.role+'</span>';
+        button.addEventListener('click',()=>switchCharacter(def.id));switcher.appendChild(button);
+      });
+      document.querySelectorAll('.emotion-button').forEach(button=>button.addEventListener('click',()=>setEmotion(button.dataset.mood)));
+      document.getElementById('consultButton').addEventListener('click',()=>setEmotion('welcome'));
+      document.getElementById('showcaseButton').addEventListener('click',()=>setView('showcase'));
+      document.getElementById('widgetButton').addEventListener('click',()=>setView('widget'));
+      document.getElementById('pipFrame').addEventListener('click',()=>setView('widget'));
+      window.addEventListener('resize',()=>{
+        if(viewMode==='widget'){
+          const w=Math.min(340,window.innerWidth*.78),h=Math.min(440,window.innerHeight*.56);
+          if(G)G.to(canvas,{left:(window.innerWidth-w)/2,top:(window.innerHeight-h)/2+24,width:w,height:h,duration:.3,ease:'power2.out'});
+          else {canvas.style.left=((window.innerWidth-w)/2)+'px';canvas.style.top=((window.innerHeight-h)/2+24)+'px';canvas.style.width=w+'px';canvas.style.height=h+'px';}
+        }
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));sizeW=0;sizeH=0;
+      });
+      window.addEventListener('pointermove',event=>{
+        pointerX=clamp((event.clientX/window.innerWidth)*2-1,-1,1);pointerY=clamp((event.clientY/window.innerHeight)*2-1,-1,1);
+        if(activeCharacter){activeCharacter.gazeTarget.x=pointerX;activeCharacter.gazeTarget.y=pointerY;}
+      });
+      let downX=0,downY=0;
+      canvas.addEventListener('pointerdown',event=>{downX=event.clientX;downY=event.clientY;armIdleChat();});
+      canvas.addEventListener('pointerup',event=>{
+        if(Math.hypot(event.clientX-downX,event.clientY-downY)>5||viewMode!=='showcase')return;
+        const rect=canvas.getBoundingClientRect();const ndc=new THREE.Vector2(((event.clientX-rect.left)/rect.width)*2-1,-((event.clientY-rect.top)/rect.height)*2+1);
+        raycaster.setFromCamera(ndc,camera);
+        /* Tap the character itself and it reacts -- a different one each time. */
+        if(activeCharacter){
+          const hits=raycaster.intersectObject(activeCharacter.root,true);
+          if(hits.length){
+            activeCharacter.react();
+            if(activeCharacter.onSpark)activeCharacter.onSpark(hits[0].point,8);
+            return;
+          }
+        }
+        const point=new THREE.Vector3();
+        if(raycaster.ray.intersectPlane(floorPlane,point))emitSparkles(point,9);
+      });
+      document.getElementById('pipFrame').addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();setView('widget');}});
+
+      function frame() {
+        requestAnimationFrame(frame);
+        const dt=Math.min(clock.getDelta(),.05),time=clock.elapsedTime;
+        if(activeCharacter)activeCharacter.update(dt,time);
+        controls.update();updateDust(dt,time);updateSparkles(dt);resizeStage();
+        const stageCanvas=document.getElementById('stage');const w=stageCanvas.clientWidth,h=stageCanvas.clientHeight;
+        renderer.setScissorTest(false);renderer.setViewport(0,0,w,h);renderer.clear(true,true,true);renderer.render(scene,camera);
+        if(viewMode==='showcase'){
+          const rect=document.getElementById('pipFrame').getBoundingClientRect();
+          const sx=Math.round(rect.left),sy=Math.round(window.innerHeight-rect.bottom),sw=Math.round(rect.width),sh=Math.round(rect.height);
+          if(sw>0&&sh>0){pipCamera.aspect=sw/sh;pipCamera.updateProjectionMatrix();renderer.setScissorTest(true);renderer.setScissor(sx,sy,sw,sh);renderer.setViewport(sx,sy,sw,sh);renderer.clearDepth();renderer.render(scene,pipCamera);renderer.setScissorTest(false);}
+        }
+      }
+      frame();
+      if(G){
+        G.from('#brand',{opacity:0,y:-12,duration:.8,delay:.2,ease:'power2.out'});
+        G.from('#modeSwitch',{opacity:0,y:-12,duration:.8,delay:.3,ease:'power2.out'});
+        G.from('#heroCopy',{opacity:0,x:-16,duration:1,delay:.38,ease:'power3.out'});
+        G.from('.character-tab',{opacity:0,y:16,duration:.65,stagger:.07,delay:.55,ease:'power3.out'});
+        G.from('.emotion-button',{opacity:0,x:14,duration:.55,stagger:.07,delay:.68,ease:'power2.out'});
+        G.from('#pipFrame',{opacity:0,y:12,duration:.7,delay:.82,ease:'power2.out'});
+      }
+      window.setTimeout(hideLoader,650);
+    }
+
+    // Exportable character constructors and a self-contained mount helper.
+    window.LumiereAtelier = {
+      version:'1.0.0',
+      characters:{AshaCharacter:AshaCharacter,MochiCharacter:MochiCharacter,NoorCharacter:NoorCharacter,TaraCharacter:TaraCharacter,GiaCharacter:GiaCharacter,PipCharacter:PipCharacter},
+      mountStandaloneWidget:function(CharacterClass,container,options={}){
+        const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+        const width=options.width||300,height=options.height||390;renderer.setSize(width,height,false);renderer.outputEncoding=THREE.sRGBEncoding;renderer.toneMapping=THREE.ACESFilmicToneMapping;
+        renderer.domElement.style.cssText='width:100%;height:100%;display:block;border-radius:inherit;';container.appendChild(renderer.domElement);
+        const scene=new THREE.Scene();scene.environment=makeEnvironment(renderer);
+        const camera=new THREE.PerspectiveCamera(38,width/height,.1,50);camera.position.set(0,1.45,3.9);camera.lookAt(0,1.2,0);
+        scene.add(new THREE.AmbientLight(0x34291e,.6));const key=new THREE.DirectionalLight(0xffd9a8,1.25);key.position.set(3,5,4);scene.add(key);const rim=new THREE.DirectionalLight(0xffc786,1.4);rim.position.set(-2,4,-4);scene.add(rim);
+        const character=new CharacterClass();character.mount(scene);character.setEmotion(options.emotion||'welcome');const clock=new THREE.Clock();let alive=true;
+        function render(){if(!alive)return;requestAnimationFrame(render);const dt=Math.min(clock.getDelta(),.05);character.update(dt,clock.elapsedTime);renderer.render(scene,camera);}render();
+        return {character:character,renderer:renderer,scene:scene,dispose:function(){alive=false;character.dispose();renderer.dispose();if(renderer.domElement.parentNode)renderer.domElement.parentNode.removeChild(renderer.domElement);}};
+      }
+    };
+
+    try { buildStage(); }
+    catch (error) { console.error(error);showError('The atelier could not open. '+(error&&error.message?error.message:'Please refresh and try again.')); }
+  })();
+  </script>
+</body>
+</html>
