@@ -67,6 +67,7 @@
   <button class="primary" id="btnPlay">▶ Run bubble sort</button>
   <button id="btnStep">Step</button>
   <button id="btnShuffle">Shuffle</button>
+  <button id="btnSquad" style="background:rgba(111,217,190,.15);border-color:#6FD9BE;color:#6FD9BE">Squad: 8 Mascots</button>
   <button id="btnSpeed">Speed ×1</button>
   <button id="btnSpin">Auto-orbit</button>
 </div>
@@ -90,9 +91,10 @@
 
   /* ---------------------------------------------------------------- config */
   var SPACING = 1.10;                       // slot pitch, matches the sheets
-  var IDS = ['gaja', 'diya', 'kumbha', 'grantha', 'dhanesh', 'salya'];
-  var START = [8, 1, 7, 2, 4, 6];
-  var CAM = { yaw: 0.0, pitch: 0.30, dist: 5.4, target: { x: 0, y: 0.62, z: 0 } };
+  var ALL_IDS = ['gaja', 'diya', 'kumbha', 'grantha', 'dhanesh', 'salya', 'mayur', 'patra'];
+  var IDS = ['gaja', 'diya', 'kumbha', 'grantha', 'dhanesh', 'salya', 'mayur', 'patra'];
+  var START = [8, 3, 7, 1, 5, 2, 6, 4];
+  var CAM = { yaw: 0.0, pitch: 0.30, dist: 6.8, target: { x: 0, y: 0.62, z: 0 } };
 
   var stage = document.getElementById('stage');
   var renderer = new T.WebGLRenderer({ antialias: true, alpha: false });
@@ -125,6 +127,13 @@
     }
     return audioCtx;
   }
+
+  // Global user gesture listener for immediate zero-lag audio unlock
+  ['pointerdown', 'touchstart', 'click', 'keydown'].forEach(function(ev) {
+    window.addEventListener(ev, function() {
+      getAudio();
+    }, { once: true, passive: true });
+  });
 
   function playSound(type) {
     var ctx = getAudio();
@@ -439,8 +448,11 @@
       play('Hop', a, 0.08); play('Hop', b, 0.08);
       st.fromA = S.slotX[st.i]; st.fromB = S.slotX[st.j];
       st.done = false;
-      if (a === 'diya' || b === 'diya') {
-        spawnFlameEmbers(S.slotX[st.i], 0.75, 0, 12);
+      if (a === 'diya') {
+        spawnFlameEmbers(S.slotX[st.i], 0.75, 0, 14);
+      }
+      if (b === 'diya') {
+        spawnFlameEmbers(S.slotX[st.j], 0.75, 0, 14);
       }
       setStatus('swap — both <b>hop</b>, the slot translation carries them past each other');
     } else if (st.kind === 'noswap') {
@@ -479,11 +491,16 @@
         play('Land', idB, 0.06);
         updateChips();
 
-        // Audio & impact reaction
+        // Audio & impact reaction at exact character coordinates
         if (idA === 'gaja' || idB === 'gaja') {
-          triggerCameraShake(0.045, 0.38);
+          var gajaSlotX = (idA === 'gaja') ? S.slotX[st.i] : S.slotX[st.j];
+          triggerCameraShake(0.05, 0.40);
           playSound('gaja_stomp');
-          spawnDustPuff(S.slotX[st.i], 0, 18);
+          spawnDustPuff(gajaSlotX, 0, 20);
+        } else if (idA === 'salya' || idB === 'salya') {
+          var salyaSlotX = (idA === 'salya') ? S.slotX[st.i] : S.slotX[st.j];
+          triggerCameraShake(0.025, 0.25);
+          spawnDustPuff(salyaSlotX, 0, 10);
         } else if (idA === 'kumbha' || idB === 'kumbha') {
           playSound('kumbha_chime');
         } else if (idA === 'grantha' || idB === 'grantha') {
@@ -562,6 +579,28 @@
     this.classList.toggle('primary', autoSpin);
   });
 
+  // Squad toggle (Switch between 8-Mascot Full Roster and 6-Mascot Core Squad)
+  var isEight = true;
+  document.getElementById('btnSquad').addEventListener('click', function () {
+    isEight = !isEight;
+    if (isEight) {
+      IDS = ['gaja', 'diya', 'kumbha', 'grantha', 'dhanesh', 'salya', 'mayur', 'patra'];
+      START = [8, 3, 7, 1, 5, 2, 6, 4];
+      this.textContent = 'Squad: 8 Mascots';
+      CAM.dist = 6.8;
+    } else {
+      IDS = ['gaja', 'diya', 'kumbha', 'grantha', 'dhanesh', 'salya'];
+      START = [8, 1, 7, 2, 4, 6];
+      this.textContent = 'Squad: 6 Mascots';
+      CAM.dist = 5.4;
+      // hide remaining models
+      ['mayur', 'patra'].forEach(function(id) {
+        if (chars[id]) chars[id].root.position.set(0, -100, 0);
+      });
+    }
+    reset();
+  });
+
   function reset(values) {
     var vals = (values || START).slice();
     // clear one-shot clips back to Idle
@@ -569,7 +608,7 @@
     order = vals.map(function (v, i) { return { value: v, id: IDS[i] }; });
     S.steps = makeSteps(vals);
     S.step = 0; S.t = 0; S.playing = false;
-    S.slotX = vals.map(function (_, i) { return (i - 2) * SPACING; });
+    var mid = (vals.length - 1) / 2; S.slotX = vals.map(function (_, i) { return (i - mid) * SPACING; });
     chipEls.forEach(function (c) { c.classList.remove('on', 'done'); });
     buildChips(vals);
     setStatus('ready — <b>' + vals.join(' · ') + '</b> — press Run');
@@ -640,7 +679,7 @@
 
   /* ------------------------------------------------------------------ boot */
   setStatus('loading models…');
-  Promise.all(IDS.map(load)).then(function () {
+  Promise.all(ALL_IDS.map(load)).then(function () {
     reset(START);
     IDS.forEach(function (id) { play('Idle', id, 0.0); });
     frame();
