@@ -235,13 +235,14 @@
     for (var pass = 0; pass < n - 1; pass++) {
       var swapped = false;
       for (var i = 0; i < n - 1 - pass; i++) {
-        steps.push({ kind: 'compare', i: i, j: i + 1, dur: 0.75 });
+        var j = i + 1;
+        steps.push({ kind: 'compare', i: i, j: j, dur: 0.75 });
         if (arr[i] > arr[j]) {
-          steps.push({ kind: 'swap', i: i, j: i + 1, dur: 0.62 });
+          steps.push({ kind: 'swap', i: i, j: j, dur: 0.62 });
           var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
           swapped = true;
         } else {
-          steps.push({ kind: 'noswap', i: i, j: i + 1, dur: 0.85 });
+          steps.push({ kind: 'noswap', i: i, j: j, dur: 0.85 });
         }
       }
       if (!swapped) break;
