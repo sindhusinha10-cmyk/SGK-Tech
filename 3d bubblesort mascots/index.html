@@ -169,6 +169,7 @@
     });
   }
 
+  var loadedCount = 0;
   function load(id) {
     return new Promise(function (res, rej) {
       loader.load('models/' + id + '.glb', function (g) {
@@ -201,8 +202,13 @@
                       bone: root.getObjectByName('badge'), el: el,
                       meta: (g.scene.getObjectByName(id + '_mesh') || {}).userData || {} };
         scene.add(root);
+        loadedCount++;
+        setStatus('loading models… (' + loadedCount + '/' + IDS.length + ')');
         res();
-      }, undefined, rej);
+      }, undefined, function (err) {
+        console.error('Error loading ' + id, err);
+        rej(err);
+      });
     });
   }
 
