@@ -110,6 +110,178 @@
   scene.fog = new T.Fog(0x0B0D12, 7, 15);
   var camera = new T.PerspectiveCamera(34, innerWidth / innerHeight, 0.1, 100);
 
+
+  /* -------------------------------------------------------------- Audio & FX (Web Audio API) */
+  var audioCtx = null;
+  function getAudio() {
+    if (!audioCtx) {
+      try {
+        var AC = window.AudioContext || window.webkitAudioContext;
+        if (AC) audioCtx = new AC();
+      } catch (e) {}
+    }
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+    return audioCtx;
+  }
+
+  function playSound(type) {
+    var ctx = getAudio();
+    if (!ctx) return;
+    var t0 = ctx.currentTime;
+
+    if (type === 'gaja_stomp') {
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(120, t0);
+      osc.frequency.exponentialRampToValueAtTime(28, t0 + 0.35);
+      gain.gain.setValueAtTime(0.65, t0);
+      gain.gain.exponentialRampToValueAtTime(0.001, t0 + 0.40);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(t0);
+      osc.stop(t0 + 0.40);
+    } else if (type === 'kumbha_chime') {
+      [587.33, 880.0, 1174.66, 1760.0].forEach(function(freq, i) {
+        var osc = ctx.createOscillator();
+        var gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, t0);
+        var vol = 0.28 / (i + 1);
+        gain.gain.setValueAtTime(vol, t0);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.85 + i * 0.15);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(t0);
+        osc.stop(t0 + 1.2);
+      });
+    } else if (type === 'grantha_clap') {
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(320, t0);
+      osc.frequency.exponentialRampToValueAtTime(80, t0 + 0.08);
+      gain.gain.setValueAtTime(0.40, t0);
+      gain.gain.exponentialRampToValueAtTime(0.001, t0 + 0.09);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(t0);
+      osc.stop(t0 + 0.10);
+    } else if (type === 'whoosh') {
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(220, t0);
+      osc.frequency.exponentialRampToValueAtTime(540, t0 + 0.25);
+      gain.gain.setValueAtTime(0.18, t0);
+      gain.gain.exponentialRampToValueAtTime(0.001, t0 + 0.32);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(t0);
+      osc.stop(t0 + 0.35);
+    }
+  }
+
+  // Camera Shake
+  var camShake = { time: 0, dur: 0, amp: 0 };
+  function triggerCameraShake(amp, dur) {
+    camShake.amp = amp || 0.04;
+    camShake.dur = dur || 0.35;
+    camShake.time = camShake.dur;
+  }
+
+  // Particle System (Embers & Dust)
+  var particles = [];
+  var pGeo = new T.BufferGeometry();
+  var MAX_P = 200;
+  var pPos = new Float32Array(MAX_P * 3);
+  var pCol = new Float32Array(MAX_P * 3);
+  pGeo.setAttribute('position', new T.BufferAttribute(pPos, 3));
+  pGeo.setAttribute('color', new T.BufferAttribute(pCol, 3));
+  var pMat = new T.PointsMaterial({
+    size: 0.065,
+    vertexColors: true,
+    transparent: true,
+    opacity: 0.85,
+    blending: T.AdditiveBlending,
+    depthWrite: false
+  });
+  var pPoints = new T.Points(pGeo, pMat);
+  scene.add(pPoints);
+
+  function spawnDustPuff(x, z, count) {
+    count = count || 16;
+    for (var i = 0; i < count; i++) {
+      if (particles.length >= MAX_P) particles.shift();
+      var ang = Math.random() * Math.PI * 2;
+      var spd = 0.8 + Math.random() * 1.4;
+      particles.push({
+        x: x, y: 0.04, z: z,
+        vx: Math.cos(ang) * spd,
+        vy: 0.4 + Math.random() * 0.6,
+        vz: Math.sin(ang) * spd,
+        life: 0.45 + Math.random() * 0.25,
+        maxLife: 0.70,
+        r: 0.75, g: 0.70, b: 0.62
+      });
+    }
+  }
+
+  function spawnFlameEmbers(x, y, z, count) {
+    count = count || 6;
+    for (var i = 0; i < count; i++) {
+      if (particles.length >= MAX_P) particles.shift();
+      particles.push({
+        x: x + (Math.random() - 0.5) * 0.12,
+        y: y,
+        z: z + (Math.random() - 0.5) * 0.12,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: 0.8 + Math.random() * 0.8,
+        vz: (Math.random() - 0.5) * 0.4,
+        life: 0.35 + Math.random() * 0.20,
+        maxLife: 0.55,
+        r: 1.0, g: 0.55, b: 0.12
+      });
+    }
+  }
+
+  function updateParticles(dt) {
+    for (var i = particles.length - 1; i >= 0; i--) {
+      var p = particles[i];
+      p.life -= dt;
+      if (p.life <= 0) {
+        particles.splice(i, 1);
+        continue;
+      }
+      p.x += p.vx * dt;
+      p.y += p.vy * dt;
+      p.z += p.vz * dt;
+      p.vy -= 2.2 * dt;
+    }
+    var positions = pGeo.attributes.position.array;
+    var colors = pGeo.attributes.color.array;
+    for (var j = 0; j < MAX_P; j++) {
+      if (j < particles.length) {
+        var pt = particles[j];
+        positions[j * 3] = pt.x;
+        positions[j * 3 + 1] = pt.y;
+        positions[j * 3 + 2] = pt.z;
+        var fade = Math.max(0, pt.life / pt.maxLife);
+        colors[j * 3] = pt.r * fade;
+        colors[j * 3 + 1] = pt.g * fade;
+        colors[j * 3 + 2] = pt.b * fade;
+      } else {
+        positions[j * 3] = 0;
+        positions[j * 3 + 1] = -100;
+        positions[j * 3 + 2] = 0;
+      }
+    }
+    pGeo.attributes.position.needsUpdate = true;
+    pGeo.attributes.color.needsUpdate = true;
+  }
+
   /* ------------------------------------------------------------- lighting */
   scene.add(new T.HemisphereLight(0x5A6478, 0x0E0F14, 0.75));
   var key = new T.DirectionalLight(0xFFF3E2, 2.1);
@@ -263,9 +435,13 @@
                 '</b> — ' + (valueAtSlot(st.i) > valueAtSlot(st.j) ? 'swap needed' : 'already in order'));
       chipEls.forEach(function (c, k) { c.classList.toggle('on', k === st.i || k === st.j); });
     } else if (st.kind === 'swap') {
+      playSound('whoosh');
       play('Hop', a, 0.08); play('Hop', b, 0.08);
       st.fromA = S.slotX[st.i]; st.fromB = S.slotX[st.j];
       st.done = false;
+      if (a === 'diya' || b === 'diya') {
+        spawnFlameEmbers(S.slotX[st.i], 0.75, 0, 12);
+      }
       setStatus('swap — both <b>hop</b>, the slot translation carries them past each other');
     } else if (st.kind === 'noswap') {
       play('NoSwap', a, 0.12); play('NoSwap', b, 0.12);
@@ -298,9 +474,21 @@
         st.done = true;
         var tmp = order[st.i]; order[st.i] = order[st.j]; order[st.j] = tmp;
         S.slotX[st.i] = st.fromB; S.slotX[st.j] = st.fromA;
-        play('Land', idAtSlot(st.i), 0.06);
-        play('Land', idAtSlot(st.j), 0.06);
+        var idA = idAtSlot(st.i), idB = idAtSlot(st.j);
+        play('Land', idA, 0.06);
+        play('Land', idB, 0.06);
         updateChips();
+
+        // Audio & impact reaction
+        if (idA === 'gaja' || idB === 'gaja') {
+          triggerCameraShake(0.045, 0.38);
+          playSound('gaja_stomp');
+          spawnDustPuff(S.slotX[st.i], 0, 18);
+        } else if (idA === 'kumbha' || idB === 'kumbha') {
+          playSound('kumbha_chime');
+        } else if (idA === 'grantha' || idB === 'grantha') {
+          playSound('grantha_clap');
+        }
       }
     }
     if (S.t >= (st.kind === 'swap' ? st.dur + 0.45 : st.dur)) {
@@ -413,14 +601,24 @@
 
     if (autoSpin) CAM.yaw += dt * 0.14;
 
+    updateParticles(dt);
+
+    // camera shake decay
+    var shakeOffsetY = 0;
+    if (camShake.time > 0) {
+      camShake.time -= dt;
+      var sFrac = Math.max(0, camShake.time / camShake.dur);
+      shakeOffsetY = Math.sin(camShake.time * 45) * camShake.amp * sFrac;
+    }
+
     // camera
     var cp = Math.cos(CAM.pitch), sp = Math.sin(CAM.pitch);
     camera.position.set(
       CAM.target.x + Math.sin(CAM.yaw) * CAM.dist * cp,
-      CAM.target.y + CAM.dist * sp + 0.25,
+      CAM.target.y + CAM.dist * sp + 0.25 + shakeOffsetY,
       CAM.target.z + Math.cos(CAM.yaw) * CAM.dist * cp
     );
-    camera.lookAt(CAM.target.x, CAM.target.y, CAM.target.z);
+    camera.lookAt(CAM.target.x, CAM.target.y + shakeOffsetY * 0.5, CAM.target.z);
 
     // ---- number labels: live text projected onto the badge bone ----
     IDS.forEach(function (id) {
