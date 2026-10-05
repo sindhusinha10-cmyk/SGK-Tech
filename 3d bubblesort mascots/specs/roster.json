@@ -4,29 +4,29 @@
    "id": "gaja",
    "name": "Gaja",
    "role": "The Heavyweight Anchor",
-   "height": 1.245,
-   "width": 1.0024,
-   "depth": 0.9383,
+   "height": 1.285,
+   "width": 1.0988,
+   "depth": 0.9971,
    "bbox_min": [
-    -0.5012,
+    -0.5494,
     0.0,
-    -0.34
+    -0.365
    ],
    "bbox_max": [
-    0.5012,
-    1.245,
-    0.5983
+    0.5494,
+    1.285,
+    0.6321
    ],
-   "triangles": 12460,
-   "vertices": 7008,
+   "triangles": 11272,
+   "vertices": 6444,
    "badge_anchor": [
     0.0,
     0.52,
-    0.3487
+    0.3737
    ],
    "badge_size": [
-    0.19,
-    0.115
+    0.195,
+    0.12
    ],
    "clip_order": [
     "Idle",
@@ -38,10 +38,10 @@
     "NoSwap",
     "Success"
    ],
-   "part_count": 31,
+   "part_count": 36,
    "joint_count": 21,
    "file": "models/gaja.glb",
-   "bytes": 664916,
+   "bytes": 610176,
    "clips": [
     {
      "name": "Idle",
@@ -104,48 +104,48 @@
     "badge": {
      "surface": "badge",
      "color": [
-      0.9301,
-      0.8879,
-      0.807
+      0.9387,
+      0.9047,
+      0.8228
      ],
      "metallic": 0.0,
-     "roughness": 0.52,
+     "roughness": 0.5,
      "alpha": 1.0,
      "texture": "matte"
     },
     "badge_rim": {
      "surface": "badge_rim",
      "color": [
-      0.5776,
-      0.3372,
-      0.0612
+      0.6584,
+      0.3763,
+      0.0648
      ],
-     "metallic": 0.85,
-     "roughness": 0.3,
+     "metallic": 0.88,
+     "roughness": 0.28,
      "alpha": 1.0,
      "texture": null
     },
     "ear_inner": {
      "surface": "ear_inner",
      "color": [
-      0.7305,
-      0.2542,
-      0.1714
+      0.7758,
+      0.2623,
+      0.1812
      ],
      "metallic": 0.0,
-     "roughness": 0.6,
+     "roughness": 0.55,
      "alpha": 1.0,
      "texture": null
     },
     "eye_dark": {
      "surface": "eye_dark",
      "color": [
-      0.0075,
-      0.0075,
-      0.011
+      0.008,
+      0.008,
+      0.0123
      ],
      "metallic": 0.0,
-     "roughness": 0.1,
+     "roughness": 0.08,
      "alpha": 1.0,
      "texture": null
     },
@@ -153,23 +153,35 @@
      "surface": "eye_glint",
      "color": [
       1.0,
-      0.9473,
-      0.855
+      1.0,
+      1.0
      ],
      "metallic": 0.0,
-     "roughness": 0.25,
+     "roughness": 0.2,
      "alpha": 1.0,
      "texture": null
     },
     "lid": {
      "surface": "lid",
      "color": [
-      0.1329,
-      0.1845,
-      0.2502
+      0.0802,
+      0.1384,
+      0.2086
      ],
-     "metallic": 0.02,
+     "metallic": 0.01,
      "roughness": 0.5,
+     "alpha": 1.0,
+     "texture": null
+    },
+    "mouth_dark": {
+     "surface": "mouth_dark",
+     "color": [
+      0.2086,
+      0.0252,
+      0.0252
+     ],
+     "metallic": 0.0,
+     "roughness": 0.4,
      "alpha": 1.0,
      "texture": null
     },
@@ -188,24 +200,24 @@
     "skin": {
      "surface": "skin",
      "color": [
-      0.1529,
-      0.2086,
-      0.2789
+      0.1022,
+      0.1746,
+      0.2623
      ],
-     "metallic": 0.02,
-     "roughness": 0.55,
+     "metallic": 0.01,
+     "roughness": 0.52,
      "alpha": 1.0,
-     "texture": "stone"
+     "texture": "ceramic"
     },
     "skin_light": {
      "surface": "skin_light",
      "color": [
-      0.2384,
-      0.3278,
-      0.4342
+      0.2016,
+      0.305,
+      0.4233
      ],
-     "metallic": 0.02,
-     "roughness": 0.5,
+     "metallic": 0.01,
+     "roughness": 0.48,
      "alpha": 1.0,
      "texture": null
     },
@@ -213,11 +225,11 @@
      "surface": "tusk",
      "color": [
       1.0,
-      0.9387,
-      0.7991
+      0.9823,
+      0.8879
      ],
      "metallic": 0.0,
-     "roughness": 0.25,
+     "roughness": 0.22,
      "alpha": 1.0,
      "texture": null
     }
@@ -288,9 +300,9 @@
      "parent": "head",
      "group": "face",
      "rest": [
-      -0.125,
-      0.97,
-      0.3117
+      -0.13,
+      0.985,
+      0.3369
      ]
     },
     {
@@ -298,9 +310,9 @@
      "parent": "head",
      "group": "face",
      "rest": [
-      0.125,
-      0.97,
-      0.3117
+      0.13,
+      0.985,
+      0.3369
      ]
     },
     {
@@ -308,9 +320,9 @@
      "parent": "head",
      "group": "face",
      "rest": [
-      -0.125,
-      0.97,
-      0.3117
+      -0.13,
+      0.985,
+      0.3369
      ]
     },
     {
@@ -318,9 +330,9 @@
      "parent": "head",
      "group": "face",
      "rest": [
-      0.125,
-      0.97,
-      0.3117
+      0.13,
+      0.985,
+      0.3369
      ]
     },
     {
@@ -330,7 +342,7 @@
      "rest": [
       0.0,
       0.52,
-      0.3487
+      0.3737
      ]
     },
     {
@@ -338,7 +350,7 @@
      "parent": "hips",
      "group": "core",
      "rest": [
-      -0.185,
+      -0.19,
       0.2,
       0.0
      ]
@@ -348,7 +360,7 @@
      "parent": "hips",
      "group": "core",
      "rest": [
-      0.185,
+      0.19,
       0.2,
       0.0
      ]
@@ -369,8 +381,8 @@
      "group": "extra",
      "rest": [
       0.0,
-      0.84,
-      0.3
+      0.88,
+      0.32
      ]
     },
     {
@@ -379,8 +391,8 @@
      "group": "extra",
      "rest": [
       0.0,
-      0.82,
-      0.41
+      0.84,
+      0.44
      ]
     },
     {
@@ -389,8 +401,8 @@
      "group": "extra",
      "rest": [
       0.0,
-      0.9,
-      0.49
+      0.96,
+      0.52
      ]
     },
     {
@@ -398,9 +410,9 @@
      "parent": "head",
      "group": "extra",
      "rest": [
-      -0.36,
-      0.98,
-      -0.04
+      -0.41,
+      0.99,
+      -0.06
      ]
     },
     {
@@ -408,9 +420,9 @@
      "parent": "head",
      "group": "extra",
      "rest": [
-      0.36,
-      0.98,
-      -0.04
+      0.41,
+      0.99,
+      -0.06
      ]
     },
     {
@@ -418,9 +430,9 @@
      "parent": "chest",
      "group": "extra",
      "rest": [
-      -0.26,
-      0.68,
-      0.05
+      -0.28,
+      0.69,
+      0.06
      ]
     },
     {
@@ -428,49 +440,49 @@
      "parent": "chest",
      "group": "extra",
      "rest": [
-      0.26,
-      0.68,
-      0.05
+      0.28,
+      0.69,
+      0.06
      ]
     }
    ],
    "palette_srgb": [
-    "#6D7E90",
-    "#869BB0",
-    "#DE8A73",
-    "#FFF8E7"
+    "#5A748C",
+    "#7C96AE",
+    "#E48C76",
+    "#FFFDF2"
    ],
    "blurb": "bipedal baby elephant mascot with floppy ears and curved trunk",
-   "build_seconds": 1.38
+   "build_seconds": 0.96
   },
   {
-   "ground_shift": -0.0375,
+   "ground_shift": -0.0425,
    "id": "mayur",
    "name": "Mayur",
    "role": "The Pattern Comparator",
-   "height": 1.1335,
-   "width": 1.4234,
-   "depth": 0.56,
+   "height": 1.2317,
+   "width": 1.5501,
+   "depth": 0.5993,
    "bbox_min": [
-    -0.7117,
+    -0.775,
     0.0,
-    -0.245
+    -0.26
    ],
    "bbox_max": [
-    0.7117,
-    1.1335,
-    0.315
+    0.775,
+    1.2317,
+    0.3393
    ],
-   "triangles": 13696,
-   "vertices": 7830,
+   "triangles": 14664,
+   "vertices": 8504,
    "badge_anchor": [
     0.0,
     0.38,
-    0.2565
+    0.2722
    ],
    "badge_size": [
-    0.165,
-    0.105
+    0.17,
+    0.11
    ],
    "clip_order": [
     "Idle",
@@ -482,10 +494,10 @@
     "NoSwap",
     "Success"
    ],
-   "part_count": 45,
+   "part_count": 59,
    "joint_count": 18,
    "file": "models/mayur.glb",
-   "bytes": 682740,
+   "bytes": 729284,
    "clips": [
     {
      "name": "Idle",
@@ -548,24 +560,24 @@
     "badge": {
      "surface": "badge",
      "color": [
-      0.9301,
-      0.8879,
-      0.807
+      0.9387,
+      0.9047,
+      0.8228
      ],
      "metallic": 0.0,
-     "roughness": 0.52,
+     "roughness": 0.5,
      "alpha": 1.0,
      "texture": "matte"
     },
     "badge_rim": {
      "surface": "badge_rim",
      "color": [
-      0.5776,
-      0.3372,
-      0.0612
+      0.6584,
+      0.3763,
+      0.0648
      ],
-     "metallic": 0.85,
-     "roughness": 0.3,
+     "metallic": 0.88,
+     "roughness": 0.28,
      "alpha": 1.0,
      "texture": null
     },
@@ -577,31 +589,31 @@
       0.6308
      ],
      "metallic": 0.0,
-     "roughness": 0.3,
+     "roughness": 0.28,
      "alpha": 1.0,
      "texture": null
     },
     "body_teal": {
      "surface": "body_teal",
      "color": [
-      0.0242,
-      0.2086,
-      0.2623
+      0.0176,
+      0.1683,
+      0.2346
      ],
-     "metallic": 0.04,
-     "roughness": 0.38,
+     "metallic": 0.03,
+     "roughness": 0.35,
      "alpha": 1.0,
      "texture": null
     },
     "eye_dark": {
      "surface": "eye_dark",
      "color": [
-      0.0075,
-      0.0075,
-      0.011
+      0.008,
+      0.008,
+      0.0123
      ],
      "metallic": 0.0,
-     "roughness": 0.1,
+     "roughness": 0.08,
      "alpha": 1.0,
      "texture": null
     },
@@ -609,59 +621,59 @@
      "surface": "eye_glint",
      "color": [
       1.0,
-      0.9473,
-      0.855
+      1.0,
+      1.0
      ],
      "metallic": 0.0,
-     "roughness": 0.25,
+     "roughness": 0.2,
      "alpha": 1.0,
      "texture": null
     },
     "fan_emerald": {
      "surface": "fan_emerald",
      "color": [
-      0.0273,
-      0.3663,
-      0.1714
+      0.0168,
+      0.3095,
+      0.1384
      ],
-     "metallic": 0.08,
-     "roughness": 0.45,
+     "metallic": 0.06,
+     "roughness": 0.4,
      "alpha": 1.0,
      "texture": null
     },
     "fan_gold": {
      "surface": "fan_gold",
      "color": [
-      0.7454,
-      0.4452,
+      0.7758,
+      0.4735,
       0.0723
      ],
-     "metallic": 0.6,
-     "roughness": 0.32,
+     "metallic": 0.7,
+     "roughness": 0.28,
      "alpha": 1.0,
      "texture": null
     },
     "fan_indigo": {
      "surface": "fan_indigo",
      "color": [
-      0.0168,
-      0.0356,
-      0.1441
+      0.0137,
+      0.0284,
+      0.1274
      ],
      "metallic": 0.1,
-     "roughness": 0.25,
+     "roughness": 0.22,
      "alpha": 1.0,
      "texture": null
     },
     "lid": {
      "surface": "lid",
      "color": [
-      0.0168,
-      0.147,
-      0.1845
+      0.0123,
+      0.117,
+      0.162
      ],
-     "metallic": 0.04,
-     "roughness": 0.4,
+     "metallic": 0.03,
+     "roughness": 0.38,
      "alpha": 1.0,
      "texture": null
     },
@@ -744,9 +756,9 @@
      "parent": "head",
      "group": "face",
      "rest": [
-      -0.105,
-      0.7,
-      0.2317
+      -0.11,
+      0.72,
+      0.2464
      ]
     },
     {
@@ -754,9 +766,9 @@
      "parent": "head",
      "group": "face",
      "rest": [
-      0.105,
-      0.7,
-      0.2317
+      0.11,
+      0.72,
+      0.2464
      ]
     },
     {
@@ -764,9 +776,9 @@
      "parent": "head",
      "group": "face",
      "rest": [
-      -0.105,
-      0.7,
-      0.2317
+      -0.11,
+      0.72,
+      0.2464
      ]
     },
     {
@@ -774,9 +786,9 @@
      "parent": "head",
      "group": "face",
      "rest": [
-      0.105,
-      0.7,
-      0.2317
+      0.11,
+      0.72,
+      0.2464
      ]
     },
     {
@@ -786,7 +798,7 @@
      "rest": [
       0.0,
       0.38,
-      0.2565
+      0.2722
      ]
     },
     {
@@ -794,7 +806,7 @@
      "parent": "hips",
      "group": "core",
      "rest": [
-      -0.11,
+      -0.115,
       0.12,
       0.0
      ]
@@ -804,7 +816,7 @@
      "parent": "hips",
      "group": "core",
      "rest": [
-      0.11,
+      0.115,
       0.12,
       0.0
      ]
@@ -825,8 +837,8 @@
      "group": "extra",
      "rest": [
       0.0,
-      0.36,
-      -0.16
+      0.37,
+      -0.17
      ]
     },
     {
@@ -834,9 +846,9 @@
      "parent": "tailFan_root",
      "group": "extra",
      "rest": [
-      -0.18,
-      0.51,
-      -0.16
+      -0.22,
+      0.55,
+      -0.17
      ]
     },
     {
@@ -844,9 +856,9 @@
      "parent": "tailFan_root",
      "group": "extra",
      "rest": [
-      0.18,
-      0.51,
-      -0.16
+      0.22,
+      0.55,
+      -0.17
      ]
     },
     {
@@ -855,47 +867,47 @@
      "group": "extra",
      "rest": [
       0.0,
-      0.9,
+      0.93,
       0.04
      ]
     }
    ],
    "palette_srgb": [
-    "#2B7E8C",
-    "#2EA373",
-    "#E0B24C",
+    "#247285",
+    "#239768",
+    "#E4B74C",
     "#FFF2D0"
    ],
    "blurb": "peacock chick with radiant emerald-and-gold fanned plumage",
-   "build_seconds": 1.23
+   "build_seconds": 0.84
   },
   {
    "id": "diya",
    "name": "Diya",
    "role": "The Traversal Pointer",
-   "height": 0.9733,
-   "width": 0.703,
-   "depth": 0.6161,
+   "height": 1.0969,
+   "width": 0.722,
+   "depth": 0.6965,
    "bbox_min": [
-    -0.3515,
+    -0.361,
     0.0,
-    -0.3
+    -0.32
    ],
    "bbox_max": [
-    0.3515,
-    0.9733,
-    0.3161
+    0.361,
+    1.0969,
+    0.3765
    ],
-   "triangles": 4872,
-   "vertices": 2794,
+   "triangles": 6244,
+   "vertices": 3582,
    "badge_anchor": [
     0.0,
-    0.16,
-    0.278
+    0.155,
+    0.2896
    ],
    "badge_size": [
-    0.175,
-    0.095
+    0.18,
+    0.1
    ],
    "clip_order": [
     "Idle",
@@ -907,10 +919,10 @@
     "NoSwap",
     "Success"
    ],
-   "part_count": 17,
+   "part_count": 21,
    "joint_count": 16,
    "file": "models/diya.glb",
-   "bytes": 326708,
+   "bytes": 384648,
    "clips": [
     {
      "name": "Idle",
@@ -973,48 +985,48 @@
     "badge": {
      "surface": "badge",
      "color": [
-      0.9301,
-      0.8879,
-      0.807
+      0.9387,
+      0.9047,
+      0.8228
      ],
      "metallic": 0.0,
-     "roughness": 0.52,
+     "roughness": 0.5,
      "alpha": 1.0,
      "texture": "matte"
     },
     "badge_rim": {
      "surface": "badge_rim",
      "color": [
-      0.5776,
-      0.3372,
-      0.0612
+      0.6584,
+      0.3763,
+      0.0648
      ],
-     "metallic": 0.85,
-     "roughness": 0.3,
+     "metallic": 0.88,
+     "roughness": 0.28,
      "alpha": 1.0,
      "texture": null
     },
     "clay": {
      "surface": "clay",
      "color": [
-      0.5776,
-      0.147,
-      0.0561
+      0.5089,
+      0.117,
+      0.0395
      ],
      "metallic": 0.01,
-     "roughness": 0.65,
+     "roughness": 0.62,
      "alpha": 1.0,
      "texture": "ceramic"
     },
     "clay_dark": {
      "surface": "clay_dark",
      "color": [
-      0.314,
-      0.0704,
-      0.0232
+      0.2623,
+      0.0561,
+      0.0185
      ],
      "metallic": 0.01,
-     "roughness": 0.68,
+     "roughness": 0.66,
      "alpha": 1.0,
      "texture": null
     },
@@ -1022,23 +1034,23 @@
      "surface": "ember",
      "color": [
       1.0,
-      0.1441,
+      0.1221,
       0.0
      ],
      "metallic": 0.0,
-     "roughness": 0.2,
+     "roughness": 0.18,
      "alpha": 1.0,
      "texture": null
     },
     "eye_dark": {
      "surface": "eye_dark",
      "color": [
-      0.0075,
-      0.0075,
-      0.011
+      0.008,
+      0.008,
+      0.0123
      ],
      "metallic": 0.0,
-     "roughness": 0.1,
+     "roughness": 0.08,
      "alpha": 1.0,
      "texture": null
     },
@@ -1046,11 +1058,11 @@
      "surface": "eye_glint",
      "color": [
       1.0,
-      0.9473,
-      0.855
+      1.0,
+      1.0
      ],
      "metallic": 0.0,
-     "roughness": 0.25,
+     "roughness": 0.2,
      "alpha": 1.0,
      "texture": null
     },
@@ -1058,11 +1070,11 @@
      "surface": "flame_core",
      "color": [
       1.0,
-      0.8879,
-      0.4452
+      0.9216,
+      0.6038
      ],
      "metallic": 0.0,
-     "roughness": 0.15,
+     "roughness": 0.1,
      "alpha": 1.0,
      "texture": null
     },
@@ -1070,23 +1082,35 @@
      "surface": "flame_outer",
      "color": [
       1.0,
-      0.4179,
-      0.0331
+      0.3663,
+      0.0103
      ],
      "metallic": 0.0,
-     "roughness": 0.2,
-     "alpha": 0.88,
+     "roughness": 0.15,
+     "alpha": 0.9,
      "texture": null
     },
     "lid": {
      "surface": "lid",
      "color": [
-      0.4793,
-      0.1144,
-      0.0395
+      0.4179,
+      0.0887,
+      0.0273
      ],
      "metallic": 0.01,
-     "roughness": 0.6,
+     "roughness": 0.58,
+     "alpha": 1.0,
+     "texture": null
+    },
+    "mouth_dark": {
+     "surface": "mouth_dark",
+     "color": [
+      0.1683,
+      0.0296,
+      0.0103
+     ],
+     "metallic": 0.0,
+     "roughness": 0.45,
      "alpha": 1.0,
      "texture": null
     },
@@ -1169,9 +1193,9 @@
      "parent": "head",
      "group": "face",
      "rest": [
-      -0.105,
-      0.315,
-      0.28
+      -0.11,
+      0.335,
+      0.2998
      ]
     },
     {
@@ -1179,9 +1203,9 @@
      "parent": "head",
      "group": "face",
      "rest": [
-      0.105,
-      0.315,
-      0.28
+      0.11,
+      0.335,
+      0.2998
      ]
     },
     {
@@ -1189,9 +1213,9 @@
      "parent": "head",
      "group": "face",
      "rest": [
-      -0.105,
-      0.315,
-      0.28
+      -0.11,
+      0.335,
+      0.2998
      ]
     },
     {
@@ -1199,9 +1223,9 @@
      "parent": "head",
      "group": "face",
      "rest": [
-      0.105,
-      0.315,
-      0.28
+      0.11,
+      0.335,
+      0.2998
      ]
     },
     {
@@ -1210,8 +1234,8 @@
      "group": "badge",
      "rest": [
       0.0,
-      0.16,
-      0.278
+      0.155,
+      0.2896
      ]
     },
     {
@@ -1219,7 +1243,7 @@
      "parent": "hips",
      "group": "core",
      "rest": [
-      -0.145,
+      -0.15,
       0.06,
       0.0
      ]
@@ -1229,7 +1253,7 @@
      "parent": "hips",
      "group": "core",
      "rest": [
-      0.145,
+      0.15,
       0.06,
       0.0
      ]
@@ -1250,7 +1274,7 @@
      "group": "extra",
      "rest": [
       0.0,
-      0.47,
+      0.48,
       0.0
      ]
     },
@@ -1260,48 +1284,48 @@
      "group": "extra",
      "rest": [
       0.0,
-      0.69,
+      0.76,
       0.0
      ]
     }
    ],
    "palette_srgb": [
-    "#C86B43",
-    "#FFAD33",
-    "#FFF2B2",
-    "#FF6A00"
+    "#BD6038",
+    "#FFA31A",
+    "#FFF6CC",
+    "#FF6200"
    ],
    "blurb": "sacred terracotta oil lamp with glowing living flame crest",
-   "build_seconds": 0.71
+   "build_seconds": 0.59
   },
   {
-   "ground_shift": -0.038,
+   "ground_shift": -0.04,
    "id": "patra",
    "name": "Patra",
    "role": "The Memory Index",
-   "height": 1.176,
-   "width": 0.512,
-   "depth": 0.512,
+   "height": 1.2,
+   "width": 0.5545,
+   "depth": 0.528,
    "bbox_min": [
-    -0.256,
+    -0.2917,
     0.0,
-    -0.256
+    -0.264
    ],
    "bbox_max": [
-    0.256,
-    1.176,
-    0.256
+    0.2629,
+    1.2,
+    0.264
    ],
-   "triangles": 7192,
-   "vertices": 4055,
+   "triangles": 8996,
+   "vertices": 5086,
    "badge_anchor": [
     0.0,
     0.26,
-    0.2339
+    0.2439
    ],
    "badge_size": [
-    0.18,
-    0.11
+    0.185,
+    0.115
    ],
    "clip_order": [
     "Idle",
@@ -1313,10 +1337,10 @@
     "NoSwap",
     "Success"
    ],
-   "part_count": 18,
+   "part_count": 24,
    "joint_count": 15,
    "file": "models/patra.glb",
-   "bytes": 407384,
+   "bytes": 483720,
    "clips": [
     {
      "name": "Idle",
@@ -1379,36 +1403,36 @@
     "badge": {
      "surface": "badge",
      "color": [
-      0.9301,
-      0.8879,
-      0.807
+      0.9387,
+      0.9047,
+      0.8228
      ],
      "metallic": 0.0,
-     "roughness": 0.52,
+     "roughness": 0.5,
      "alpha": 1.0,
      "texture": "matte"
     },
     "badge_rim": {
      "surface": "badge_rim",
      "color": [
-      0.5776,
-      0.3372,
-      0.0612
+      0.6584,
+      0.3763,
+      0.0648
      ],
-     "metallic": 0.85,
-     "roughness": 0.3,
+     "metallic": 0.88,
+     "roughness": 0.28,
      "alpha": 1.0,
      "texture": null
     },
     "eye_dark": {
      "surface": "eye_dark",
      "color": [
-      0.0075,
-      0.0075,
-      0.011
+      0.008,
+      0.008,
+      0.0123
      ],
      "metallic": 0.0,
-     "roughness": 0.1,
+     "roughness": 0.08,
      "alpha": 1.0,
      "texture": null
     },
@@ -1416,20 +1440,32 @@
      "surface": "eye_glint",
      "color": [
       1.0,
-      0.9473,
-      0.855
+      1.0,
+      1.0
      ],
      "metallic": 0.0,
-     "roughness": 0.25,
+     "roughness": 0.2,
      "alpha": 1.0,
      "texture": null
     },
     "lid": {
      "surface": "lid",
      "color": [
-      0.6584,
-      0.552,
-      0.3712
+      0.624,
+      0.5029,
+      0.3185
+     ],
+     "metallic": 0.0,
+     "roughness": 0.48,
+     "alpha": 1.0,
+     "texture": null
+    },
+    "mouth_dark": {
+     "surface": "mouth_dark",
+     "color": [
+      0.1384,
+      0.0685,
+      0.0212
      ],
      "metallic": 0.0,
      "roughness": 0.5,
@@ -1439,14 +1475,26 @@
     "parchment": {
      "surface": "parchment",
      "color": [
-      0.8228,
-      0.7084,
-      0.5149
+      0.7758,
+      0.6584,
+      0.4621
      ],
      "metallic": 0.0,
-     "roughness": 0.55,
+     "roughness": 0.52,
      "alpha": 1.0,
      "texture": "ceramic"
+    },
+    "parchment_dark": {
+     "surface": "parchment_dark",
+     "color": [
+      0.521,
+      0.3864,
+      0.2232
+     ],
+     "metallic": 0.0,
+     "roughness": 0.58,
+     "alpha": 1.0,
+     "texture": null
     },
     "pop": {
      "surface": "pop",
@@ -1463,36 +1511,36 @@
     "rod_brass": {
      "surface": "rod_brass",
      "color": [
-      0.5776,
-      0.3372,
-      0.0612
+      0.6584,
+      0.3763,
+      0.0648
      ],
-     "metallic": 0.75,
-     "roughness": 0.3,
+     "metallic": 0.82,
+     "roughness": 0.28,
      "alpha": 1.0,
      "texture": null
     },
     "saffron_silk": {
      "surface": "saffron_silk",
      "color": [
-      0.6867,
-      0.2307,
-      0.0273
+      0.7454,
+      0.2582,
+      0.0212
      ],
-     "metallic": 0.1,
-     "roughness": 0.35,
+     "metallic": 0.12,
+     "roughness": 0.32,
      "alpha": 1.0,
      "texture": null
     },
     "wood_peg": {
      "surface": "wood_peg",
      "color": [
-      0.1529,
-      0.0545,
-      0.016
+      0.1221,
+      0.0395,
+      0.0103
      ],
      "metallic": 0.02,
-     "roughness": 0.6,
+     "roughness": 0.62,
      "alpha": 1.0,
      "texture": null
     }
@@ -1563,9 +1611,9 @@
      "parent": "head",
      "group": "face",
      "rest": [
-      -0.095,
-      0.78,
-      0.1887
+      -0.1,
+      0.79,
+      0.1966
      ]
     },
     {
@@ -1573,9 +1621,9 @@
      "parent": "head",
      "group": "face",
      "rest": [
-      0.095,
-      0.78,
-      0.1887
+      0.1,
+      0.79,
+      0.1966
      ]
     },
     {
@@ -1583,9 +1631,9 @@
      "parent": "head",
      "group": "face",
      "rest": [
-      -0.095,
-      0.78,
-      0.1887
+      -0.1,
+      0.79,
+      0.1966
      ]
     },
     {
@@ -1593,9 +1641,9 @@
      "parent": "head",
      "group": "face",
      "rest": [
-      0.095,
-      0.78,
-      0.1887
+      0.1,
+      0.79,
+      0.1966
      ]
     },
     {
@@ -1605,7 +1653,7 @@
      "rest": [
       0.0,
       0.26,
-      0.2339
+      0.2439
      ]
     },
     {
@@ -1613,7 +1661,7 @@
      "parent": "hips",
      "group": "core",
      "rest": [
-      -0.11,
+      -0.115,
       0.08,
       0.0
      ]
@@ -1623,7 +1671,7 @@
      "parent": "hips",
      "group": "core",
      "rest": [
-      0.11,
+      0.115,
       0.08,
       0.0
      ]
@@ -1644,47 +1692,47 @@
      "group": "extra",
      "rest": [
       0.0,
-      0.96,
+      0.98,
       0.0
      ]
     }
    ],
    "palette_srgb": [
-    "#EADBBE",
-    "#D8842E",
-    "#6D4222",
-    "#C89D46"
+    "#E4D4B5",
+    "#E08B28",
+    "#62381A",
+    "#D4A548"
    ],
    "blurb": "living parchment manuscript scroll with saffron sash and wooden pegs",
-   "build_seconds": 0.72
+   "build_seconds": 0.49
   },
   {
    "id": "kumbha",
    "name": "Kumbha",
    "role": "The Boundary Buffer",
-   "height": 0.94,
-   "width": 0.7889,
-   "depth": 0.6899,
+   "height": 1.0815,
+   "width": 0.82,
+   "depth": 0.734,
    "bbox_min": [
-    -0.3944,
+    -0.41,
     0.0,
-    -0.34
+    -0.355
    ],
    "bbox_max": [
-    0.3944,
-    0.94,
-    0.3499
+    0.41,
+    1.0815,
+    0.379
    ],
-   "triangles": 7168,
-   "vertices": 4105,
+   "triangles": 9036,
+   "vertices": 5146,
    "badge_anchor": [
     0.0,
     0.2,
-    0.3138
+    0.3205
    ],
    "badge_size": [
-    0.175,
-    0.1
+    0.18,
+    0.105
    ],
    "clip_order": [
     "Idle",
@@ -1696,10 +1744,10 @@
     "NoSwap",
     "Success"
    ],
-   "part_count": 20,
+   "part_count": 24,
    "joint_count": 16,
    "file": "models/kumbha.glb",
-   "bytes": 426736,
+   "bytes": 503824,
    "clips": [
     {
      "name": "Idle",
@@ -1762,72 +1810,72 @@
     "badge": {
      "surface": "badge",
      "color": [
-      0.9301,
-      0.8879,
-      0.807
+      0.9387,
+      0.9047,
+      0.8228
      ],
      "metallic": 0.0,
-     "roughness": 0.52,
+     "roughness": 0.5,
      "alpha": 1.0,
      "texture": "matte"
     },
     "badge_rim": {
      "surface": "badge_rim",
      "color": [
-      0.5776,
-      0.3372,
-      0.0612
+      0.6584,
+      0.3763,
+      0.0648
      ],
-     "metallic": 0.85,
-     "roughness": 0.3,
+     "metallic": 0.88,
+     "roughness": 0.28,
      "alpha": 1.0,
      "texture": null
     },
     "brass": {
      "surface": "brass",
      "color": [
-      0.7379,
-      0.4125,
-      0.0423
+      0.7758,
+      0.4564,
+      0.0452
      ],
-     "metallic": 0.88,
-     "roughness": 0.22,
+     "metallic": 0.92,
+     "roughness": 0.18,
      "alpha": 1.0,
      "texture": null
     },
     "brass_dark": {
      "surface": "brass_dark",
      "color": [
-      0.3916,
-      0.1878,
-      0.013
+      0.3325,
+      0.1559,
+      0.0091
      ],
-     "metallic": 0.85,
-     "roughness": 0.3,
+     "metallic": 0.9,
+     "roughness": 0.25,
      "alpha": 1.0,
      "texture": null
     },
     "coconut": {
      "surface": "coconut",
      "color": [
-      0.1441,
-      0.0595,
-      0.0194
+      0.1274,
+      0.0467,
+      0.013
      ],
      "metallic": 0.02,
-     "roughness": 0.72,
+     "roughness": 0.74,
      "alpha": 1.0,
      "texture": "stone"
     },
     "eye_dark": {
      "surface": "eye_dark",
      "color": [
-      0.0075,
-      0.0075,
-      0.011
+      0.008,
+      0.008,
+      0.0123
      ],
      "metallic": 0.0,
-     "roughness": 0.1,
+     "roughness": 0.08,
      "alpha": 1.0,
      "texture": null
     },
@@ -1835,35 +1883,47 @@
      "surface": "eye_glint",
      "color": [
       1.0,
-      0.9473,
-      0.855
+      1.0,
+      1.0
      ],
      "metallic": 0.0,
-     "roughness": 0.25,
+     "roughness": 0.2,
      "alpha": 1.0,
      "texture": null
     },
     "lid": {
      "surface": "lid",
      "color": [
-      0.6172,
-      0.314,
-      0.0252
+      0.6038,
+      0.3515,
+      0.0296
      ],
-     "metallic": 0.8,
-     "roughness": 0.25,
+     "metallic": 0.85,
+     "roughness": 0.22,
      "alpha": 1.0,
      "texture": null
     },
     "mango_leaf": {
      "surface": "mango_leaf",
      "color": [
-      0.0242,
-      0.2542,
-      0.0578
+      0.016,
+      0.2462,
+      0.0482
      ],
-     "metallic": 0.04,
-     "roughness": 0.4,
+     "metallic": 0.03,
+     "roughness": 0.38,
+     "alpha": 1.0,
+     "texture": null
+    },
+    "mouth_dark": {
+     "surface": "mouth_dark",
+     "color": [
+      0.117,
+      0.0513,
+      0.0052
+     ],
+     "metallic": 0.3,
+     "roughness": 0.35,
      "alpha": 1.0,
      "texture": null
     },
@@ -1946,9 +2006,9 @@
      "parent": "head",
      "group": "face",
      "rest": [
-      -0.11,
-      0.38,
-      0.3138
+      -0.115,
+      0.395,
+      0.3258
      ]
     },
     {
@@ -1956,9 +2016,9 @@
      "parent": "head",
      "group": "face",
      "rest": [
-      0.11,
-      0.38,
-      0.3138
+      0.115,
+      0.395,
+      0.3258
      ]
     },
     {
@@ -1966,9 +2026,9 @@
      "parent": "head",
      "group": "face",
      "rest": [
-      -0.11,
-      0.38,
-      0.3138
+      -0.115,
+      0.395,
+      0.3258
      ]
     },
     {
@@ -1976,9 +2036,9 @@
      "parent": "head",
      "group": "face",
      "rest": [
-      0.11,
-      0.38,
-      0.3138
+      0.115,
+      0.395,
+      0.3258
      ]
     },
     {
@@ -1988,7 +2048,7 @@
      "rest": [
       0.0,
       0.2,
-      0.3138
+      0.3205
      ]
     },
     {
@@ -1996,7 +2056,7 @@
      "parent": "hips",
      "group": "core",
      "rest": [
-      -0.135,
+      -0.14,
       0.08,
       0.0
      ]
@@ -2006,7 +2066,7 @@
      "parent": "hips",
      "group": "core",
      "rest": [
-      0.135,
+      0.14,
       0.08,
       0.0
      ]
@@ -2027,7 +2087,7 @@
      "group": "extra",
      "rest": [
       0.0,
-      0.77,
+      0.81,
       0.0
      ]
     },
@@ -2037,19 +2097,19 @@
      "group": "extra",
      "rest": [
       0.0,
-      0.68,
+      0.74,
       0.0
      ]
     }
    ],
    "palette_srgb": [
-    "#DFAC3A",
-    "#A8781E",
-    "#2B8A44",
-    "#6A4526"
+    "#E4B43C",
+    "#9C6E18",
+    "#22883E",
+    "#643D1E"
    ],
    "blurb": "sacred golden Kalasha brass vessel crowned with mango leaves and coconut",
-   "build_seconds": 0.84
+   "build_seconds": 0.63
   }
  ],
  "clips": [

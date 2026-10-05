@@ -3,7 +3,7 @@
   {
    "id": "gaja",
    "file": "gaja.glb",
-   "bytes": 664916,
+   "bytes": 610176,
    "checks": [
     {
      "name": "glTF 2.0 asset",
@@ -33,12 +33,12 @@
     {
      "name": "triangles under budget",
      "pass": true,
-     "detail": "12460 / 15000"
+     "detail": "11272 / 15000"
     },
     {
      "name": "single mesh, multiple materials",
      "pass": true,
-     "detail": "1 mesh(es), 8 prims"
+     "detail": "1 mesh(es), 10 prims"
     },
     {
      "name": "weights normalised",
@@ -58,12 +58,12 @@
     {
      "name": "Y up (taller than deep)",
      "pass": true,
-     "detail": "h=1.245 d=0.938"
+     "detail": "h=1.285 d=0.997"
     },
     {
      "name": "front faces +Z (eyes on +Z)",
      "pass": true,
-     "detail": "front-most eye centroid z = 0.302"
+     "detail": "front-most eye centroid z = 0.328"
     },
     {
      "name": "all eight clips present",
@@ -78,12 +78,12 @@
     {
      "name": "Hop lifts the body",
      "pass": true,
-     "detail": "t=0.24 apex y=1.436 vs rest 1.245"
+     "detail": "t=0.24 apex y=1.479 vs rest 1.285"
     },
     {
      "name": "Hop keeps the feet near the ground",
      "pass": true,
-     "detail": "t=0.24 min y=0.1303"
+     "detail": "t=0.24 min y=0.1279"
     },
     {
      "name": "skinning deforms the mesh",
@@ -93,7 +93,7 @@
     {
      "name": "badge bone exists at the chest",
      "pass": true,
-     "detail": "anchor = [0.0, 0.52, 0.349]"
+     "detail": "anchor = [0.0, 0.52, 0.374]"
     },
     {
      "name": "Idle loops seamlessly",
@@ -102,23 +102,23 @@
     }
    ],
    "warnings": [],
-   "triangles": 12460,
-   "vertices": 7008,
-   "primitives": 8,
-   "materials": 10,
+   "triangles": 11272,
+   "vertices": 6444,
+   "primitives": 10,
+   "materials": 11,
    "images": 2,
    "max_influences_used": 4,
    "bbox_min": [
-    -0.5012,
+    -0.5494,
     0.0,
-    -0.34
+    -0.365
    ],
    "bbox_max": [
-    0.5012,
-    1.245,
-    0.5983
+    0.5494,
+    1.285,
+    0.6321
    ],
-   "height": 1.245,
+   "height": 1.285,
    "clips": [
     {
      "name": "Idle",
@@ -172,14 +172,14 @@
    "badge_anchor": [
     0.0,
     0.52,
-    0.3487
+    0.3737
    ],
    "pass": true
   },
   {
    "id": "mayur",
    "file": "mayur.glb",
-   "bytes": 682740,
+   "bytes": 729284,
    "checks": [
     {
      "name": "glTF 2.0 asset",
@@ -209,7 +209,7 @@
     {
      "name": "triangles under budget",
      "pass": true,
-     "detail": "13696 / 15000"
+     "detail": "14664 / 15000"
     },
     {
      "name": "single mesh, multiple materials",
@@ -234,12 +234,12 @@
     {
      "name": "Y up (taller than deep)",
      "pass": true,
-     "detail": "h=1.133 d=0.560"
+     "detail": "h=1.232 d=0.599"
     },
     {
      "name": "front faces +Z (eyes on +Z)",
      "pass": true,
-     "detail": "front-most eye centroid z = 0.223"
+     "detail": "front-most eye centroid z = 0.238"
     },
     {
      "name": "all eight clips present",
@@ -254,12 +254,12 @@
     {
      "name": "Hop lifts the body",
      "pass": true,
-     "detail": "t=0.24 apex y=1.304 vs rest 1.133"
+     "detail": "t=0.24 apex y=1.372 vs rest 1.232"
     },
     {
      "name": "Hop keeps the feet near the ground",
      "pass": true,
-     "detail": "t=0.24 min y=0.1502"
+     "detail": "t=0.24 min y=0.1490"
     },
     {
      "name": "skinning deforms the mesh",
@@ -269,7 +269,7 @@
     {
      "name": "badge bone exists at the chest",
      "pass": true,
-     "detail": "anchor = [0.0, 0.38, 0.256]"
+     "detail": "anchor = [0.0, 0.38, 0.272]"
     },
     {
      "name": "Idle loops seamlessly",
@@ -278,23 +278,23 @@
     }
    ],
    "warnings": [],
-   "triangles": 13696,
-   "vertices": 7830,
+   "triangles": 14664,
+   "vertices": 8504,
    "primitives": 10,
    "materials": 11,
    "images": 1,
    "max_influences_used": 4,
    "bbox_min": [
-    -0.7117,
+    -0.775,
     0.0,
-    -0.245
+    -0.26
    ],
    "bbox_max": [
-    0.7117,
-    1.1335,
-    0.315
+    0.775,
+    1.2317,
+    0.3393
    ],
-   "height": 1.1335,
+   "height": 1.2317,
    "clips": [
     {
      "name": "Idle",
@@ -348,14 +348,14 @@
    "badge_anchor": [
     0.0,
     0.38,
-    0.2565
+    0.2722
    ],
    "pass": true
   },
   {
    "id": "diya",
    "file": "diya.glb",
-   "bytes": 326708,
+   "bytes": 384648,
    "checks": [
     {
      "name": "glTF 2.0 asset",
@@ -385,12 +385,12 @@
     {
      "name": "triangles under budget",
      "pass": true,
-     "detail": "4872 / 15000"
+     "detail": "6244 / 15000"
     },
     {
      "name": "single mesh, multiple materials",
      "pass": true,
-     "detail": "1 mesh(es), 10 prims"
+     "detail": "1 mesh(es), 11 prims"
     },
     {
      "name": "weights normalised",
@@ -410,12 +410,12 @@
     {
      "name": "Y up (taller than deep)",
      "pass": true,
-     "detail": "h=0.973 d=0.616"
+     "detail": "h=1.097 d=0.696"
     },
     {
      "name": "front faces +Z (eyes on +Z)",
      "pass": true,
-     "detail": "front-most eye centroid z = 0.272"
+     "detail": "front-most eye centroid z = 0.292"
     },
     {
      "name": "all eight clips present",
@@ -430,7 +430,7 @@
     {
      "name": "Hop lifts the body",
      "pass": true,
-     "detail": "t=0.24 apex y=1.125 vs rest 0.973"
+     "detail": "t=0.24 apex y=1.263 vs rest 1.097"
     },
     {
      "name": "Hop keeps the feet near the ground",
@@ -445,7 +445,7 @@
     {
      "name": "badge bone exists at the chest",
      "pass": true,
-     "detail": "anchor = [0.0, 0.16, 0.278]"
+     "detail": "anchor = [0.0, 0.155, 0.29]"
     },
     {
      "name": "Idle loops seamlessly",
@@ -454,23 +454,23 @@
     }
    ],
    "warnings": [],
-   "triangles": 4872,
-   "vertices": 2794,
-   "primitives": 10,
-   "materials": 11,
+   "triangles": 6244,
+   "vertices": 3582,
+   "primitives": 11,
+   "materials": 12,
    "images": 2,
    "max_influences_used": 4,
    "bbox_min": [
-    -0.3515,
+    -0.361,
     0.0,
-    -0.3
+    -0.32
    ],
    "bbox_max": [
-    0.3515,
-    0.9733,
-    0.3161
+    0.361,
+    1.0969,
+    0.3765
    ],
-   "height": 0.9733,
+   "height": 1.0969,
    "clips": [
     {
      "name": "Idle",
@@ -523,15 +523,15 @@
    ],
    "badge_anchor": [
     0.0,
-    0.16,
-    0.278
+    0.155,
+    0.2896
    ],
    "pass": true
   },
   {
    "id": "patra",
    "file": "patra.glb",
-   "bytes": 407384,
+   "bytes": 483720,
    "checks": [
     {
      "name": "glTF 2.0 asset",
@@ -561,12 +561,12 @@
     {
      "name": "triangles under budget",
      "pass": true,
-     "detail": "7192 / 15000"
+     "detail": "8996 / 15000"
     },
     {
      "name": "single mesh, multiple materials",
      "pass": true,
-     "detail": "1 mesh(es), 9 prims"
+     "detail": "1 mesh(es), 11 prims"
     },
     {
      "name": "weights normalised",
@@ -586,12 +586,12 @@
     {
      "name": "Y up (taller than deep)",
      "pass": true,
-     "detail": "h=1.176 d=0.512"
+     "detail": "h=1.200 d=0.528"
     },
     {
      "name": "front faces +Z (eyes on +Z)",
      "pass": true,
-     "detail": "front-most eye centroid z = 0.181"
+     "detail": "front-most eye centroid z = 0.189"
     },
     {
      "name": "all eight clips present",
@@ -606,12 +606,12 @@
     {
      "name": "Hop lifts the body",
      "pass": true,
-     "detail": "t=0.24 apex y=1.363 vs rest 1.176"
+     "detail": "t=0.24 apex y=1.389 vs rest 1.200"
     },
     {
      "name": "Hop keeps the feet near the ground",
      "pass": true,
-     "detail": "t=0.24 min y=0.1227"
+     "detail": "t=0.24 min y=0.1226"
     },
     {
      "name": "skinning deforms the mesh",
@@ -621,7 +621,7 @@
     {
      "name": "badge bone exists at the chest",
      "pass": true,
-     "detail": "anchor = [0.0, 0.26, 0.234]"
+     "detail": "anchor = [0.0, 0.26, 0.244]"
     },
     {
      "name": "Idle loops seamlessly",
@@ -630,23 +630,23 @@
     }
    ],
    "warnings": [],
-   "triangles": 7192,
-   "vertices": 4055,
-   "primitives": 9,
-   "materials": 10,
+   "triangles": 8996,
+   "vertices": 5086,
+   "primitives": 11,
+   "materials": 12,
    "images": 2,
    "max_influences_used": 4,
    "bbox_min": [
-    -0.256,
+    -0.2917,
     0.0,
-    -0.256
+    -0.264
    ],
    "bbox_max": [
-    0.256,
-    1.176,
-    0.256
+    0.2629,
+    1.2,
+    0.264
    ],
-   "height": 1.176,
+   "height": 1.2,
    "clips": [
     {
      "name": "Idle",
@@ -700,14 +700,14 @@
    "badge_anchor": [
     0.0,
     0.26,
-    0.2339
+    0.2439
    ],
    "pass": true
   },
   {
    "id": "kumbha",
    "file": "kumbha.glb",
-   "bytes": 426736,
+   "bytes": 503824,
    "checks": [
     {
      "name": "glTF 2.0 asset",
@@ -737,12 +737,12 @@
     {
      "name": "triangles under budget",
      "pass": true,
-     "detail": "7168 / 15000"
+     "detail": "9036 / 15000"
     },
     {
      "name": "single mesh, multiple materials",
      "pass": true,
-     "detail": "1 mesh(es), 9 prims"
+     "detail": "1 mesh(es), 10 prims"
     },
     {
      "name": "weights normalised",
@@ -762,12 +762,12 @@
     {
      "name": "Y up (taller than deep)",
      "pass": true,
-     "detail": "h=0.940 d=0.690"
+     "detail": "h=1.082 d=0.734"
     },
     {
      "name": "front faces +Z (eyes on +Z)",
      "pass": true,
-     "detail": "front-most eye centroid z = 0.305"
+     "detail": "front-most eye centroid z = 0.318"
     },
     {
      "name": "all eight clips present",
@@ -782,12 +782,12 @@
     {
      "name": "Hop lifts the body",
      "pass": true,
-     "detail": "t=0.24 apex y=1.105 vs rest 0.940"
+     "detail": "t=0.24 apex y=1.258 vs rest 1.082"
     },
     {
      "name": "Hop keeps the feet near the ground",
      "pass": true,
-     "detail": "t=0.24 min y=0.1080"
+     "detail": "t=0.24 min y=0.1062"
     },
     {
      "name": "skinning deforms the mesh",
@@ -797,7 +797,7 @@
     {
      "name": "badge bone exists at the chest",
      "pass": true,
-     "detail": "anchor = [0.0, 0.2, 0.314]"
+     "detail": "anchor = [0.0, 0.2, 0.321]"
     },
     {
      "name": "Idle loops seamlessly",
@@ -806,23 +806,23 @@
     }
    ],
    "warnings": [],
-   "triangles": 7168,
-   "vertices": 4105,
-   "primitives": 9,
-   "materials": 10,
+   "triangles": 9036,
+   "vertices": 5146,
+   "primitives": 10,
+   "materials": 11,
    "images": 2,
    "max_influences_used": 4,
    "bbox_min": [
-    -0.3944,
+    -0.41,
     0.0,
-    -0.34
+    -0.355
    ],
    "bbox_max": [
-    0.3944,
-    0.94,
-    0.3499
+    0.41,
+    1.0815,
+    0.379
    ],
-   "height": 0.94,
+   "height": 1.0815,
    "clips": [
     {
      "name": "Idle",
@@ -876,7 +876,7 @@
    "badge_anchor": [
     0.0,
     0.2,
-    0.3138
+    0.3205
    ],
    "pass": true
   }
@@ -884,9 +884,9 @@
  "summary": {
   "models": 5,
   "passed": 5,
-  "total_triangles": 45388,
-  "max_triangles": 13696,
-  "total_bytes": 2508484,
+  "total_triangles": 50212,
+  "max_triangles": 14664,
+  "total_bytes": 2711652,
   "clips_per_model": [
    8,
    8,

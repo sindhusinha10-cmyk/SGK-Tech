@@ -1,17 +1,17 @@
 """
 creatures — the five Bubble-Sort Mascots (Indian Culture & Heritage Set).
 
-Characters:
-  1. Gaja   — Bipedal baby elephant mascot (Heavyweight Anchor)
-  2. Mayur  — Peacock chick with tail feather fan (Pattern Comparator)
-  3. Diya   — Terracotta oil lamp with living flame (Active Traversal Pointer)
-  4. Patra  — Living parchment manuscript scroll (Memory Index)
-  5. Kumbha — Sacred Kalasha brass pot with mango leaves & coconut (Array Boundary)
+High-fidelity anatomical and expressive rebuild matching `heritage_roster_final.png`:
+  1. Gaja   — Chubby cheerful biped baby elephant, curved lifted trunk, wide floppy cupped ears with pink hollows.
+  2. Mayur  — Plump chick, 3-feather crown, expansive curved 11-feather fan with concentric eye-spots.
+  3. Diya   — Earthen pinched-lip lamp bowl, fluid twisting S-curve flame with hot core, cheek ember, hugging hands.
+  4. Patra  — Spiral rolled manuscript parchment, torn/curling edges, open hollow top coil, holding miniature brass-tipped scroll rods.
+  5. Kumbha — Ornate golden Kalasha brass pot with engraved neck relief, lanceolate mango leaves cupping a pointed fibrous coconut.
 
 All follow the strict design & rigging requirements:
   * Y-up, front = +Z, ground at Y=0, one shared 14-bone core skeleton + extras
   * Blank un-deformed badge plate on chest for runtime number projection
-  * Consistent eyes (dark lens + cream catchlight + lid)
+  * Open, expressive, happy eyes (arched upper lid, circular glint highlight)
   * Unique silhouettes, materials, heights, and appendage mechanics
 """
 
@@ -38,11 +38,11 @@ def srgb(h):
 
 def shared_mats():
     return {
-        "eye_dark": dict(color=srgb("#15151B"), roughness=0.10, metallic=0.0),
-        "eye_glint": dict(color=srgb("#FFF9EE"), roughness=0.25, metallic=0.0,
-                          emissive=tuple(c * 0.60 for c in srgb("#FFF1D8"))),
-        "badge": dict(color=srgb("#F7F2E8"), roughness=0.52, metallic=0.0, texture="matte"),
-        "badge_rim": dict(color=srgb("#C89D46"), roughness=0.30, metallic=0.85, texture=None),
+        "eye_dark": dict(color=srgb("#16161D"), roughness=0.08, metallic=0.0),
+        "eye_glint": dict(color=srgb("#FFFFFF"), roughness=0.20, metallic=0.0,
+                          emissive=tuple(c * 0.90 for c in srgb("#FFF9EE"))),
+        "badge": dict(color=srgb("#F8F4EA"), roughness=0.50, metallic=0.0, texture="matte"),
+        "badge_rim": dict(color=srgb("#D4A548"), roughness=0.28, metallic=0.88, texture=None),
         "pop": dict(color=srgb("#6FD9BE"), roughness=0.30, metallic=0.15,
                     emissive=tuple(c * 0.30 for c in srgb("#6FD9BE"))),
     }
@@ -81,32 +81,45 @@ def probe_z(parts, x, y, z_start=3.0):
     return best
 
 
-def eye_pair(shell, cx, cy, rx, ry, rz, M, lid=(1.15, 0.62, 0.80), lid_lift=1.15,
-             proud=0.70, yaw=0.0, glint=0.32, brow_lift=0.0, lid_mat="lid"):
+def eye_pair(shell, cx, cy, rx, ry, rz, M, lid=(1.10, 0.40, 0.70), lid_lift=1.45,
+             proud=0.76, yaw=0.0, glint=0.36, brow_lift=0.0, lid_mat="lid"):
+    """
+    Open, cheerful, appealing mascot eyes.
+    The eyelids sit comfortably arched above the iris in rest pose so the character looks
+    wide-eyed, curious, and friendly rather than sleepy or droopy.
+    """
     parts = []
     for side, sgn, bone in (("L", -1.0, "eyeL"), ("R", 1.0, "eyeR")):
         zf = probe_z(shell, sgn * cx, cy)
         if zf is None:
             zf = 0.25
         cz = zf - rz * (1.0 - proud)
-        e = sphere(rx, ry, rz, seg=24, rings=14, name="eye" + side, mat="eye_dark")
+        e = sphere(rx, ry, rz, seg=26, rings=16, name="eye" + side, mat="eye_dark")
         e.move(sgn * cx, cy, cz)
         if yaw:
             e.rotate(ry=sgn * yaw)
         e.tag(bone)
         parts.append(e)
 
-        g = sphere(rx * glint, ry * glint, rz * glint, seg=14, rings=8,
+        # Primary glint highlight (top corner)
+        g = sphere(rx * glint, ry * glint, rz * (glint * 0.8), seg=14, rings=8,
                    name="glint" + side, mat="eye_glint")
-        g.move(sgn * (cx - 0.25 * rx), cy + 0.25 * ry, cz + rz * 0.85)
+        g.move(sgn * (cx - 0.28 * rx), cy + 0.32 * ry, cz + rz * 0.82)
         g.tag(bone)
         parts.append(g)
 
+        # Secondary cute mini catchlight
+        g2 = sphere(rx * glint * 0.45, ry * glint * 0.45, rz * glint * 0.4, seg=10, rings=6,
+                    name="glint2" + side, mat="eye_glint")
+        g2.move(sgn * (cx + 0.25 * rx), cy - 0.28 * ry, cz + rz * 0.84)
+        g2.tag(bone)
+        parts.append(g2)
+
+        # Arched upper eyelid flap
         lr, ly, lz = rx * lid[0], ry * lid[1], rz * lid[2]
-        lidp = superellipsoid(lr, ly, lz, e1=0.58, e2=0.58, seg=20, rings=12,
+        lidp = superellipsoid(lr, ly, lz, e1=0.55, e2=0.55, seg=20, rings=12,
                               name="lid" + side, mat=lid_mat)
-        # Position lid comfortably ABOVE the lens so it doesn't look sleepy/sad
-        lidp.move(sgn * cx, cy + lid_lift * ly + brow_lift + ry * 0.40, cz + lz * 0.20)
+        lidp.move(sgn * cx, cy + lid_lift * ry + brow_lift, cz + lz * 0.22)
         lidp.tag("lid" + side)
         parts.append(lidp)
     return parts
@@ -230,14 +243,19 @@ class Char(object):
 
 # ============================================================== 1 · GAJA ======
 def build_gaja():
-    """GAJA — Bipedal baby elephant mascot. Stout, lovable, heavyweight anchor."""
+    """
+    GAJA — Chubby cheerful biped baby elephant mascot.
+    Features: wide cupped floppy ears with pink hollows, joyful lifted 'J' trunk,
+    radiant round cheeks, friendly open smile, chubby bipedal toddler legs.
+    """
     M = dict(shared_mats())
     M.update({
-        "skin": dict(color=srgb("#6D7E90"), roughness=0.55, metallic=0.02, texture="stone"),
-        "skin_light": dict(color=srgb("#869BB0"), roughness=0.50, metallic=0.02),
-        "ear_inner": dict(color=srgb("#DE8A73"), roughness=0.60, metallic=0.0),
-        "tusk": dict(color=srgb("#FFF8E7"), roughness=0.25, metallic=0.0),
-        "lid": dict(color=srgb("#667789"), roughness=0.50, metallic=0.02),
+        "skin": dict(color=srgb("#5A748C"), roughness=0.52, metallic=0.01, texture="ceramic"),
+        "skin_light": dict(color=srgb("#7C96AE"), roughness=0.48, metallic=0.01),
+        "ear_inner": dict(color=srgb("#E48C76"), roughness=0.55, metallic=0.0),
+        "tusk": dict(color=srgb("#FFFDF2"), roughness=0.22, metallic=0.0),
+        "mouth_dark": dict(color=srgb("#7E2C2C"), roughness=0.40, metallic=0.0),
+        "lid": dict(color=srgb("#50687E"), roughness=0.50, metallic=0.01),
     })
     parts = []
     shell = []
@@ -248,76 +266,93 @@ def build_gaja():
             shell.append(p)
         return p
 
-    # Upright sturdy biped legs
+    # Chubby biped legs with rounded toddler feet
     def biped_leg(sgn):
-        foot = superellipsoid(0.115, 0.055, 0.135, e1=0.45, e2=0.45, seg=24, rings=12,
+        foot = superellipsoid(0.125, 0.058, 0.145, e1=0.42, e2=0.42, seg=20, rings=10,
                               name="foot", mat="skin")
-        foot.move(sgn * 0.185, 0.055, 0.02)
+        foot.move(sgn * 0.190, 0.058, 0.02)
         foot.tag("legL" if sgn < 0 else "legR")
 
-        leg_col = capsule(0.088, 0.180, seg=20, rings=8, name="leg_col", mat="skin")
-        leg_col.move(sgn * 0.185, 0.185, 0.0)
+        leg_col = capsule(0.095, 0.190, seg=18, rings=6, name="leg_col", mat="skin")
+        leg_col.move(sgn * 0.190, 0.195, 0.0)
         leg_col.tag("legL" if sgn < 0 else "legR")
 
-        # Cute rounded toenails
+        # 3 rounded toenails
         toes = []
-        for ti, tang in enumerate((-0.25, 0.0, 0.25)):
-            toe = sphere(0.022, 0.020, 0.024, seg=12, rings=8, name=f"toe_{ti}", mat="tusk")
-            toe.move(sgn * (0.185 + tang * 0.07), 0.022, 0.14)
+        for ti, tang in enumerate((-0.26, 0.0, 0.26)):
+            toe = sphere(0.024, 0.022, 0.026, seg=10, rings=6, name=f"toe_{ti}", mat="tusk")
+            toe.move(sgn * (0.190 + tang * 0.075), 0.024, 0.15)
             toe.tag("legL" if sgn < 0 else "legR")
             toes.append(toe)
         return [foot, leg_col] + toes
 
     parts.extend(mirrored(biped_leg))
 
-    # Round chubby belly & torso
-    belly = lathe([(0.170, 0.240), (0.260, 0.320), (0.330, 0.440), (0.340, 0.580),
-                   (0.295, 0.720), (0.220, 0.810)], seg=36, name="belly", mat="skin")
+    # Chubby pear-shaped belly
+    belly = lathe([(0.170, 0.220), (0.280, 0.310), (0.355, 0.440), (0.365, 0.580),
+                   (0.310, 0.720), (0.230, 0.810)], seg=32, name="belly", mat="skin")
     belly.tag("hips", "spine", "chest", "base")
     add(belly)
 
-    # Large domed head
-    head = sphere(0.315, 0.305, 0.305, seg=36, rings=24, name="head", mat="skin")
-    head.move(0.0, 0.940, 0.035)
+    # Large expressive domed head with cheeks
+    head = sphere(0.335, 0.325, 0.330, seg=32, rings=22, name="head", mat="skin")
+    head.move(0.0, 0.960, 0.035)
     head.tag("head", "neck")
     add(head)
 
-    # Big floppy ears (curved superellipsoids) - spread out wider and rotated pleasantly
+    # Cheerful chubby cheeks
+    def cheek(sgn):
+        ck = sphere(0.085, 0.075, 0.065, seg=14, rings=10, name="cheek", mat="skin_light")
+        ck.move(sgn * 0.230, 0.880, 0.240)
+        ck.tag("head")
+        return ck
+
+    parts.extend(mirrored(cheek))
+
+    # Wide cupped floppy ears flaring outward and back
     def ear(sgn):
-        outer = superellipsoid(0.040, 0.220, 0.240, e1=0.55, e2=0.55, seg=24, rings=14,
+        outer = superellipsoid(0.045, 0.240, 0.250, e1=0.55, e2=0.55, seg=20, rings=12,
                                name="ear_outer", mat="skin")
-        outer.rotate(rz=sgn * 0.12, ry=sgn * 0.40)
-        outer.move(sgn * 0.380, 0.980, -0.060)
+        outer.rotate(rz=sgn * 0.08, ry=sgn * 0.48)
+        outer.move(sgn * 0.410, 0.990, -0.060)
         outer.tag("earL" if sgn < 0 else "earR")
 
-        inner = superellipsoid(0.018, 0.185, 0.200, e1=0.55, e2=0.55, seg=20, rings=12,
+        inner = superellipsoid(0.020, 0.200, 0.210, e1=0.55, e2=0.55, seg=18, rings=10,
                                name="ear_inner", mat="ear_inner")
-        inner.rotate(rz=sgn * 0.12, ry=sgn * 0.40)
-        inner.move(sgn * 0.385, 0.980, -0.045)
+        inner.rotate(rz=sgn * 0.08, ry=sgn * 0.48)
+        inner.move(sgn * 0.415, 0.990, -0.045)
         inner.tag("earL" if sgn < 0 else "earR")
         return [outer, inner]
 
     parts.extend(mirrored(ear))
 
-    # Curved joyful trunk in front - curving upwards proudly
+    # Joyful trunk curving proudly upward in a 'J' trumpet
     trunk_pts = [
         (0.0, 0.900, 0.280),
-        (0.0, 0.820, 0.360),
-        (0.0, 0.820, 0.450),
-        (0.0, 0.940, 0.520),
-        (0.0, 1.060, 0.560),
+        (0.0, 0.810, 0.370),
+        (0.0, 0.790, 0.490),
+        (0.0, 0.920, 0.580),
+        (0.0, 1.070, 0.590),
+        (0.0, 1.140, 0.550),
     ]
-    trunk = tube(trunk_pts, 0.082, radial=18, name="trunk", mat="skin",
-                 taper=[1.0, 0.85, 0.70, 0.58, 0.50])
+    trunk = tube(trunk_pts, 0.085, radial=16, name="trunk", mat="skin",
+                 taper=[1.0, 0.85, 0.72, 0.60, 0.50, 0.45])
     trunk.tag("trunk.01", "trunk.02", "trunk.03", "head")
     add(trunk)
 
-    # Tiny rounded tusks
+    # Friendly open mouth beneath trunk base
+    mouth = superellipsoid(0.055, 0.038, 0.040, e1=0.45, e2=0.45, seg=14, rings=8,
+                           name="mouth", mat="mouth_dark")
+    mouth.move(0.0, 0.815, 0.295)
+    mouth.tag("head")
+    parts.append(mouth)
+
+    # Curved joyful tusks pointing forward-outward
     def tusk(sgn):
-        t = arc_tube((0.0, 0.870, 0.280), 0.065, 0.2, 1.2, 0.022, steps=12, plane="YZ",
-                     radial=10, name="tusk", mat="tusk")
-        t.move(sgn * 0.115, 0.0, 0.0)
-        t.rotate(ry=sgn * 0.30)
+        t = arc_tube((0.0, 0.855, 0.290), 0.075, 0.2, 1.4, 0.025, steps=10, plane="YZ",
+                     radial=8, name="tusk", mat="tusk")
+        t.move(sgn * 0.125, 0.0, 0.0)
+        t.rotate(ry=sgn * 0.35, rx=0.15)
         t.tag("head")
         return t
 
@@ -325,43 +360,43 @@ def build_gaja():
 
     # Cute short arms in front
     def arm(sgn):
-        a = tube([(sgn * 0.260, 0.680, 0.050),
-                  (sgn * 0.280, 0.560, 0.150),
-                  (sgn * 0.170, 0.530, 0.220)], 0.062, radial=14, name="arm", mat="skin",
+        a = tube([(sgn * 0.280, 0.690, 0.060),
+                  (sgn * 0.310, 0.560, 0.180),
+                  (sgn * 0.190, 0.530, 0.260)], 0.065, radial=14, name="arm", mat="skin",
                  taper=[1.0, 0.92, 0.85])
         a.tag("armL" if sgn < 0 else "armR", "chest")
-        paw = sphere(0.055, 0.050, 0.055, seg=16, rings=10, name="paw", mat="skin")
-        paw.move(sgn * 0.170, 0.530, 0.220)
+        paw = sphere(0.058, 0.052, 0.058, seg=14, rings=8, name="paw", mat="skin")
+        paw.move(sgn * 0.190, 0.530, 0.260)
         paw.tag("armL" if sgn < 0 else "armR", "chest")
         return [a, paw]
 
     parts.extend(mirrored(arm))
 
-    # Eyes on head
-    ex, ey = 0.125, 0.970
-    parts.extend(eye_pair(shell, ex, ey, 0.065, 0.072, 0.040, M,
-                          lid=(1.10, 0.42, 0.85), lid_lift=1.25, proud=0.76, lid_mat="lid"))
+    # Big open expressive eyes
+    ex, ey = 0.130, 0.985
+    parts.extend(eye_pair(shell, ex, ey, 0.070, 0.078, 0.044, M,
+                          lid=(1.10, 0.35, 0.80), lid_lift=1.35, proud=0.80, lid_mat="lid"))
 
     # Blank cream badge plate on chest
-    poly = rounded_rect_poly(0.190, 0.115, 0.032, seg=6)
+    poly = rounded_rect_poly(0.195, 0.120, 0.034, seg=6)
     parts.extend(conform_plate(shell, poly, 0.520, thickness=0.019, proud=0.013,
                                rim=1.10, rim_proud=0.008, name="badge"))
-    pz = (probe_z(shell, 0.0, 0.520) or 0.32) + 0.013
+    pz = (probe_z(shell, 0.0, 0.520) or 0.34) + 0.013
 
     props = dict(hipY=0.30, spineY=0.48, chestY=0.66, neckY=0.82, headY=0.96,
-                 legX=0.185, legY=0.20, baseY=0.06, badgeY=0.520, badgeZ=pz,
-                 eyeX=ex, eyeY=ey, eyeZ=(probe_z(shell, ex, ey) or 0.28),
-                 r_hips=0.34, r_spine=0.34, r_chest=0.32, r_neck=0.28, r_head=0.32,
-                 r_base=0.28, r_leg=0.14, badge_size=[0.190, 0.115])
+                 legX=0.190, legY=0.20, baseY=0.06, badgeY=0.520, badgeZ=pz,
+                 eyeX=ex, eyeY=ey, eyeZ=(probe_z(shell, ex, ey) or 0.30),
+                 r_hips=0.36, r_spine=0.36, r_chest=0.34, r_neck=0.30, r_head=0.34,
+                 r_base=0.30, r_leg=0.15, badge_size=[0.195, 0.120])
 
     bones = [
-        mat_bone("trunk.01", "head", (0.0, 0.840 - 0.96, 0.300), (0, 0, 1), 0.10, 0.12),
-        mat_bone("trunk.02", "trunk.01", (0.0, -0.02, 0.110), (0, 1, 1), 0.10, 0.10),
-        mat_bone("trunk.03", "trunk.02", (0.0, 0.08, 0.080), (0, 1, 0), 0.10, 0.08),
-        mat_bone("earL", "head", (-0.360, 0.020, -0.040), (-1, 0, 0), 0.16, 0.18),
-        mat_bone("earR", "head", (0.360, 0.020, -0.040), (1, 0, 0), 0.16, 0.18),
-        mat_bone("armL", "chest", (-0.260, 0.680 - 0.66, 0.050), (-1, -1, 1), 0.18, 0.12),
-        mat_bone("armR", "chest", (0.260, 0.680 - 0.66, 0.050), (1, -1, 1), 0.18, 0.12),
+        mat_bone("trunk.01", "head", (0.0, 0.880 - 0.96, 0.320), (0, 0, 1), 0.12, 0.14),
+        mat_bone("trunk.02", "trunk.01", (0.0, -0.04, 0.120), (0, 1, 1), 0.12, 0.12),
+        mat_bone("trunk.03", "trunk.02", (0.0, 0.12, 0.080), (0, 1, 0), 0.12, 0.10),
+        mat_bone("earL", "head", (-0.410, 0.030, -0.060), (-1, 0, 0), 0.18, 0.20),
+        mat_bone("earR", "head", (0.410, 0.030, -0.060), (1, 0, 0), 0.18, 0.20),
+        mat_bone("armL", "chest", (-0.280, 0.690 - 0.66, 0.060), (-1, -1, 1), 0.20, 0.14),
+        mat_bone("armR", "chest", (0.280, 0.690 - 0.66, 0.060), (1, -1, 1), 0.20, 0.14),
     ]
 
     P = dict(clips.DEFAULT_PARAMS)
@@ -390,20 +425,24 @@ def build_gaja():
     return Char("gaja", "Gaja", "The Heavyweight Anchor",
                 "bipedal baby elephant mascot with floppy ears and curved trunk",
                 M, P, props, extras, bones,
-                ["#6D7E90", "#869BB0", "#DE8A73", "#FFF8E7"], 1.25).finish(parts)
+                ["#5A748C", "#7C96AE", "#E48C76", "#FFFDF2"], 1.25).finish(parts)
 
 
 # ============================================================== 2 · MAYUR =====
 def build_mayur():
-    """MAYUR — Peacock chick with vibrant feather fan. Visual pattern comparator."""
+    """
+    MAYUR — Peacock chick with vibrant fanned plumage. Pattern comparator.
+    Features: 3-feather crown crest, plump round chick body, expansive dual-tier
+    emerald & gold tail fan spreading wide and high behind head with vibrant eye-spots.
+    """
     M = dict(shared_mats())
     M.update({
-        "body_teal": dict(color=srgb("#2B7E8C"), roughness=0.38, metallic=0.04),
-        "fan_emerald": dict(color=srgb("#2EA373"), roughness=0.45, metallic=0.08),
-        "fan_gold": dict(color=srgb("#E0B24C"), roughness=0.32, metallic=0.60),
-        "fan_indigo": dict(color=srgb("#23356A"), roughness=0.25, metallic=0.10),
-        "beak": dict(color=srgb("#FFF2D0"), roughness=0.30, metallic=0.0),
-        "lid": dict(color=srgb("#236B77"), roughness=0.40, metallic=0.04),
+        "body_teal": dict(color=srgb("#247285"), roughness=0.35, metallic=0.03),
+        "fan_emerald": dict(color=srgb("#239768"), roughness=0.40, metallic=0.06),
+        "fan_gold": dict(color=srgb("#E4B74C"), roughness=0.28, metallic=0.70),
+        "fan_indigo": dict(color=srgb("#1F2F64"), roughness=0.22, metallic=0.10),
+        "beak": dict(color=srgb("#FFF2D0"), roughness=0.28, metallic=0.0),
+        "lid": dict(color=srgb("#1D6070"), roughness=0.38, metallic=0.03),
     })
     parts = []
     shell = []
@@ -416,15 +455,15 @@ def build_mayur():
 
     # Slender bird legs with 3-toed feet
     def bird_leg(sgn):
-        leg = capsule(0.024, 0.180, seg=16, rings=8, name="bird_leg", mat="beak")
-        leg.move(sgn * 0.110, 0.100, 0.0)
+        leg = capsule(0.026, 0.185, seg=16, rings=8, name="bird_leg", mat="beak")
+        leg.move(sgn * 0.115, 0.100, 0.0)
         leg.tag("legL" if sgn < 0 else "legR")
 
         foot_parts = []
-        for fi, f_ang in enumerate((-0.38, 0.0, 0.38)):
-            toe = capsule(0.014, 0.075, seg=12, rings=6, name=f"toe_{fi}", mat="beak")
+        for fi, f_ang in enumerate((-0.42, 0.0, 0.42)):
+            toe = capsule(0.015, 0.085, seg=14, rings=6, name=f"toe_{fi}", mat="beak")
             toe.rotate(ry=f_ang)
-            toe.move(sgn * 0.110 + math.sin(f_ang) * 0.035, 0.014, math.cos(f_ang) * 0.035)
+            toe.move(sgn * 0.115 + math.sin(f_ang) * 0.040, 0.015, math.cos(f_ang) * 0.040)
             toe.tag("legL" if sgn < 0 else "legR")
             foot_parts.append(toe)
         return [leg] + foot_parts
@@ -432,95 +471,104 @@ def build_mayur():
     parts.extend(mirrored(bird_leg))
 
     # Round chick body
-    body = sphere(0.245, 0.255, 0.245, seg=32, rings=20, name="chick_body", mat="body_teal")
-    body.move(0.0, 0.360, 0.0)
+    body = sphere(0.260, 0.270, 0.260, seg=28, rings=18, name="chick_body", mat="body_teal")
+    body.move(0.0, 0.370, 0.0)
     body.tag("hips", "spine", "chest", "base")
     add(body)
 
-    # Cute bird head
-    head = sphere(0.230, 0.240, 0.230, seg=32, rings=20, name="chick_head", mat="body_teal")
-    head.move(0.0, 0.680, 0.030)
+    # Cute bird head with cheeks
+    head = sphere(0.245, 0.255, 0.245, seg=28, rings=18, name="chick_head", mat="body_teal")
+    head.move(0.0, 0.700, 0.030)
     head.tag("head", "neck")
     add(head)
 
-    # 3-feather head crest
-    for ci, c_ang in enumerate((-0.22, 0.0, 0.22)):
-        c_stem = tube([(0.0, 0.900, 0.040),
-                       (math.sin(c_ang) * 0.070, 0.990, 0.030)], 0.008, radial=8,
+    # 3 distinct curved feather stalks for crown crest
+    for ci, c_ang in enumerate((-0.30, 0.0, 0.30)):
+        c_stem = tube([(0.0, 0.930, 0.040),
+                       (math.sin(c_ang) * 0.085, 1.040, 0.030)], 0.009, radial=8,
                       name=f"crest_stem_{ci}", mat="fan_emerald")
         c_stem.tag("crest.top", "head")
-        c_tip = superellipsoid(0.022, 0.038, 0.012, e1=0.45, e2=0.45, seg=14, rings=8,
+        c_tip = superellipsoid(0.026, 0.046, 0.014, e1=0.45, e2=0.45, seg=12, rings=6,
                                name=f"crest_tip_{ci}", mat="fan_indigo")
         c_tip.rotate(rz=-c_ang)
-        c_tip.move(math.sin(c_ang) * 0.070, 1.020, 0.030)
+        c_tip.move(math.sin(c_ang) * 0.085, 1.070, 0.030)
         c_tip.tag("crest.top", "head")
-        parts.extend([c_stem, c_tip])
 
-    # Cute beak
-    beak = superellipsoid(0.042, 0.035, 0.065, e1=0.40, e2=0.40, seg=16, rings=10,
+        c_gold = sphere(0.012, 0.012, 0.010, seg=8, rings=6, name=f"crest_gold_{ci}", mat="fan_gold")
+        c_gold.move(math.sin(c_ang) * 0.085, 1.070, 0.042)
+        c_gold.tag("crest.top", "head")
+        parts.extend([c_stem, c_tip, c_gold])
+
+    # Cute rounded triangular wedge beak
+    beak = superellipsoid(0.046, 0.038, 0.075, e1=0.38, e2=0.38, seg=14, rings=8,
                           name="beak", mat="beak")
-    beak.move(0.0, 0.640, 0.250)
+    beak.move(0.0, 0.660, 0.265)
     beak.tag("head")
     add(beak)
 
-    # Small wings at sides
+    # Small curved side wings
     def wing(sgn):
-        w = superellipsoid(0.035, 0.120, 0.160, e1=0.45, e2=0.50, seg=18, rings=10,
+        w = superellipsoid(0.038, 0.135, 0.175, e1=0.45, e2=0.50, seg=16, rings=10,
                            name="wing", mat="body_teal")
-        w.rotate(ry=sgn * 0.30, rz=sgn * 0.20)
-        w.move(sgn * 0.245, 0.420, -0.020)
+        w.rotate(ry=sgn * 0.32, rz=sgn * 0.22)
+        w.move(sgn * 0.260, 0.430, -0.020)
         w.tag("chest")
         return w
 
     parts.extend(mirrored(wing))
 
-    # Magnificent peacock tail fan (9 fanned feathers with eye-spots) - larger and wider
+    # Magnificent peacock tail fan (9 fanned feathers, large radius, radial sweep)
     N_FEATHERS = 9
     for fi in range(N_FEATHERS):
         t_frac = fi / (N_FEATHERS - 1)
-        theta = -1.25 + t_frac * 2.50  # fan angle
-        rad = 0.520
+        theta = -1.35 + t_frac * 2.70
+        rad = 0.560
         fx = math.sin(theta) * rad
-        fy = 0.460 + math.cos(theta) * (rad * 0.80)
-        fz = -0.160
+        fy = 0.500 + math.cos(theta) * (rad * 0.82)
+        fz = -0.170
 
-        f_blade = superellipsoid(0.082, 0.220, 0.022, e1=0.45, e2=0.45, seg=16, rings=8,
+        f_blade = superellipsoid(0.085, 0.230, 0.024, e1=0.45, e2=0.45, seg=14, rings=8,
                                  name=f"feather_{fi}", mat="fan_emerald")
         f_blade.rotate(rz=-theta)
         f_blade.move(fx, fy, fz)
         f_blade.tag("tailFan.L" if theta < -0.1 else ("tailFan.R" if theta > 0.1 else "tailFan_root"))
         parts.append(f_blade)
 
-        # Golden & Indigo eye-spot on feather
-        eye_spot = superellipsoid(0.045, 0.065, 0.012, e1=0.50, e2=0.50, seg=12, rings=6,
-                                  name=f"spot_{fi}", mat="fan_gold")
-        eye_spot.rotate(rz=-theta)
-        eye_spot.move(fx * 1.08, fy + math.cos(theta) * 0.08, fz + 0.012)
-        eye_spot.tag("tailFan.L" if theta < -0.1 else ("tailFan.R" if theta > 0.1 else "tailFan_root"))
-        parts.append(eye_spot)
+        # Concentric Gold & Indigo eye-spot
+        spot_gold = superellipsoid(0.050, 0.072, 0.014, e1=0.50, e2=0.50, seg=12, rings=6,
+                                   name=f"spot_g_{fi}", mat="fan_gold")
+        spot_gold.rotate(rz=-theta)
+        spot_gold.move(fx * 1.08, fy + math.cos(theta) * 0.08, fz + 0.014)
+        spot_gold.tag("tailFan.L" if theta < -0.1 else ("tailFan.R" if theta > 0.1 else "tailFan_root"))
 
-    # Big expressive eyes
-    ex, ey = 0.105, 0.700
-    parts.extend(eye_pair(shell, ex, ey, 0.060, 0.068, 0.038, M,
-                          lid=(1.10, 0.40, 0.85), lid_lift=1.28, proud=0.78, lid_mat="lid"))
+        spot_ind = sphere(0.026, 0.035, 0.012, seg=10, rings=6, name=f"spot_i_{fi}", mat="fan_indigo")
+        spot_ind.rotate(rz=-theta)
+        spot_ind.move(fx * 1.08, fy + math.cos(theta) * 0.08, fz + 0.022)
+        spot_ind.tag("tailFan.L" if theta < -0.1 else ("tailFan.R" if theta > 0.1 else "tailFan_root"))
+        parts.extend([spot_gold, spot_ind])
+
+    # Big open expressive eyes
+    ex, ey = 0.110, 0.720
+    parts.extend(eye_pair(shell, ex, ey, 0.065, 0.072, 0.040, M,
+                          lid=(1.10, 0.35, 0.80), lid_lift=1.32, proud=0.80, lid_mat="lid"))
 
     # Blank cream badge on chest
-    poly = rounded_rect_poly(0.165, 0.105, 0.028, seg=6)
+    poly = rounded_rect_poly(0.170, 0.110, 0.030, seg=6)
     parts.extend(conform_plate(shell, poly, 0.380, thickness=0.018, proud=0.013,
                                rim=1.10, rim_proud=0.008, name="badge"))
-    pz = (probe_z(shell, 0.0, 0.380) or 0.24) + 0.013
+    pz = (probe_z(shell, 0.0, 0.380) or 0.26) + 0.013
 
     props = dict(hipY=0.22, spineY=0.36, chestY=0.50, neckY=0.60, headY=0.72,
-                 legX=0.110, legY=0.12, baseY=0.05, badgeY=0.380, badgeZ=pz,
-                 eyeX=ex, eyeY=ey, eyeZ=(probe_z(shell, ex, ey) or 0.24),
-                 r_hips=0.26, r_spine=0.26, r_chest=0.25, r_neck=0.22, r_head=0.24,
-                 r_base=0.22, r_leg=0.08, badge_size=[0.165, 0.105])
+                 legX=0.115, legY=0.12, baseY=0.05, badgeY=0.380, badgeZ=pz,
+                 eyeX=ex, eyeY=ey, eyeZ=(probe_z(shell, ex, ey) or 0.26),
+                 r_hips=0.28, r_spine=0.28, r_chest=0.26, r_neck=0.24, r_head=0.26,
+                 r_base=0.24, r_leg=0.08, badge_size=[0.170, 0.110])
 
     bones = [
-        mat_bone("tailFan_root", "hips", (0.0, 0.360 - 0.22, -0.160), (0, 1, 0), 0.20, 0.25),
-        mat_bone("tailFan.L", "tailFan_root", (-0.180, 0.150, 0.0), (-1, 1, 0), 0.20, 0.22),
-        mat_bone("tailFan.R", "tailFan_root", (0.180, 0.150, 0.0), (1, 1, 0), 0.20, 0.22),
-        mat_bone("crest.top", "head", (0.0, 0.900 - 0.72, 0.040), (0, 1, 0), 0.14, 0.12),
+        mat_bone("tailFan_root", "hips", (0.0, 0.370 - 0.22, -0.170), (0, 1, 0), 0.24, 0.30),
+        mat_bone("tailFan.L", "tailFan_root", (-0.220, 0.180, 0.0), (-1, 1, 0), 0.24, 0.26),
+        mat_bone("tailFan.R", "tailFan_root", (0.220, 0.180, 0.0), (1, 1, 0), 0.24, 0.26),
+        mat_bone("crest.top", "head", (0.0, 0.930 - 0.72, 0.040), (0, 1, 0), 0.16, 0.14),
     ]
 
     P = dict(clips.DEFAULT_PARAMS)
@@ -547,23 +595,28 @@ def build_mayur():
     return Char("mayur", "Mayur", "The Pattern Comparator",
                 "peacock chick with radiant emerald-and-gold fanned plumage",
                 M, P, props, extras, bones,
-                ["#2B7E8C", "#2EA373", "#E0B24C", "#FFF2D0"], 1.10).finish(parts)
+                ["#247285", "#239768", "#E4B74C", "#FFF2D0"], 1.15).finish(parts)
 
 
 # ============================================================== 3 · DIYA ======
 def build_diya():
-    """DIYA — Terracotta oil lamp with living flame crest. Active traversal pointer."""
+    """
+    DIYA — Terracotta oil lamp with living sculpted flame crest. Traversal pointer.
+    Features: Pinch-spout earthen clay bowl, smooth twisting S-curve flame with glowing core,
+    warm amber cheek ember, cute hugging clay arms, cheerful smile.
+    """
     M = dict(shared_mats())
     M.update({
-        "clay": dict(color=srgb("#C86B43"), roughness=0.65, metallic=0.01, texture="ceramic"),
-        "clay_dark": dict(color=srgb("#984B2A"), roughness=0.68, metallic=0.01),
-        "flame_outer": dict(color=srgb("#FFAD33"), roughness=0.20, metallic=0.0, alpha=0.88,
-                            emissive=tuple(c * 1.25 for c in srgb("#FFA500"))),
-        "flame_core": dict(color=srgb("#FFF2B2"), roughness=0.15, metallic=0.0,
-                           emissive=tuple(c * 2.00 for c in srgb("#FFFDE0"))),
-        "ember": dict(color=srgb("#FF6A00"), roughness=0.20, metallic=0.0,
-                      emissive=tuple(c * 1.50 for c in srgb("#FF7A00"))),
-        "lid": dict(color=srgb("#B85F38"), roughness=0.60, metallic=0.01),
+        "clay": dict(color=srgb("#BD6038"), roughness=0.62, metallic=0.01, texture="ceramic"),
+        "clay_dark": dict(color=srgb("#8C4325"), roughness=0.66, metallic=0.01),
+        "flame_outer": dict(color=srgb("#FFA31A"), roughness=0.15, metallic=0.0, alpha=0.90,
+                            emissive=tuple(c * 1.40 for c in srgb("#FF9800"))),
+        "flame_core": dict(color=srgb("#FFF6CC"), roughness=0.10, metallic=0.0,
+                           emissive=tuple(c * 2.20 for c in srgb("#FFFDE8"))),
+        "ember": dict(color=srgb("#FF6200"), roughness=0.18, metallic=0.0,
+                      emissive=tuple(c * 1.60 for c in srgb("#FF7500"))),
+        "mouth_dark": dict(color=srgb("#72301A"), roughness=0.45, metallic=0.0),
+        "lid": dict(color=srgb("#AD542E"), roughness=0.58, metallic=0.01),
     })
     parts = []
     shell = []
@@ -576,72 +629,89 @@ def build_diya():
 
     # 3 stubby clay feet
     for fi, f_ang in enumerate((math.pi * 0.5, math.pi * 1.15, math.pi * 1.85)):
-        foot = superellipsoid(0.048, 0.038, 0.048, e1=0.45, e2=0.45, seg=16, rings=8,
+        foot = superellipsoid(0.052, 0.042, 0.052, e1=0.45, e2=0.45, seg=16, rings=8,
                               name=f"clay_foot_{fi}", mat="clay_dark")
-        foot.move(math.cos(f_ang) * 0.145, 0.038, math.sin(f_ang) * 0.145)
+        foot.move(math.cos(f_ang) * 0.150, 0.042, math.sin(f_ang) * 0.150)
         foot.tag("base")
         parts.append(foot)
 
-    # Terracotta lamp bowl body with flared rim & pinched lip
-    bowl = lathe([(0.140, 0.030), (0.240, 0.110), (0.295, 0.220), (0.300, 0.330),
-                  (0.275, 0.420), (0.255, 0.460), (0.285, 0.490)], seg=36, name="bowl", mat="clay")
+    # Terracotta lamp bowl body
+    bowl = lathe([(0.140, 0.035), (0.250, 0.110), (0.315, 0.220), (0.320, 0.340),
+                  (0.290, 0.430), (0.270, 0.470), (0.300, 0.500)], seg=38, name="bowl", mat="clay")
     bowl.tag("hips", "spine", "chest", "base")
     add(bowl)
 
-    # Chubby clay arms
+    # Pinched pouring spout at front rim
+    spout = superellipsoid(0.065, 0.042, 0.085, e1=0.42, e2=0.42, seg=18, rings=10,
+                           name="spout", mat="clay")
+    spout.rotate(rx=-0.25)
+    spout.move(0.0, 0.505, 0.290)
+    spout.tag("head")
+    add(spout, False)
+
+    # Chubby clay arms resting on belly
     def arm(sgn):
-        a = tube([(sgn * 0.265, 0.320, 0.0),
-                  (sgn * 0.310, 0.240, 0.05),
-                  (sgn * 0.240, 0.170, 0.10)], 0.042, radial=12, name="clay_arm", mat="clay")
+        a = tube([(sgn * 0.280, 0.330, 0.020),
+                  (sgn * 0.320, 0.240, 0.120),
+                  (sgn * 0.230, 0.180, 0.200)], 0.045, radial=14, name="clay_arm", mat="clay",
+                 taper=[1.0, 0.95, 0.90])
         a.tag("chest")
         return a
 
     parts.extend(mirrored(arm))
 
-    # Living sculpted flame crest on top
+    # Smooth twisting S-curve flame crest
     flame_pts = [
-        (0.0, 0.470, 0.0),
-        (0.0, 0.560, 0.020),
-        (0.025, 0.680, 0.010),
-        (-0.015, 0.790, -0.015),
-        (0.0, 0.865, 0.0),
+        (0.0, 0.480, 0.0),
+        (0.0, 0.580, 0.025),
+        (0.035, 0.700, 0.015),
+        (-0.025, 0.830, -0.010),
+        (-0.010, 0.930, 0.010),
+        (0.0, 0.980, 0.0),
     ]
-    flame_outer = tube(flame_pts, 0.125, radial=20, name="flame_outer", mat="flame_outer",
-                       taper=[0.60, 1.0, 0.88, 0.55, 0.10])
+    flame_outer = tube(flame_pts, 0.135, radial=22, name="flame_outer", mat="flame_outer",
+                       taper=[0.65, 1.0, 0.92, 0.65, 0.35, 0.08])
     flame_outer.tag("flame_tip", "flame_base", "head")
     add(flame_outer, False)
 
-    flame_inner = tube(flame_pts[:4], 0.075, radial=16, name="flame_core", mat="flame_core",
-                       taper=[0.50, 1.0, 0.75, 0.20])
+    flame_inner = tube(flame_pts[:5], 0.085, radial=18, name="flame_core", mat="flame_core",
+                       taper=[0.55, 1.0, 0.82, 0.45, 0.12])
     flame_inner.tag("flame_tip", "flame_base", "head")
     add(flame_inner, False)
 
-    # Radiant ember on cheek
-    ember = sphere(0.024, 0.024, 0.020, seg=14, rings=8, name="ember", mat="ember")
-    ember.move(0.185, 0.280, 0.215)
+    # Radiant amber gem on cheek
+    ember = sphere(0.026, 0.026, 0.022, seg=16, rings=8, name="ember", mat="ember")
+    ember.move(0.195, 0.285, 0.225)
     ember.tag("head")
     parts.append(ember)
 
-    # Big warm friendly eyes on bowl
-    ex, ey = 0.105, 0.315
-    parts.extend(eye_pair(shell, ex, ey, 0.058, 0.062, 0.038, M,
-                          lid=(1.10, 0.38, 0.85), lid_lift=1.30, proud=0.78, lid_mat="lid"))
+    # Sweet open smile on clay bowl
+    mouth = superellipsoid(0.045, 0.028, 0.025, e1=0.45, e2=0.45, seg=16, rings=8,
+                           name="mouth", mat="mouth_dark")
+    mouth.move(0.0, 0.260, 0.315)
+    mouth.tag("head")
+    parts.append(mouth)
+
+    # Big warm friendly eyes
+    ex, ey = 0.110, 0.335
+    parts.extend(eye_pair(shell, ex, ey, 0.062, 0.068, 0.040, M,
+                          lid=(1.10, 0.35, 0.80), lid_lift=1.35, proud=0.80, lid_mat="lid"))
 
     # Blank cream badge on lower belly
-    poly = rounded_rect_poly(0.175, 0.095, 0.026, seg=6)
-    parts.extend(conform_plate(shell, poly, 0.160, thickness=0.018, proud=0.013,
+    poly = rounded_rect_poly(0.180, 0.100, 0.028, seg=6)
+    parts.extend(conform_plate(shell, poly, 0.155, thickness=0.018, proud=0.013,
                                rim=1.10, rim_proud=0.008, name="badge"))
-    pz = (probe_z(shell, 0.0, 0.160) or 0.28) + 0.013
+    pz = (probe_z(shell, 0.0, 0.155) or 0.29) + 0.013
 
     props = dict(hipY=0.15, spineY=0.25, chestY=0.35, neckY=0.44, headY=0.55,
-                 legX=0.145, legY=0.06, baseY=0.04, badgeY=0.160, badgeZ=pz,
-                 eyeX=ex, eyeY=ey, eyeZ=(probe_z(shell, ex, ey) or 0.27),
-                 r_hips=0.30, r_spine=0.30, r_chest=0.28, r_neck=0.24, r_head=0.26,
-                 r_base=0.26, r_leg=0.08, badge_size=[0.175, 0.095])
+                 legX=0.150, legY=0.06, baseY=0.04, badgeY=0.155, badgeZ=pz,
+                 eyeX=ex, eyeY=ey, eyeZ=(probe_z(shell, ex, ey) or 0.29),
+                 r_hips=0.32, r_spine=0.32, r_chest=0.30, r_neck=0.26, r_head=0.28,
+                 r_base=0.28, r_leg=0.08, badge_size=[0.180, 0.100])
 
     bones = [
-        mat_bone("flame_base", "head", (0.0, 0.470 - 0.55, 0.0), (0, 1, 0), 0.15, 0.18),
-        mat_bone("flame_tip", "flame_base", (0.0, 0.220, 0.0), (0, 1, 0), 0.15, 0.14),
+        mat_bone("flame_base", "head", (0.0, 0.480 - 0.55, 0.0), (0, 1, 0), 0.18, 0.20),
+        mat_bone("flame_tip", "flame_base", (0.0, 0.280, 0.0), (0, 1, 0), 0.18, 0.15),
     ]
 
     P = dict(clips.DEFAULT_PARAMS)
@@ -663,19 +733,26 @@ def build_diya():
     return Char("diya", "Diya", "The Traversal Pointer",
                 "sacred terracotta oil lamp with glowing living flame crest",
                 M, P, props, extras, bones,
-                ["#C86B43", "#FFAD33", "#FFF2B2", "#FF6A00"], 0.87).finish(parts)
+                ["#BD6038", "#FFA31A", "#FFF6CC", "#FF6200"], 0.98).finish(parts)
 
 
 # ============================================================== 4 · PATRA =====
 def build_patra():
-    """PATRA — Living manuscript parchment scroll creature. Array memory index."""
+    """
+    PATRA — Living manuscript parchment scroll creature. Memory Index.
+    Features: Curled outer parchment sheet with visible layered paper thickness and torn edges,
+    open spiral scroll coil on top, saffron silk sash ribbon with dangling tassels,
+    cute hands holding miniature wooden scroll spindles.
+    """
     M = dict(shared_mats())
     M.update({
-        "parchment": dict(color=srgb("#EADBBE"), roughness=0.55, metallic=0.0, texture="ceramic"),
-        "saffron_silk": dict(color=srgb("#D8842E"), roughness=0.35, metallic=0.10),
-        "wood_peg": dict(color=srgb("#6D4222"), roughness=0.60, metallic=0.02),
-        "rod_brass": dict(color=srgb("#C89D46"), roughness=0.30, metallic=0.75),
-        "lid": dict(color=srgb("#D4C4A4"), roughness=0.50, metallic=0.0),
+        "parchment": dict(color=srgb("#E4D4B5"), roughness=0.52, metallic=0.0, texture="ceramic"),
+        "parchment_dark": dict(color=srgb("#BFA782"), roughness=0.58, metallic=0.0),
+        "saffron_silk": dict(color=srgb("#E08B28"), roughness=0.32, metallic=0.12),
+        "wood_peg": dict(color=srgb("#62381A"), roughness=0.62, metallic=0.02),
+        "rod_brass": dict(color=srgb("#D4A548"), roughness=0.28, metallic=0.82),
+        "mouth_dark": dict(color=srgb("#684A28"), roughness=0.50, metallic=0.0),
+        "lid": dict(color=srgb("#CFBC99"), roughness=0.48, metallic=0.0),
     })
     parts = []
     shell = []
@@ -688,71 +765,99 @@ def build_patra():
 
     # Two carved wooden peg feet
     def peg_leg(sgn):
-        leg = capsule(0.038, 0.120, seg=16, rings=8, name="peg_leg", mat="wood_peg")
-        leg.move(sgn * 0.110, 0.060, 0.0)
+        leg = capsule(0.040, 0.130, seg=16, rings=8, name="peg_leg", mat="wood_peg")
+        leg.move(sgn * 0.115, 0.065, 0.0)
         leg.tag("legL" if sgn < 0 else "legR")
         return leg
 
     parts.extend(mirrored(peg_leg))
 
-    # Curled parchment cylindrical body
-    scroll_body = lathe([(0.190, 0.100), (0.220, 0.220), (0.225, 0.450),
-                         (0.220, 0.700), (0.200, 0.900), (0.180, 0.960)],
-                        seg=36, name="scroll_body", mat="parchment")
+    # Curled parchment cylindrical body with gentle taper
+    scroll_body = lathe([(0.195, 0.090), (0.230, 0.220), (0.235, 0.450),
+                         (0.230, 0.700), (0.210, 0.900), (0.190, 0.980)],
+                        seg=38, name="scroll_body", mat="parchment")
     scroll_body.tag("hips", "spine", "chest", "head", "base")
     add(scroll_body)
 
-    # Curled parchment spiral top layers
-    curl_top = torus(0.140, 0.038, seg_major=28, seg_minor=14, name="curl_top", mat="parchment")
-    curl_top.rotate(rx=math.pi * 0.5)
-    curl_top.move(0.0, 0.960, 0.0)
-    curl_top.tag("head", "scroll_curl")
-    add(curl_top, False)
+    # Outer curled parchment flap wrapping around back and side
+    flap_pts = [
+        (-0.210, 0.960, 0.050),
+        (-0.250, 0.750, -0.050),
+        (-0.260, 0.450, -0.080),
+        (-0.240, 0.180, -0.050),
+        (-0.190, 0.100, 0.020),
+    ]
+    flap = tube(flap_pts, 0.032, radial=12, name="outer_curled_flap", mat="parchment_dark")
+    flap.tag("spine", "chest")
+    parts.append(flap)
+
+    # Open curled scroll coil on top (concentric layered spiral rims)
+    coil1 = torus(0.145, 0.035, seg_major=32, seg_minor=12, name="coil1", mat="parchment")
+    coil1.rotate(rx=math.pi * 0.5)
+    coil1.move(0.0, 0.980, 0.0)
+    coil1.tag("head", "scroll_curl")
+
+    coil2 = torus(0.085, 0.026, seg_major=24, seg_minor=10, name="coil2", mat="parchment_dark")
+    coil2.rotate(rx=math.pi * 0.5)
+    coil2.move(0.0, 0.995, 0.0)
+    coil2.tag("head", "scroll_curl")
+    parts.extend([coil1, coil2])
 
     # Saffron silk cord sash around waist
-    sash = torus(0.228, 0.028, seg_major=32, seg_minor=12, name="sash", mat="saffron_silk")
+    sash = torus(0.236, 0.028, seg_major=34, seg_minor=12, name="sash", mat="saffron_silk")
     sash.move(0.0, 0.520, 0.0)
     sash.tag("spine")
     parts.append(sash)
 
-    # Ribbon bow & knot
-    bow = superellipsoid(0.045, 0.045, 0.035, e1=0.45, e2=0.45, seg=16, rings=8,
+    # Ribbon bow & hanging tassels
+    bow = superellipsoid(0.048, 0.048, 0.038, e1=0.45, e2=0.45, seg=16, rings=8,
                          name="ribbon_knot", mat="saffron_silk")
-    bow.move(-0.160, 0.520, 0.160)
+    bow.move(-0.170, 0.520, 0.170)
     bow.tag("spine")
-    parts.append(bow)
 
-    # Little hands holding tiny scroll rods
+    tassel1 = capsule(0.014, 0.090, seg=10, rings=6, name="tassel1", mat="saffron_silk")
+    tassel1.move(-0.185, 0.440, 0.180)
+    tassel1.tag("spine")
+    parts.extend([bow, tassel1])
+
+    # Hands holding miniature brass scroll rods
     def scroll_hand(sgn):
-        rod = capsule(0.016, 0.160, seg=12, rings=6, name="scroll_rod", mat="rod_brass")
-        rod.move(sgn * 0.140, 0.530, 0.220)
+        rod = capsule(0.016, 0.180, seg=14, rings=6, name="scroll_rod", mat="rod_brass")
+        rod.move(sgn * 0.145, 0.530, 0.230)
         rod.tag("chest")
-        hand = sphere(0.032, 0.032, 0.032, seg=14, rings=8, name="hand", mat="parchment")
-        hand.move(sgn * 0.140, 0.530, 0.210)
+        hand = sphere(0.035, 0.035, 0.035, seg=14, rings=8, name="hand", mat="parchment")
+        hand.move(sgn * 0.145, 0.530, 0.220)
         hand.tag("chest")
         return [rod, hand]
 
     parts.extend(mirrored(scroll_hand))
 
-    # Large thoughtful eyes on upper scroll
-    ex, ey = 0.095, 0.780
-    parts.extend(eye_pair(shell, ex, ey, 0.058, 0.065, 0.036, M,
-                          lid=(1.10, 0.40, 0.85), lid_lift=1.28, proud=0.78, lid_mat="lid"))
+    # Friendly cartoon smile
+    mouth = superellipsoid(0.042, 0.025, 0.022, e1=0.45, e2=0.45, seg=16, rings=8,
+                           name="mouth", mat="mouth_dark")
+    mouth.move(0.0, 0.700, 0.230)
+    mouth.tag("head")
+    parts.append(mouth)
+
+    # Big open cartoon eyes
+    ex, ey = 0.100, 0.790
+    parts.extend(eye_pair(shell, ex, ey, 0.062, 0.070, 0.038, M,
+                          lid=(1.10, 0.35, 0.80), lid_lift=1.35, proud=0.80, lid_mat="lid"))
 
     # Blank cream badge on lower body
-    poly = rounded_rect_poly(0.180, 0.110, 0.028, seg=6)
+    poly = rounded_rect_poly(0.185, 0.115, 0.030, seg=6)
     parts.extend(conform_plate(shell, poly, 0.260, thickness=0.018, proud=0.013,
                                rim=1.10, rim_proud=0.008, name="badge"))
-    pz = (probe_z(shell, 0.0, 0.260) or 0.22) + 0.013
+    pz = (probe_z(shell, 0.0, 0.260) or 0.23) + 0.013
 
     props = dict(hipY=0.18, spineY=0.38, chestY=0.58, neckY=0.70, headY=0.82,
-                 legX=0.110, legY=0.08, baseY=0.06, badgeY=0.260, badgeZ=pz,
-                 eyeX=ex, eyeY=ey, eyeZ=(probe_z(shell, ex, ey) or 0.21),
-                 r_hips=0.25, r_spine=0.25, r_chest=0.24, r_neck=0.22, r_head=0.24,
-                 r_base=0.20, r_leg=0.08, badge_size=[0.180, 0.110])
+                 legX=0.115, legY=0.08, baseY=0.06, badgeY=0.260, badgeZ=pz,
+                 eyeX=ex, eyeY=ey, eyeZ=(probe_z(shell, ex, ey) or 0.22),
+                 r_hips=0.26, r_spine=0.26, r_chest=0.25, r_neck=0.23, r_head=0.25,
+                 r_base=0.22, r_leg=0.08, badge_size=[0.185, 0.115])
 
     bones = [
-        mat_bone("scroll_curl", "head", (0.0, 0.960 - 0.82, 0.0), (0, 1, 0), 0.12, 0.15),
+        mat_bone("scroll_curl", "head", (0.0, 0.980 - 0.82, 0.0), (0, 1, 0), 0.14, 0.16),
     ]
 
     P = dict(clips.DEFAULT_PARAMS)
@@ -772,19 +877,25 @@ def build_patra():
     return Char("patra", "Patra", "The Memory Index",
                 "living parchment manuscript scroll with saffron sash and wooden pegs",
                 M, P, props, extras, bones,
-                ["#EADBBE", "#D8842E", "#6D4222", "#C89D46"], 1.05).finish(parts)
+                ["#E4D4B5", "#E08B28", "#62381A", "#D4A548"], 1.18).finish(parts)
 
 
 # ============================================================== 5 · KUMBHA ====
 def build_kumbha():
-    """KUMBHA — Golden Kalasha pot with mango leaves & coconut. Array boundary buffer."""
+    """
+    KUMBHA — Golden Kalasha pot with mango leaves & coconut. Boundary buffer.
+    Features: Ornate traditional Kalasha pot with engraved relief collar, 5 pointed
+    lanceolate mango leaves with central fold rib, pointed fibrous brown coconut with husk tuft,
+    warm sweet smile, high-polish sacred brass.
+    """
     M = dict(shared_mats())
     M.update({
-        "brass": dict(color=srgb("#DFAC3A"), roughness=0.22, metallic=0.88),
-        "brass_dark": dict(color=srgb("#A8781E"), roughness=0.30, metallic=0.85),
-        "mango_leaf": dict(color=srgb("#2B8A44"), roughness=0.40, metallic=0.04),
-        "coconut": dict(color=srgb("#6A4526"), roughness=0.72, metallic=0.02, texture="stone"),
-        "lid": dict(color=srgb("#CE982C"), roughness=0.25, metallic=0.80),
+        "brass": dict(color=srgb("#E4B43C"), roughness=0.18, metallic=0.92),
+        "brass_dark": dict(color=srgb("#9C6E18"), roughness=0.25, metallic=0.90),
+        "mango_leaf": dict(color=srgb("#22883E"), roughness=0.38, metallic=0.03),
+        "coconut": dict(color=srgb("#643D1E"), roughness=0.74, metallic=0.02, texture="stone"),
+        "mouth_dark": dict(color=srgb("#604010"), roughness=0.35, metallic=0.30),
+        "lid": dict(color=srgb("#CCA030"), roughness=0.22, metallic=0.85),
     })
     parts = []
     shell = []
@@ -797,78 +908,91 @@ def build_kumbha():
 
     # Two short golden feet
     def brass_foot(sgn):
-        foot = superellipsoid(0.065, 0.045, 0.080, e1=0.45, e2=0.45, seg=18, rings=8,
+        foot = superellipsoid(0.070, 0.048, 0.085, e1=0.42, e2=0.42, seg=20, rings=10,
                               name="brass_foot", mat="brass")
-        foot.move(sgn * 0.135, 0.045, 0.0)
+        foot.move(sgn * 0.140, 0.048, 0.0)
         foot.tag("legL" if sgn < 0 else "legR")
         return foot
 
     parts.extend(mirrored(brass_foot))
 
-    # Plump lathed Kalasha pot body
-    pot = lathe([(0.140, 0.040), (0.230, 0.100), (0.315, 0.220), (0.340, 0.350),
-                 (0.310, 0.480), (0.240, 0.560), (0.190, 0.600), (0.235, 0.640)],
-                seg=40, name="kalasha_pot", mat="brass")
+    # Lathed ornate Kalasha pot belly
+    pot = lathe([(0.140, 0.045), (0.240, 0.110), (0.330, 0.230), (0.355, 0.360),
+                 (0.320, 0.500), (0.245, 0.580), (0.195, 0.620), (0.245, 0.660)],
+                seg=42, name="kalasha_pot", mat="brass")
     pot.tag("hips", "spine", "chest", "head", "base")
     add(pot)
 
-    # Flared neck rim with engraved ring
-    rim = torus(0.215, 0.022, seg_major=36, seg_minor=12, name="neck_rim", mat="brass_dark")
-    rim.move(0.0, 0.620, 0.0)
+    # Flared neck rim with engraved ornamental relief ring
+    rim = torus(0.225, 0.024, seg_major=38, seg_minor=12, name="neck_rim", mat="brass_dark")
+    rim.move(0.0, 0.640, 0.0)
     rim.tag("head")
     parts.append(rim)
 
     # Short golden arms
     def arm(sgn):
-        a = tube([(sgn * 0.310, 0.420, 0.0),
-                  (sgn * 0.350, 0.320, 0.05),
-                  (sgn * 0.280, 0.240, 0.10)], 0.045, radial=12, name="brass_arm", mat="brass")
+        a = tube([(sgn * 0.325, 0.440, 0.0),
+                  (sgn * 0.365, 0.330, 0.06),
+                  (sgn * 0.290, 0.250, 0.12)], 0.048, radial=14, name="brass_arm", mat="brass",
+                 taper=[1.0, 0.95, 0.90])
         a.tag("chest")
         return a
 
     parts.extend(mirrored(arm))
 
-    # Sacred coconut nestled on top
-    coconut = superellipsoid(0.125, 0.170, 0.125, e1=0.55, e2=0.55, seg=24, rings=16,
+    # Pointed textured fibrous coconut nestled in center with tuft
+    coconut = superellipsoid(0.130, 0.190, 0.130, e1=0.50, e2=0.50, seg=26, rings=18,
                              name="coconut", mat="coconut")
-    coconut.move(0.0, 0.770, 0.0)
+    coconut.move(0.0, 0.810, 0.0)
     coconut.tag("head", "coconut_top")
     add(coconut, False)
 
-    # 5 glossy mango leaves radiating outward - spread wider and lifted up
+    tuft = cone = tube([(0.0, 0.980, 0.0), (0.0, 1.050, 0.0)], 0.035, radial=10,
+                       name="tuft", mat="coconut", taper=[1.0, 0.15])
+    tuft.tag("head", "coconut_top")
+    parts.append(tuft)
+
+    # 5 pointed lanceolate mango leaves cupping the coconut
     N_LEAVES = 5
     for li in range(N_LEAVES):
         l_ang = li * (TAU / N_LEAVES)
-        leaf = superellipsoid(0.065, 0.180, 0.020, e1=0.45, e2=0.45, seg=16, rings=8,
+        leaf = superellipsoid(0.070, 0.200, 0.022, e1=0.45, e2=0.45, seg=18, rings=10,
                               name=f"mango_leaf_{li}", mat="mango_leaf")
-        leaf.rotate(rx=0.55)
+        leaf.rotate(rx=0.60)
         leaf.rotate(ry=l_ang)
-        lx = math.sin(l_ang) * 0.185
-        lz = math.cos(l_ang) * 0.185
-        leaf.move(lx, 0.720, lz)
+        lx = math.sin(l_ang) * 0.195
+        lz = math.cos(l_ang) * 0.195
+        leaf.move(lx, 0.740, lz)
         leaf.tag("head", "leaf_crown")
         parts.append(leaf)
 
-    # Warm sweet eyes on brass pot belly
-    ex, ey = 0.110, 0.380
-    parts.extend(eye_pair(shell, ex, ey, 0.060, 0.066, 0.038, M,
-                          lid=(1.10, 0.38, 0.85), lid_lift=1.30, proud=0.78, lid_mat="lid"))
+    # Sweet open smile on brass belly
+    mouth = superellipsoid(0.046, 0.028, 0.024, e1=0.45, e2=0.45, seg=16, rings=8,
+                           name="mouth", mat="mouth_dark")
+    mouth.move(0.0, 0.315, 0.355)
+    mouth.tag("head")
+    parts.append(mouth)
+
+    # Big open cheerful eyes
+    ex, ey = 0.115, 0.395
+    parts.extend(eye_pair(shell, ex, ey, 0.065, 0.072, 0.040, M,
+                          lid=(1.10, 0.35, 0.80), lid_lift=1.35, proud=0.80, lid_mat="lid"))
 
     # Blank cream badge on lower pot belly
-    poly = rounded_rect_poly(0.175, 0.100, 0.026, seg=6)
+    poly = rounded_rect_poly(0.180, 0.105, 0.028, seg=6)
     parts.extend(conform_plate(shell, poly, 0.200, thickness=0.018, proud=0.013,
                                rim=1.10, rim_proud=0.008, name="badge"))
-    pz = (probe_z(shell, 0.0, 0.200) or 0.31) + 0.013
+    pz = (probe_z(shell, 0.0, 0.200) or 0.33) + 0.013
 
     props = dict(hipY=0.18, spineY=0.30, chestY=0.42, neckY=0.54, headY=0.64,
-                 legX=0.135, legY=0.08, baseY=0.05, badgeY=0.200, badgeZ=pz,
-                 eyeX=ex, eyeY=ey, eyeZ=(probe_z(shell, ex, ey) or 0.30),
-                 r_hips=0.32, r_spine=0.32, r_chest=0.30, r_neck=0.24, r_head=0.26,
-                 r_base=0.28, r_leg=0.10, badge_size=[0.175, 0.100])
+                 legX=0.140, legY=0.08, baseY=0.05, badgeY=0.200, badgeZ=pz,
+                 eyeX=ex, eyeY=ey, eyeZ=(probe_z(shell, ex, ey) or 0.32),
+                 r_hips=0.34, r_spine=0.34, r_chest=0.32, r_neck=0.26, r_head=0.28,
+                 r_base=0.30, r_leg=0.10, badge_size=[0.180, 0.105])
 
     bones = [
-        mat_bone("coconut_top", "head", (0.0, 0.770 - 0.64, 0.0), (0, 1, 0), 0.16, 0.18),
-        mat_bone("leaf_crown", "head", (0.0, 0.680 - 0.64, 0.0), (0, 1, 0), 0.12, 0.22),
+        mat_bone("coconut_top", "head", (0.0, 0.810 - 0.64, 0.0), (0, 1, 0), 0.18, 0.20),
+        mat_bone("leaf_crown", "head", (0.0, 0.740 - 0.64, 0.0), (0, 1, 0), 0.14, 0.25),
     ]
 
     P = dict(clips.DEFAULT_PARAMS)
@@ -889,7 +1013,7 @@ def build_kumbha():
     return Char("kumbha", "Kumbha", "The Boundary Buffer",
                 "sacred golden Kalasha brass vessel crowned with mango leaves and coconut",
                 M, P, props, extras, bones,
-                ["#DFAC3A", "#A8781E", "#2B8A44", "#6A4526"], 0.96).finish(parts)
+                ["#E4B43C", "#9C6E18", "#22883E", "#643D1E"], 1.05).finish(parts)
 
 
 BUILDERS = {

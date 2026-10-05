@@ -52,7 +52,7 @@
    "badge_anchor_gltf": [
     0.0,
     0.52,
-    0.3487
+    0.3737
    ],
    "clips": [
     {
@@ -140,12 +140,12 @@
    ],
    "clips_missing": [],
    "images": [
-    "matte",
-    "stone"
+    "ceramic",
+    "matte"
    ],
    "node_groups": [],
-   "triangles": 12460,
-   "vertices": 7008,
+   "triangles": 11272,
+   "vertices": 6444,
    "materials": [
     "gaja_badge",
     "gaja_badge_rim",
@@ -153,7 +153,9 @@
     "gaja_eye_dark",
     "gaja_eye_glint",
     "gaja_lid",
+    "gaja_mouth_dark",
     "gaja_skin",
+    "gaja_skin_light",
     "gaja_tusk"
    ],
    "vertex_groups": 21,
@@ -162,20 +164,20 @@
     "ARMATURE"
    ],
    "bounds_blender_min": [
-    -0.5011807084083557,
-    -0.5983051061630249,
+    -0.5494106411933899,
+    -0.6321102976799011,
     0.0
    ],
    "bounds_blender_max": [
-    0.5011807084083557,
-    0.3400000035762787,
-    1.2450000047683716
+    0.5494106411933899,
+    0.36500000953674316,
+    1.284999966621399
    ],
-   "height_m": 1.2450000047683716,
+   "height_m": 1.284999966621399,
    "ground_z": 0.0,
-   "front_y": -0.5983051061630249,
+   "front_y": -0.6321102976799011,
    "file": "source/gaja.blend",
-   "bytes": 548666
+   "bytes": 505555
   },
   {
    "id": "mayur",
@@ -213,7 +215,7 @@
    "badge_anchor_gltf": [
     0.0,
     0.38,
-    0.2565
+    0.2722
    ],
    "clips": [
     {
@@ -304,8 +306,8 @@
     "matte"
    ],
    "node_groups": [],
-   "triangles": 13696,
-   "vertices": 7830,
+   "triangles": 14664,
+   "vertices": 8504,
    "materials": [
     "mayur_badge",
     "mayur_badge_rim",
@@ -324,20 +326,20 @@
     "ARMATURE"
    ],
    "bounds_blender_min": [
-    -0.7117233276367188,
-    -0.3149999976158142,
+    -0.775049090385437,
+    -0.33927980065345764,
     0.0
    ],
    "bounds_blender_max": [
-    0.7117233276367188,
-    0.24500000476837158,
-    1.1334999799728394
+    0.775049090385437,
+    0.25999999046325684,
+    1.2316999435424805
    ],
-   "height_m": 1.1334999799728394,
+   "height_m": 1.2316999435424805,
    "ground_z": 0.0,
-   "front_y": -0.3149999976158142,
+   "front_y": -0.33927980065345764,
    "file": "source/mayur.blend",
-   "bytes": 523408
+   "bytes": 544489
   },
   {
    "id": "diya",
@@ -370,8 +372,8 @@
    "badge_bone": true,
    "badge_anchor_gltf": [
     0.0,
-    0.16,
-    0.278
+    0.155,
+    0.2896
    ],
    "clips": [
     {
@@ -463,8 +465,8 @@
     "matte"
    ],
    "node_groups": [],
-   "triangles": 4872,
-   "vertices": 2794,
+   "triangles": 6244,
+   "vertices": 3582,
    "materials": [
     "diya_badge",
     "diya_badge_rim",
@@ -475,7 +477,8 @@
     "diya_eye_glint",
     "diya_flame_core",
     "diya_flame_outer",
-    "diya_lid"
+    "diya_lid",
+    "diya_mouth_dark"
    ],
    "vertex_groups": 16,
    "max_influences": 4,
@@ -483,20 +486,20 @@
     "ARMATURE"
    ],
    "bounds_blender_min": [
-    -0.3514852225780487,
-    -0.3161420226097107,
+    -0.3609813451766968,
+    -0.37646833062171936,
     0.0
    ],
    "bounds_blender_max": [
-    0.3514852225780487,
-    0.30000001192092896,
-    0.9732531905174255
+    0.3609813451766968,
+    0.3199999928474426,
+    1.096913456916809
    ],
-   "height_m": 0.9732531905174255,
+   "height_m": 1.096913456916809,
    "ground_z": 0.0,
-   "front_y": -0.3161420226097107,
+   "front_y": -0.37646833062171936,
    "file": "source/diya.blend",
-   "bytes": 349529
+   "bytes": 388315
   },
   {
    "id": "patra",
@@ -528,7 +531,7 @@
    "badge_anchor_gltf": [
     0.0,
     0.26,
-    0.2339
+    0.2439
    ],
    "clips": [
     {
@@ -620,15 +623,17 @@
     "matte"
    ],
    "node_groups": [],
-   "triangles": 7192,
-   "vertices": 4055,
+   "triangles": 8996,
+   "vertices": 5086,
    "materials": [
     "patra_badge",
     "patra_badge_rim",
     "patra_eye_dark",
     "patra_eye_glint",
     "patra_lid",
+    "patra_mouth_dark",
     "patra_parchment",
+    "patra_parchment_dark",
     "patra_rod_brass",
     "patra_saffron_silk",
     "patra_wood_peg"
@@ -639,20 +644,20 @@
     "ARMATURE"
    ],
    "bounds_blender_min": [
-    -0.25600001215934753,
-    -0.25600001215934753,
+    -0.2916540801525116,
+    -0.2639999985694885,
     0.0
    ],
    "bounds_blender_max": [
-    0.25600001215934753,
-    0.25600001215934753,
-    1.1759999990463257
+    0.2628738284111023,
+    0.2639999985694885,
+    1.2000000476837158
    ],
-   "height_m": 1.1759999990463257,
+   "height_m": 1.2000000476837158,
    "ground_z": 0.0,
-   "front_y": -0.25600001215934753,
+   "front_y": -0.2639999985694885,
    "file": "source/patra.blend",
-   "bytes": 371207
+   "bytes": 422898
   },
   {
    "id": "kumbha",
@@ -686,7 +691,7 @@
    "badge_anchor_gltf": [
     0.0,
     0.2,
-    0.3138
+    0.3205
    ],
    "clips": [
     {
@@ -778,8 +783,8 @@
     "stone"
    ],
    "node_groups": [],
-   "triangles": 7168,
-   "vertices": 4105,
+   "triangles": 9036,
+   "vertices": 5146,
    "materials": [
     "kumbha_badge",
     "kumbha_badge_rim",
@@ -789,7 +794,8 @@
     "kumbha_eye_dark",
     "kumbha_eye_glint",
     "kumbha_lid",
-    "kumbha_mango_leaf"
+    "kumbha_mango_leaf",
+    "kumbha_mouth_dark"
    ],
    "vertex_groups": 16,
    "max_influences": 4,
@@ -797,25 +803,25 @@
     "ARMATURE"
    ],
    "bounds_blender_min": [
-    -0.3944363594055176,
-    -0.3499450087547302,
+    -0.40998929738998413,
+    -0.3790000081062317,
     0.0
    ],
    "bounds_blender_max": [
-    0.3944363594055176,
-    0.3400000035762787,
-    0.9399999976158142
+    0.40998929738998413,
+    0.35499998927116394,
+    1.0815000534057617
    ],
-   "height_m": 0.9399999976158142,
+   "height_m": 1.0815000534057617,
    "ground_z": 0.0,
-   "front_y": -0.3499450087547302,
+   "front_y": -0.3790000081062317,
    "file": "source/kumbha.blend",
-   "bytes": 393917
+   "bytes": 448495
   }
  ],
  "roster": {
   "file": "source/bubblesort_squad_roster.blend",
-  "bytes": 1598376,
+  "bytes": 1742802,
   "slot_pitch_m": 1.1,
   "characters": [
    "gaja",
