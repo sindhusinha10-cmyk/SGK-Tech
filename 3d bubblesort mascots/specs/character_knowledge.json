@@ -2,146 +2,115 @@
   {
     "id": "gaja",
     "name": "Gaja",
-    "title": "The Bipedal Elephant & Heavyweight Anchor",
+    "title": "The Baby Elephant & Heavyweight Stomp",
+    "height_m": 1.25,
     "cultural_heritage": {
-      "motif": "Gaja (Airavata / Gajendra)",
-      "cultural_significance": "In Indian heritage, the elephant embodies profound memory, patience, wisdom, and unyielding physical presence. It signifies grounded stability and venerable steadiness.",
-      "visual_design": "Stout, friendly bipedal baby elephant standing on two sturdy hind legs. Large expressive floppy ears, raised curved trunk expressing joy, slate blue-grey skin, and warm terracotta inner ears. Blank runtime badge on chest."
+      "motif": "Airavata / Gajendra (Sacred Indian Elephant)",
+      "significance": "Emblem of wisdom, steadfast strength, and unbreakable memory. Represents patience and immense physical weight."
     },
-    "bubble_sort_pedagogy": {
-      "algorithm_role": "Heavyweight / Anchor Element",
-      "sorting_behavior": "When an array item has a high numeric value, Bubble Sort causes it to steadily 'bubble up' to the right end of the array pass-by-pass. Gaja represents this heavyweight element: with each comparison pass, Gaja hops decisively across smaller elements until reaching the final sorted partition.",
-      "runtime_state_reactions": {
-        "GlanceL": "Turns trunk and eyes left to inspect the neighbouring array element value.",
-        "GlanceR": "Turns trunk and eyes right to compare numeric values.",
-        "Hop": "Powerful vertical bipedal leap with flapping ears as the slot coordinates swap.",
-        "NoSwap": "Nods knowingly and stays put when the adjacent element is already smaller.",
-        "Success": "Trumpets trunk high in victory with a joyful ear flap when the array is sorted."
-      }
+    "powers_and_mechanics": {
+      "jump_physics": "Heavyweight Stomp: Deep crouch with delayed lift; lands with an earth-shaking resonant thud. Ears flap wide and trunk curls upward in triumphant J-salute.",
+      "superpower": "Heavyweight Anchor (Invariance): When swapped, smaller elements must hop completely over Gaja. Gaja's high numeric values bubble steadily rightward pass-by-pass into the sorted partition."
     },
-    "3d_asset_specs": {
+    "3d_specs": {
       "mesh": "gaja.glb",
-      "height_m": 1.25,
-      "base_armature": "14-bone standard biped core",
-      "accessory_bones": ["trunk.01", "trunk.02", "trunk.03", "ear.L", "ear.R"],
-      "materials": ["gaja_skin_rough", "gaja_ear_terracotta", "badge_slate_cream"],
-      "triangle_budget": "< 12000"
-    }
-  },
-  {
-    "id": "mayur",
-    "name": "Mayur",
-    "title": "The Peacock Chick & Pattern Comparator",
-    "cultural_heritage": {
-      "motif": "Mayura (Peacock)",
-      "cultural_significance": "The national bird of India, Mayura symbolizes beauty, sacred vigilance, cyclical rebirth, and radiant celestial geometry. Its fanned plumage is a traditional symbol of completeness and discernment.",
-      "visual_design": "Plump teal/cerulean bird chick standing on two slender clawed legs. Features a triple-feather head crest and a wide radial fan of emerald green and golden feathers adorned with shimmering indigo eye-spots."
-    },
-    "bubble_sort_pedagogy": {
-      "algorithm_role": "Comparison & Pattern Verification Pointer",
-      "sorting_behavior": "Mayur serves as the dynamic visual comparator. The expansive tail fan folds inward during fast travel and fans outward into a breathtaking radial arc during element inspection and victorious sort completion.",
-      "runtime_state_reactions": {
-        "GlanceL": "Tilts head crest and cocks beak leftward to scrutinize the left neighbour.",
-        "GlanceR": "Pecks and glances rightward during pairwise comparison.",
-        "Hop": "Nimble, fluttery hop in place with tail feathers rustling.",
-        "NoSwap": "Gentle preening flutter indicating the adjacent pair is in ascending order.",
-        "Success": "Magnificent full tail fan expansion with high-frequency plumage shiver."
-      }
-    },
-    "3d_asset_specs": {
-      "mesh": "mayur.glb",
-      "height_m": 1.10,
-      "base_armature": "14-bone standard biped core",
-      "accessory_bones": ["tailFan_root", "tailFan.L", "tailFan.R", "crest.top", "beak"],
-      "materials": ["peacock_blue_satin", "feather_emerald_gold", "badge_slate_cream"],
-      "triangle_budget": "< 14500"
+      "accessory_bones": ["trunk.01", "trunk.02", "trunk.03", "earL", "earR", "armL", "armR"],
+      "materials": ["slate_skin_soft", "terracotta_ear_inner", "curved_ivory_tusks", "badge_cream_slate"]
     }
   },
   {
     "id": "diya",
     "name": "Diya",
-    "title": "The Terracotta Lamp & Traversal Pointer",
+    "title": "The Terracotta Lamp & Flame Burst",
+    "height_m": 0.85,
     "cultural_heritage": {
-      "motif": "Diya / Deepa (Clay Oil Lamp)",
-      "cultural_significance": "The clay lamp symbolizes the triumph of light over darkness and knowledge over ignorance (Tamaso ma jyotir gamaya). It represents inner focus, truth, and persistent clarity.",
-      "visual_design": "Chubby terracotta clay bowl with a pinched pouring spout, short stubby clay arms and feet, and a warm glowing teardrop flame crest alive on top. A radiant amber gem rests on its cheek."
+      "motif": "Deepa / Diya (Clay Sacred Oil Lamp)",
+      "significance": "Triumph of knowledge over ignorance (Tamaso ma jyotir gamaya). Inner truth, persistence, and continuous illumination."
     },
-    "bubble_sort_pedagogy": {
-      "algorithm_role": "Active Traversal Pointer & Invariance Validator",
-      "sorting_behavior": "In Bubble Sort, an inner loop pointer traverses adjacent pairs [j, j+1]. Diya acts as the radiant searchlight of the algorithm: its flame glows brighter during active comparison and turns steady gold once its element is locked into its invariant sorted position.",
-      "runtime_state_reactions": {
-        "GlanceL": "Pivots flame and warm eyes left, illuminating the left slot.",
-        "GlanceR": "Spill of warm light rightward toward the comparison target.",
-        "Hop": "Energetic bobbing bounce with the flame flexing like a teardrop.",
-        "NoSwap": "Flame pulses warm amber, confirming no inversion exists between pairs.",
-        "Success": "Flame flares into brilliant warm gold with joyful arm spinning."
-      }
+    "powers_and_mechanics": {
+      "jump_physics": "Flame Burst Leap: Rapid, high-frequency spring; its living sculpted S-curve flame stretches and trails warm golden light in the air.",
+      "superpower": "Traversal Illuminator (Active Comparison): Flame flares into brilliant white-gold when inspecting adjacent pairs; cheek ember pulses warm amber when an inversion is detected."
     },
-    "3d_asset_specs": {
+    "3d_specs": {
       "mesh": "diya.glb",
-      "height_m": 0.85,
-      "base_armature": "14-bone standard biped core",
       "accessory_bones": ["flame_base", "flame_mid", "flame_tip"],
-      "materials": ["terracotta_matte_clay", "flame_emissive_translucent", "badge_slate_cream"],
-      "triangle_budget": "< 8000"
-    }
-  },
-  {
-    "id": "patra",
-    "name": "Patra",
-    "title": "The Parchment Scroll & Array Memory Index",
-    "cultural_heritage": {
-      "motif": "Patra / Grantha (Ancient Manuscript Scroll)",
-      "cultural_significance": "Represents the ancient Indian preservation of foundational mathematical treatises (such as the Sulba Sutras and Aryabhatiya). It symbolizes structured records, sequential texts, and written memory.",
-      "visual_design": "Chubby upright rolled manuscript scroll of aged ivory paper with visible ancient script textures, bound with a saffron silk sash ribbon and tassel, standing on carved wooden peg feet."
-    },
-    "bubble_sort_pedagogy": {
-      "algorithm_role": "Data Index & Historical State Logger",
-      "sorting_behavior": "Every sorting algorithm requires memory tracking of indices and swap counters. Patra represents the sequential indexing of the array: its curled paper unfurls slightly when swaps occur, visualizing the state change in memory.",
-      "runtime_state_reactions": {
-        "GlanceL": "Unfurls top curl slightly toward the left neighbour.",
-        "GlanceR": "Curls top edge rightward to inspect the next slot.",
-        "Hop": "Crisp upright spring on its wooden peg feet with ribbon tassels swinging.",
-        "NoSwap": "Gentle ribbon wobble confirming index increment without swap.",
-        "Success": "Full joyful bow with parchment unrolling slightly in celebration."
-      }
-    },
-    "3d_asset_specs": {
-      "mesh": "patra.glb",
-      "height_m": 1.05,
-      "base_armature": "14-bone standard biped core",
-      "accessory_bones": ["scroll_curl_top", "scroll_curl_side", "ribbon_knot"],
-      "materials": ["manuscript_parchment_aged", "saffron_silk_ribbon", "badge_slate_cream"],
-      "triangle_budget": "< 9500"
+      "materials": ["earthen_terracotta_clay", "flame_emissive_core", "flame_amber_glow", "cheek_ember"]
     }
   },
   {
     "id": "kumbha",
     "name": "Kumbha",
-    "title": "The Golden Kalasha & Array Boundary Buffer",
+    "title": "The Sacred Kalasha & Boundary Chime",
+    "height_m": 0.98,
     "cultural_heritage": {
-      "motif": "Purna Kalasha / Kumbha (Sacred Vessel)",
-      "cultural_significance": "A fundamental emblem of fullness, auspicious completion, abundance, and source of life. Crowned with lush mango leaves (Amrapallava) and a sacred coconut (Shriphala).",
-      "visual_design": "Round plump polished brass pot with engraved floral neck rim, crowned with five emerald green mango leaves and a fibrous brown coconut. Short golden brass arms and feet."
+      "motif": "Purna Kalasha / Kumbha (Auspicious Vessel)",
+      "significance": "Emblem of fullness, auspicious abundance, and source of life. Adorned with mango leaves (Amrapallava) and sacred coconut (Shriphala)."
     },
-    "bubble_sort_pedagogy": {
-      "algorithm_role": "Array Boundary & Fullness (Sorted) Verifier",
-      "sorting_behavior": "Signifies the boundary of the unsorted partition (n - i - 1). Once an element reaches its final place at the end of the pass, Kumbha marks it as complete. When the entire array is sorted, Kumbha's fullness represents O(1) auxiliary space completion.",
-      "runtime_state_reactions": {
-        "GlanceL": "Shifts brass weight and tips mango leaves toward the left slot.",
-        "GlanceR": "Tips coconut crown rightward to check array boundary.",
-        "Hop": "Solid, resonant metallic hop with mango leaves swaying.",
-        "NoSwap": "Reverberant metallic chime pose confirming partition boundary intact.",
-        "Success": "Leaves flutter upright, coconut shines, and celebratory brass shimmer."
-      }
+    "powers_and_mechanics": {
+      "jump_physics": "Resonant Bell Chime Hop: Solid, balanced metallic leap; the 5 pointed mango leaves flutter rhythmically and coconut tuft sways, landing with a clean temple chime.",
+      "superpower": "Partition Boundary Buffer (Completion): Marks the sorted partition boundary (n - i - 1). Emits a golden sacred chime when an element reaches its permanent invariant slot."
     },
-    "3d_asset_specs": {
+    "3d_specs": {
       "mesh": "kumbha.glb",
-      "height_m": 0.95,
-      "base_armature": "14-bone standard biped core",
-      "accessory_bones": ["coconut_top", "leaf_FL", "leaf_FR", "leaf_BL", "leaf_BR"],
-      "materials": ["sacred_brass_polished", "mango_leaf_emerald", "coconut_husk_brown", "badge_slate_cream"],
-      "triangle_budget": "< 11000"
+      "accessory_bones": ["coconut_tuft", "leaf_FL", "leaf_FR", "leaf_BL", "leaf_BR"],
+      "materials": ["sacred_brass_relief", "emerald_mango_leaf", "coconut_fibrous_husk", "badge_cream_slate"]
+    }
+  },
+  {
+    "id": "grantha",
+    "name": "Grantha",
+    "title": "The Vedic Palm-Leaf Book & Memory Logger",
+    "height_m": 1.15,
+    "cultural_heritage": {
+      "motif": "Grantha / Pothi (Ancient Vedic Manuscript)",
+      "significance": "Ancient preservation of foundational mathematics (Sulba Sutras, Aryabhatiya). Structured algorithmic records and written memory."
+    },
+    "powers_and_mechanics": {
+      "jump_physics": "Leaf Flutter Hop: Crisp upright box spring; carved teak wood covers clap with a gentle wooden snap, and the red braided cord bells chime.",
+      "superpower": "State & Swap Counter (Memory Logger): Unfurls its ancient manuscript leaves and tilts its peacock quill to log swap state changes and loop counts in memory."
+    },
+    "3d_specs": {
+      "mesh": "grantha.glb",
+      "accessory_bones": ["cover_top", "cord_tassel", "quill_pen"],
+      "materials": ["aged_birch_bark", "carved_teak_wood", "silk_cord_braid", "peacock_quill"]
+    }
+  },
+  {
+    "id": "dhanesh",
+    "name": "Dhanesh",
+    "title": "The Great Indian Hornbill & Casque Glide",
+    "height_m": 1.38,
+    "cultural_heritage": {
+      "motif": "Dhanesh (Great Indian Hornbill - Buceros bicornis)",
+      "significance": "Sacred forest bird of the Western Ghats and Northeast India. Embodies aerial vigilance, partnership, and ancient canopy wisdom."
+    },
+    "powers_and_mechanics": {
+      "jump_physics": "Casque Glide Leap: High vertical flutter with a slight wing glide at apex; regal golden casque horn leads the jump with a forward head dip.",
+      "superpower": "Precision Comparator Pointer: Massive golden beak dips down to point directly at the adjacent comparison target, making pairwise checks unmistakably clear."
+    },
+    "3d_specs": {
+      "mesh": "dhanesh.glb",
+      "accessory_bones": ["casque_horn", "beak_tip", "wingL", "wingR", "tail_long"],
+      "materials": ["feather_onyx_black", "feather_ivory_white", "golden_casque_amber", "perch_wood"]
+    }
+  },
+  {
+    "id": "salya",
+    "name": "Salya",
+    "title": "The Indian Pangolin & Scaled Defense",
+    "height_m": 0.92,
+    "cultural_heritage": {
+      "motif": "Salya (Indian Scaled Pangolin - Manis crassicaudata)",
+      "significance": "Shy, endangered native Indian wildlife covered in pinecone keratin armor. Symbolizes quiet persistence, defense, and self-contained strength."
+    },
+    "powers_and_mechanics": {
+      "jump_physics": "Armored Ball Spring: Low crouch that coils into a tight golden pinecone curve at apex, bouncing cleanly on its muscular counterbalanced tail.",
+      "superpower": "Stability Armor (Invariance Lock): Shivers its golden keratin scales and locks in place when two elements are already in sorted order (NoSwap)."
+    },
+    "3d_specs": {
+      "mesh": "salya.glb",
+      "accessory_bones": ["tail_curl.01", "tail_curl.02", "scale_hood", "armL", "armR"],
+      "materials": ["golden_keratin_scales", "soft_cream_underbelly", "tail_armor", "badge_cream_slate"]
     }
   }
 ]

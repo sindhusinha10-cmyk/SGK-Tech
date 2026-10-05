@@ -4,7 +4,7 @@ build_knowledge_faiss.py
 
 Generates dense vector embeddings for character specifications, cultural heritage,
 and Bubble Sort CS educational concepts, indexing them into a FAISS vector index.
-Uses an exact Bag-of-Words / TF-IDF sparse-to-dense projection with bigram weighting.
+Supports the full 6-character Sanskritik & Native Wildlife roster.
 """
 
 import json
@@ -30,8 +30,9 @@ def load_chunks():
         cname = item["name"]
         ctitle = item["title"]
         ch = item["cultural_heritage"]
-        cp = item["bubble_sort_pedagogy"]
-        sp = item["3d_asset_specs"]
+        pm = item["powers_and_mechanics"]
+        sp = item["3d_specs"]
+        hm = item.get("height_m", 1.0)
 
         # Chunk 1: Identity & Overview
         chunks.append({
@@ -40,8 +41,8 @@ def load_chunks():
             "category": "character_identity",
             "title": f"{cname} Overview: {ctitle}",
             "text": f"Character: {cname} ({cid}). Title: {ctitle}. Cultural Motif: {ch['motif']}. "
-                    f"Visual Design: {ch['visual_design']} Role in Bubble Sort: {cp['algorithm_role']}. "
-                    f"3D Mesh: {sp['mesh']}, Height: {sp['height_m']}m."
+                    f"Significance: {ch['significance']} Height: {hm}m. "
+                    f"Superpower: {pm['superpower']} Jump physics: {pm['jump_physics']}"
         })
 
         # Chunk 2: Cultural Heritage & Symbolism
@@ -50,21 +51,18 @@ def load_chunks():
             "character_id": cid,
             "category": "cultural_heritage",
             "title": f"{cname} Cultural Heritage & Motif",
-            "text": f"{cname} ({cid}) is inspired by {ch['motif']}. Cultural Significance: {ch['cultural_significance']}. "
-                    f"Visual characteristics: {ch['visual_design']} The character connects computer science education "
-                    f"with India's rich intellectual and craft traditions."
+            "text": f"{cname} ({cid}) is inspired by {ch['motif']}. Significance: {ch['significance']} "
+                    f"This character connects authentic Indian heritage and biodiversity with computer science education."
         })
 
-        # Chunk 3: Computer Science & Bubble Sort Algorithm Role
-        reactions = " ".join([f"{k}: {v}" for k, v in cp["runtime_state_reactions"].items()])
+        # Chunk 3: Computer Science & Bubble Sort Power Mechanics
         chunks.append({
             "chunk_id": f"{cid}_algorithm",
             "character_id": cid,
             "category": "bubble_sort_pedagogy",
-            "title": f"{cname} Bubble Sort Algorithm & Educational Function",
-            "text": f"In Bubble Sort, {cname} ({cid}) acts as the {cp['algorithm_role']}. "
-                    f"Sorting behavior: {cp['sorting_behavior']} "
-                    f"Animation reactions during execution: {reactions}"
+            "title": f"{cname} Bubble Sort Superpower & Jump Mechanics",
+            "text": f"In Bubble Sort, {cname} ({cid}) wields the superpower: '{pm['superpower']}'. "
+                    f"Unique Jump Physics: {pm['jump_physics']} Height in simulation: {hm} meters."
         })
 
         # Chunk 4: 3D Asset & Technical Rigging Specifications
@@ -73,9 +71,9 @@ def load_chunks():
             "character_id": cid,
             "category": "3d_technical_specs",
             "title": f"{cname} 3D Asset & Rigging Specs",
-            "text": f"{cname} ({cid}) 3D Model Specifications: mesh={sp['mesh']}, height={sp['height_m']} meters, "
-                    f"base armature='{sp['base_armature']}', accessory bones={', '.join(sp['accessory_bones'])}, "
-                    f"materials={', '.join(sp['materials'])}, triangle budget={sp['triangle_budget']} triangles. "
+            "text": f"{cname} ({cid}) 3D Model Specifications: mesh={sp['mesh']}, height={hm}m, "
+                    f"accessory bones={', '.join(sp['accessory_bones'])}, "
+                    f"materials={', '.join(sp['materials'])}. "
                     f"Includes blank runtime badge plate for dynamic number projection."
         })
 
@@ -84,12 +82,12 @@ def load_chunks():
         "chunk_id": "global_bubblesort_squad",
         "character_id": "all",
         "category": "algorithm_overview",
-        "title": "Bubble Sort Squad Educational Framework",
-        "text": "The Bubble Sort Squad consists of 5 original Indian-heritage mascots: "
-                "Gaja (the elephant heavyweight anchor), Mayur (the peacock comparator), "
-                "Diya (the terracotta lamp active traversal pointer), Patra (the scroll memory index), "
-                "and Kumbha (the kalasha boundary buffer). Together they illustrate adjacent comparison, "
-                "in-place swapping, and partition convergence in O(n^2) worst/average case and O(1) auxiliary space."
+        "title": "Indian Heritage & Native Wildlife Bubble Sort Squad",
+        "text": "The complete roster contains 6 unique Indian cultural and wildlife characters: "
+                "Gaja (Elephant heavyweight stomp), Diya (Terracotta lamp flame burst), "
+                "Kumbha (Kalasha boundary buffer), Grantha (Vedic book memory logger), "
+                "Dhanesh (Great Indian Hornbill comparator), and Salya (Indian Pangolin stability shield). "
+                "Each character features tailored jump physics, distinct heights, and individual sorting powers."
     })
 
     return chunks
@@ -103,7 +101,6 @@ class VocabularyTFIDFEncoder:
     def _tokenize(self, text):
         words = re.findall(r"[a-z0-9_]+", text.lower())
         tokens = list(words)
-        # Bigrams
         for i in range(len(words) - 1):
             tokens.append(f"{words[i]}_{words[i+1]}")
         return tokens
@@ -115,7 +112,6 @@ class VocabularyTFIDFEncoder:
             for tok in set(tokens):
                 df[tok] = df.get(tok, 0) + 1
 
-        # Keep top terms sorted by frequency
         sorted_terms = sorted(df.items(), key=lambda x: x[1], reverse=True)
         top_terms = [term for term, count in sorted_terms[:self.max_features]]
         self.vocab = {term: idx for idx, term in enumerate(top_terms)}
@@ -152,7 +148,7 @@ class VocabularyTFIDFEncoder:
         return vec.reshape(1, -1).astype(np.float32)
 
 def main():
-    print("Building FAISS knowledge index for 3D Mascot Squad...")
+    print("Building FAISS knowledge index for 6-Character Squad...")
     chunks = load_chunks()
     print(f"Loaded {len(chunks)} knowledge chunks.")
 
