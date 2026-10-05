@@ -318,7 +318,7 @@ def check(cid):
 
 
 def main():
-    ids = sys.argv[1:] or ["gaja", "mayur", "diya", "patra", "kumbha"]
+    ids = sys.argv[1:] or ["gaja", "diya", "kumbha", "grantha", "dhanesh", "salya", "mayur", "patra"]
     report = {"models": [], "summary": {}}
     width = 44
     print("%-8s %-6s %s" % ("char", "result", "detail"))

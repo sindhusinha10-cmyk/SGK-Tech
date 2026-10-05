@@ -1296,7 +1296,7 @@
     "#FF6200"
    ],
    "blurb": "sacred terracotta oil lamp with glowing living flame crest",
-   "build_seconds": 0.59
+   "build_seconds": 0.55
   },
   {
    "ground_shift": -0.04,
@@ -1704,7 +1704,7 @@
     "#D4A548"
    ],
    "blurb": "living parchment manuscript scroll with saffron sash and wooden pegs",
-   "build_seconds": 0.49
+   "build_seconds": 0.53
   },
   {
    "id": "kumbha",
@@ -2109,7 +2109,1354 @@
     "#643D1E"
    ],
    "blurb": "sacred golden Kalasha brass vessel crowned with mango leaves and coconut",
-   "build_seconds": 0.63
+   "build_seconds": 0.65
+  },
+  {
+   "id": "grantha",
+   "name": "Grantha",
+   "role": "The Memory Logger",
+   "height": 1.1701,
+   "width": 0.5504,
+   "depth": 0.368,
+   "bbox_min": [
+    -0.276,
+    0.0,
+    -0.17
+   ],
+   "bbox_max": [
+    0.2744,
+    1.1701,
+    0.198
+   ],
+   "triangles": 8312,
+   "vertices": 4806,
+   "badge_anchor": [
+    0.0,
+    0.26,
+    0.1661
+   ],
+   "badge_size": [
+    0.17,
+    0.1
+   ],
+   "clip_order": [
+    "Idle",
+    "GlanceL",
+    "GlanceR",
+    "Crouch",
+    "Hop",
+    "Land",
+    "NoSwap",
+    "Success"
+   ],
+   "part_count": 29,
+   "joint_count": 17,
+   "file": "models/grantha.glb",
+   "bytes": 469808,
+   "clips": [
+    {
+     "name": "Idle",
+     "duration": 4.0,
+     "fps": 30,
+     "tracks": 17,
+     "keys": 185
+    },
+    {
+     "name": "GlanceL",
+     "duration": 0.9,
+     "fps": 30,
+     "tracks": 15,
+     "keys": 128
+    },
+    {
+     "name": "GlanceR",
+     "duration": 0.9,
+     "fps": 30,
+     "tracks": 15,
+     "keys": 128
+    },
+    {
+     "name": "Crouch",
+     "duration": 0.5,
+     "fps": 30,
+     "tracks": 14,
+     "keys": 105
+    },
+    {
+     "name": "Hop",
+     "duration": 0.72,
+     "fps": 30,
+     "tracks": 17,
+     "keys": 221
+    },
+    {
+     "name": "Land",
+     "duration": 0.5,
+     "fps": 30,
+     "tracks": 15,
+     "keys": 153
+    },
+    {
+     "name": "NoSwap",
+     "duration": 0.95,
+     "fps": 30,
+     "tracks": 13,
+     "keys": 147
+    },
+    {
+     "name": "Success",
+     "duration": 1.25,
+     "fps": 30,
+     "tracks": 20,
+     "keys": 348
+    }
+   ],
+   "materials": {
+    "badge": {
+     "surface": "badge",
+     "color": [
+      0.9387,
+      0.9047,
+      0.8228
+     ],
+     "metallic": 0.0,
+     "roughness": 0.5,
+     "alpha": 1.0,
+     "texture": "matte"
+    },
+    "badge_rim": {
+     "surface": "badge_rim",
+     "color": [
+      0.6584,
+      0.3763,
+      0.0648
+     ],
+     "metallic": 0.88,
+     "roughness": 0.28,
+     "alpha": 1.0,
+     "texture": null
+    },
+    "bell_brass": {
+     "surface": "bell_brass",
+     "color": [
+      0.7231,
+      0.402,
+      0.0331
+     ],
+     "metallic": 0.88,
+     "roughness": 0.25,
+     "alpha": 1.0,
+     "texture": null
+    },
+    "cord_red": {
+     "surface": "cord_red",
+     "color": [
+      0.491,
+      0.0242,
+      0.0185
+     ],
+     "metallic": 0.08,
+     "roughness": 0.38,
+     "alpha": 1.0,
+     "texture": null
+    },
+    "eye_dark": {
+     "surface": "eye_dark",
+     "color": [
+      0.008,
+      0.008,
+      0.0123
+     ],
+     "metallic": 0.0,
+     "roughness": 0.08,
+     "alpha": 1.0,
+     "texture": null
+    },
+    "eye_glint": {
+     "surface": "eye_glint",
+     "color": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "metallic": 0.0,
+     "roughness": 0.2,
+     "alpha": 1.0,
+     "texture": null
+    },
+    "lid": {
+     "surface": "lid",
+     "color": [
+      0.1022,
+      0.0273,
+      0.007
+     ],
+     "metallic": 0.02,
+     "roughness": 0.55,
+     "alpha": 1.0,
+     "texture": null
+    },
+    "mouth_dark": {
+     "surface": "mouth_dark",
+     "color": [
+      0.0685,
+      0.016,
+      0.0037
+     ],
+     "metallic": 0.0,
+     "roughness": 0.45,
+     "alpha": 1.0,
+     "texture": null
+    },
+    "palm_leaf": {
+     "surface": "palm_leaf",
+     "color": [
+      0.7605,
+      0.6172,
+      0.4072
+     ],
+     "metallic": 0.0,
+     "roughness": 0.68,
+     "alpha": 1.0,
+     "texture": null
+    },
+    "pop": {
+     "surface": "pop",
+     "color": [
+      0.159,
+      0.6939,
+      0.5149
+     ],
+     "metallic": 0.15,
+     "roughness": 0.3,
+     "alpha": 1.0,
+     "texture": null
+    },
+    "quill_gold": {
+     "surface": "quill_gold",
+     "color": [
+      0.6584,
+      0.3763,
+      0.0648
+     ],
+     "metallic": 0.65,
+     "roughness": 0.28,
+     "alpha": 1.0,
+     "texture": null
+    },
+    "quill_shaft": {
+     "surface": "quill_shaft",
+     "color": [
+      1.0,
+      0.9387,
+      0.7991
+     ],
+     "metallic": 0.0,
+     "roughness": 0.22,
+     "alpha": 1.0,
+     "texture": null
+    },
+    "quill_teal": {
+     "surface": "quill_teal",
+     "color": [
+      0.011,
+      0.1384,
+      0.1878
+     ],
+     "metallic": 0.08,
+     "roughness": 0.35,
+     "alpha": 1.0,
+     "texture": null
+    },
+    "teak_wood": {
+     "surface": "teak_wood",
+     "color": [
+      0.1022,
+      0.0273,
+      0.007
+     ],
+     "metallic": 0.02,
+     "roughness": 0.55,
+     "alpha": 1.0,
+     "texture": "ceramic"
+    }
+   },
+   "bones": [
+    {
+     "name": "root",
+     "parent": null,
+     "group": "core",
+     "rest": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "name": "hips",
+     "parent": "root",
+     "group": "core",
+     "rest": [
+      0.0,
+      0.18,
+      0.0
+     ]
+    },
+    {
+     "name": "spine",
+     "parent": "hips",
+     "group": "core",
+     "rest": [
+      0.0,
+      0.35,
+      0.0
+     ]
+    },
+    {
+     "name": "chest",
+     "parent": "spine",
+     "group": "core",
+     "rest": [
+      0.0,
+      0.52,
+      0.0
+     ]
+    },
+    {
+     "name": "neck",
+     "parent": "chest",
+     "group": "core",
+     "rest": [
+      0.0,
+      0.64,
+      0.0
+     ]
+    },
+    {
+     "name": "head",
+     "parent": "neck",
+     "group": "core",
+     "rest": [
+      0.0,
+      0.72,
+      0.0
+     ]
+    },
+    {
+     "name": "lidL",
+     "parent": "head",
+     "group": "face",
+     "rest": [
+      -0.095,
+      0.585,
+      0.1542
+     ]
+    },
+    {
+     "name": "lidR",
+     "parent": "head",
+     "group": "face",
+     "rest": [
+      0.095,
+      0.585,
+      0.1542
+     ]
+    },
+    {
+     "name": "eyeL",
+     "parent": "head",
+     "group": "face",
+     "rest": [
+      -0.095,
+      0.585,
+      0.1542
+     ]
+    },
+    {
+     "name": "eyeR",
+     "parent": "head",
+     "group": "face",
+     "rest": [
+      0.095,
+      0.585,
+      0.1542
+     ]
+    },
+    {
+     "name": "badge",
+     "parent": "chest",
+     "group": "badge",
+     "rest": [
+      0.0,
+      0.26,
+      0.1661
+     ]
+    },
+    {
+     "name": "legL",
+     "parent": "hips",
+     "group": "core",
+     "rest": [
+      -0.125,
+      0.06,
+      0.0
+     ]
+    },
+    {
+     "name": "legR",
+     "parent": "hips",
+     "group": "core",
+     "rest": [
+      0.125,
+      0.06,
+      0.0
+     ]
+    },
+    {
+     "name": "base",
+     "parent": "hips",
+     "group": "core",
+     "rest": [
+      0.0,
+      0.04,
+      0.0
+     ]
+    },
+    {
+     "name": "cover_top",
+     "parent": "head",
+     "group": "extra",
+     "rest": [
+      0.0,
+      0.785,
+      0.0
+     ]
+    },
+    {
+     "name": "cord_tassel",
+     "parent": "head",
+     "group": "extra",
+     "rest": [
+      -0.08,
+      0.7,
+      0.135
+     ]
+    },
+    {
+     "name": "quill_pen",
+     "parent": "head",
+     "group": "extra",
+     "rest": [
+      0.12,
+      0.95,
+      -0.04
+     ]
+    }
+   ],
+   "palette_srgb": [
+    "#5A2E14",
+    "#E2CEAB",
+    "#BA2B25",
+    "#1B6878"
+   ],
+   "blurb": "Vedic palm-leaf manuscript mascot with carved teak covers, red cord and peacock quill",
+   "build_seconds": 0.79
+  },
+  {
+   "ground_shift": -0.045,
+   "id": "dhanesh",
+   "name": "Dhanesh",
+   "role": "The Precision Comparator",
+   "height": 1.2653,
+   "width": 0.7118,
+   "depth": 1.0534,
+   "bbox_min": [
+    -0.3559,
+    0.0,
+    -0.3485
+   ],
+   "bbox_max": [
+    0.3559,
+    1.2653,
+    0.7049
+   ],
+   "triangles": 10728,
+   "vertices": 6050,
+   "badge_anchor": [
+    0.0,
+    0.35,
+    0.2761
+   ],
+   "badge_size": [
+    0.17,
+    0.1
+   ],
+   "clip_order": [
+    "Idle",
+    "GlanceL",
+    "GlanceR",
+    "Crouch",
+    "Hop",
+    "Land",
+    "NoSwap",
+    "Success"
+   ],
+   "part_count": 31,
+   "joint_count": 19,
+   "file": "models/dhanesh.glb",
+   "bytes": 554424,
+   "clips": [
+    {
+     "name": "Idle",
+     "duration": 4.0,
+     "fps": 30,
+     "tracks": 17,
+     "keys": 195
+    },
+    {
+     "name": "GlanceL",
+     "duration": 0.9,
+     "fps": 30,
+     "tracks": 15,
+     "keys": 124
+    },
+    {
+     "name": "GlanceR",
+     "duration": 0.9,
+     "fps": 30,
+     "tracks": 15,
+     "keys": 124
+    },
+    {
+     "name": "Crouch",
+     "duration": 0.5,
+     "fps": 30,
+     "tracks": 14,
+     "keys": 106
+    },
+    {
+     "name": "Hop",
+     "duration": 0.72,
+     "fps": 30,
+     "tracks": 19,
+     "keys": 242
+    },
+    {
+     "name": "Land",
+     "duration": 0.5,
+     "fps": 30,
+     "tracks": 15,
+     "keys": 149
+    },
+    {
+     "name": "NoSwap",
+     "duration": 0.95,
+     "fps": 30,
+     "tracks": 14,
+     "keys": 146
+    },
+    {
+     "name": "Success",
+     "duration": 1.25,
+     "fps": 30,
+     "tracks": 22,
+     "keys": 389
+    }
+   ],
+   "materials": {
+    "badge": {
+     "surface": "badge",
+     "color": [
+      0.9387,
+      0.9047,
+      0.8228
+     ],
+     "metallic": 0.0,
+     "roughness": 0.5,
+     "alpha": 1.0,
+     "texture": "matte"
+    },
+    "badge_rim": {
+     "surface": "badge_rim",
+     "color": [
+      0.6584,
+      0.3763,
+      0.0648
+     ],
+     "metallic": 0.88,
+     "roughness": 0.28,
+     "alpha": 1.0,
+     "texture": null
+    },
+    "bill_accent": {
+     "surface": "bill_accent",
+     "color": [
+      0.305,
+      0.0212,
+      0.0091
+     ],
+     "metallic": 0.1,
+     "roughness": 0.35,
+     "alpha": 1.0,
+     "texture": null
+    },
+    "bill_ivory": {
+     "surface": "bill_ivory",
+     "color": [
+      0.8714,
+      0.6867,
+      0.3916
+     ],
+     "metallic": 0.08,
+     "roughness": 0.32,
+     "alpha": 1.0,
+     "texture": null
+    },
+    "casque_gold": {
+     "surface": "casque_gold",
+     "color": [
+      0.7835,
+      0.3419,
+      0.0176
+     ],
+     "metallic": 0.35,
+     "roughness": 0.28,
+     "alpha": 1.0,
+     "texture": null
+    },
+    "eye_dark": {
+     "surface": "eye_dark",
+     "color": [
+      0.008,
+      0.008,
+      0.0123
+     ],
+     "metallic": 0.0,
+     "roughness": 0.08,
+     "alpha": 1.0,
+     "texture": null
+    },
+    "eye_glint": {
+     "surface": "eye_glint",
+     "color": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "metallic": 0.0,
+     "roughness": 0.2,
+     "alpha": 1.0,
+     "texture": null
+    },
+    "feather_black": {
+     "surface": "feather_black",
+     "color": [
+      0.0116,
+      0.0123,
+      0.0176
+     ],
+     "metallic": 0.04,
+     "roughness": 0.45,
+     "alpha": 1.0,
+     "texture": null
+    },
+    "feather_white": {
+     "surface": "feather_white",
+     "color": [
+      0.9047,
+      0.8879,
+      0.8388
+     ],
+     "metallic": 0.01,
+     "roughness": 0.5,
+     "alpha": 1.0,
+     "texture": null
+    },
+    "lid": {
+     "surface": "lid",
+     "color": [
+      0.0116,
+      0.0123,
+      0.0176
+     ],
+     "metallic": 0.04,
+     "roughness": 0.45,
+     "alpha": 1.0,
+     "texture": null
+    },
+    "mouth_dark": {
+     "surface": "mouth_dark",
+     "color": [
+      0.0423,
+      0.0091,
+      0.0052
+     ],
+     "metallic": 0.0,
+     "roughness": 0.45,
+     "alpha": 1.0,
+     "texture": null
+    },
+    "pop": {
+     "surface": "pop",
+     "color": [
+      0.159,
+      0.6939,
+      0.5149
+     ],
+     "metallic": 0.15,
+     "roughness": 0.3,
+     "alpha": 1.0,
+     "texture": null
+    }
+   },
+   "bones": [
+    {
+     "name": "root",
+     "parent": null,
+     "group": "core",
+     "rest": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "name": "hips",
+     "parent": "root",
+     "group": "core",
+     "rest": [
+      0.0,
+      0.22,
+      0.0
+     ]
+    },
+    {
+     "name": "spine",
+     "parent": "hips",
+     "group": "core",
+     "rest": [
+      0.0,
+      0.44,
+      0.0
+     ]
+    },
+    {
+     "name": "chest",
+     "parent": "spine",
+     "group": "core",
+     "rest": [
+      0.0,
+      0.66,
+      0.0
+     ]
+    },
+    {
+     "name": "neck",
+     "parent": "chest",
+     "group": "core",
+     "rest": [
+      0.0,
+      0.84,
+      0.0
+     ]
+    },
+    {
+     "name": "head",
+     "parent": "neck",
+     "group": "core",
+     "rest": [
+      0.0,
+      0.98,
+      0.0
+     ]
+    },
+    {
+     "name": "lidL",
+     "parent": "head",
+     "group": "face",
+     "rest": [
+      -0.115,
+      0.985,
+      0.2101
+     ]
+    },
+    {
+     "name": "lidR",
+     "parent": "head",
+     "group": "face",
+     "rest": [
+      0.115,
+      0.985,
+      0.2101
+     ]
+    },
+    {
+     "name": "eyeL",
+     "parent": "head",
+     "group": "face",
+     "rest": [
+      -0.115,
+      0.985,
+      0.2101
+     ]
+    },
+    {
+     "name": "eyeR",
+     "parent": "head",
+     "group": "face",
+     "rest": [
+      0.115,
+      0.985,
+      0.2101
+     ]
+    },
+    {
+     "name": "badge",
+     "parent": "chest",
+     "group": "badge",
+     "rest": [
+      0.0,
+      0.35,
+      0.2761
+     ]
+    },
+    {
+     "name": "legL",
+     "parent": "hips",
+     "group": "core",
+     "rest": [
+      -0.12,
+      0.08,
+      0.0
+     ]
+    },
+    {
+     "name": "legR",
+     "parent": "hips",
+     "group": "core",
+     "rest": [
+      0.12,
+      0.08,
+      0.0
+     ]
+    },
+    {
+     "name": "base",
+     "parent": "hips",
+     "group": "core",
+     "rest": [
+      0.0,
+      0.04,
+      0.0
+     ]
+    },
+    {
+     "name": "casque_horn",
+     "parent": "head",
+     "group": "extra",
+     "rest": [
+      0.0,
+      1.15,
+      0.22
+     ]
+    },
+    {
+     "name": "beak_tip",
+     "parent": "head",
+     "group": "extra",
+     "rest": [
+      0.0,
+      0.85,
+      0.55
+     ]
+    },
+    {
+     "name": "wingL",
+     "parent": "chest",
+     "group": "extra",
+     "rest": [
+      -0.28,
+      0.52,
+      -0.04
+     ]
+    },
+    {
+     "name": "wingR",
+     "parent": "chest",
+     "group": "extra",
+     "rest": [
+      0.28,
+      0.52,
+      -0.04
+     ]
+    },
+    {
+     "name": "tail_long",
+     "parent": "hips",
+     "group": "extra",
+     "rest": [
+      0.0,
+      0.28,
+      -0.25
+     ]
+    }
+   ],
+   "palette_srgb": [
+    "#1C1D24",
+    "#F4F2EC",
+    "#E59E24",
+    "#F0D8A8"
+   ],
+   "blurb": "Great Indian Hornbill mascot with golden arched casque helmet, ivory bill, black-and-white plumage",
+   "build_seconds": 0.68
+  },
+  {
+   "ground_shift": -0.0162,
+   "id": "salya",
+   "name": "Salya",
+   "role": "The Invariance Defense",
+   "height": 1.0742,
+   "width": 0.63,
+   "depth": 1.0506,
+   "bbox_min": [
+    -0.315,
+    0.0,
+    -0.5262
+   ],
+   "bbox_max": [
+    0.315,
+    1.0742,
+    0.5245
+   ],
+   "triangles": 10528,
+   "vertices": 6102,
+   "badge_anchor": [
+    0.0,
+    0.25,
+    0.257
+   ],
+   "badge_size": [
+    0.165,
+    0.095
+   ],
+   "clip_order": [
+    "Idle",
+    "GlanceL",
+    "GlanceR",
+    "Crouch",
+    "Hop",
+    "Land",
+    "NoSwap",
+    "Success"
+   ],
+   "part_count": 38,
+   "joint_count": 19,
+   "file": "models/salya.glb",
+   "bytes": 556460,
+   "clips": [
+    {
+     "name": "Idle",
+     "duration": 4.0,
+     "fps": 30,
+     "tracks": 18,
+     "keys": 188
+    },
+    {
+     "name": "GlanceL",
+     "duration": 0.9,
+     "fps": 30,
+     "tracks": 14,
+     "keys": 124
+    },
+    {
+     "name": "GlanceR",
+     "duration": 0.9,
+     "fps": 30,
+     "tracks": 14,
+     "keys": 124
+    },
+    {
+     "name": "Crouch",
+     "duration": 0.5,
+     "fps": 30,
+     "tracks": 15,
+     "keys": 131
+    },
+    {
+     "name": "Hop",
+     "duration": 0.72,
+     "fps": 30,
+     "tracks": 19,
+     "keys": 250
+    },
+    {
+     "name": "Land",
+     "duration": 0.5,
+     "fps": 30,
+     "tracks": 17,
+     "keys": 164
+    },
+    {
+     "name": "NoSwap",
+     "duration": 0.95,
+     "fps": 30,
+     "tracks": 14,
+     "keys": 150
+    },
+    {
+     "name": "Success",
+     "duration": 1.25,
+     "fps": 30,
+     "tracks": 22,
+     "keys": 382
+    }
+   ],
+   "materials": {
+    "badge": {
+     "surface": "badge",
+     "color": [
+      0.9387,
+      0.9047,
+      0.8228
+     ],
+     "metallic": 0.0,
+     "roughness": 0.5,
+     "alpha": 1.0,
+     "texture": "matte"
+    },
+    "badge_rim": {
+     "surface": "badge_rim",
+     "color": [
+      0.6584,
+      0.3763,
+      0.0648
+     ],
+     "metallic": 0.88,
+     "roughness": 0.28,
+     "alpha": 1.0,
+     "texture": null
+    },
+    "claw_dark": {
+     "surface": "claw_dark",
+     "color": [
+      0.0685,
+      0.0319,
+      0.013
+     ],
+     "metallic": 0.1,
+     "roughness": 0.4,
+     "alpha": 1.0,
+     "texture": null
+    },
+    "eye_dark": {
+     "surface": "eye_dark",
+     "color": [
+      0.008,
+      0.008,
+      0.0123
+     ],
+     "metallic": 0.0,
+     "roughness": 0.08,
+     "alpha": 1.0,
+     "texture": null
+    },
+    "eye_glint": {
+     "surface": "eye_glint",
+     "color": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "metallic": 0.0,
+     "roughness": 0.2,
+     "alpha": 1.0,
+     "texture": null
+    },
+    "lid": {
+     "surface": "lid",
+     "color": [
+      0.4793,
+      0.2086,
+      0.0343
+     ],
+     "metallic": 0.18,
+     "roughness": 0.38,
+     "alpha": 1.0,
+     "texture": null
+    },
+    "mouth_dark": {
+     "surface": "mouth_dark",
+     "color": [
+      0.0908,
+      0.0356,
+      0.0091
+     ],
+     "metallic": 0.0,
+     "roughness": 0.45,
+     "alpha": 1.0,
+     "texture": null
+    },
+    "nose_pink": {
+     "surface": "nose_pink",
+     "color": [
+      0.6584,
+      0.1683,
+      0.1301
+     ],
+     "metallic": 0.0,
+     "roughness": 0.48,
+     "alpha": 1.0,
+     "texture": null
+    },
+    "pop": {
+     "surface": "pop",
+     "color": [
+      0.159,
+      0.6939,
+      0.5149
+     ],
+     "metallic": 0.15,
+     "roughness": 0.3,
+     "alpha": 1.0,
+     "texture": null
+    },
+    "scale_amber": {
+     "surface": "scale_amber",
+     "color": [
+      0.4793,
+      0.2086,
+      0.0343
+     ],
+     "metallic": 0.2,
+     "roughness": 0.36,
+     "alpha": 1.0,
+     "texture": null
+    },
+    "scale_edge": {
+     "surface": "scale_edge",
+     "color": [
+      0.7305,
+      0.402,
+      0.0908
+     ],
+     "metallic": 0.25,
+     "roughness": 0.32,
+     "alpha": 1.0,
+     "texture": null
+    },
+    "skin_belly": {
+     "surface": "skin_belly",
+     "color": [
+      0.7605,
+      0.6172,
+      0.4072
+     ],
+     "metallic": 0.01,
+     "roughness": 0.55,
+     "alpha": 1.0,
+     "texture": null
+    }
+   },
+   "bones": [
+    {
+     "name": "root",
+     "parent": null,
+     "group": "core",
+     "rest": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "name": "hips",
+     "parent": "root",
+     "group": "core",
+     "rest": [
+      0.0,
+      0.18,
+      0.0
+     ]
+    },
+    {
+     "name": "spine",
+     "parent": "hips",
+     "group": "core",
+     "rest": [
+      0.0,
+      0.34,
+      0.0
+     ]
+    },
+    {
+     "name": "chest",
+     "parent": "spine",
+     "group": "core",
+     "rest": [
+      0.0,
+      0.52,
+      0.0
+     ]
+    },
+    {
+     "name": "neck",
+     "parent": "chest",
+     "group": "core",
+     "rest": [
+      0.0,
+      0.68,
+      0.0
+     ]
+    },
+    {
+     "name": "head",
+     "parent": "neck",
+     "group": "core",
+     "rest": [
+      0.0,
+      0.82,
+      0.0
+     ]
+    },
+    {
+     "name": "lidL",
+     "parent": "head",
+     "group": "face",
+     "rest": [
+      -0.105,
+      0.85,
+      0.1518
+     ]
+    },
+    {
+     "name": "lidR",
+     "parent": "head",
+     "group": "face",
+     "rest": [
+      0.105,
+      0.85,
+      0.1518
+     ]
+    },
+    {
+     "name": "eyeL",
+     "parent": "head",
+     "group": "face",
+     "rest": [
+      -0.105,
+      0.85,
+      0.1518
+     ]
+    },
+    {
+     "name": "eyeR",
+     "parent": "head",
+     "group": "face",
+     "rest": [
+      0.105,
+      0.85,
+      0.1518
+     ]
+    },
+    {
+     "name": "badge",
+     "parent": "chest",
+     "group": "badge",
+     "rest": [
+      0.0,
+      0.25,
+      0.257
+     ]
+    },
+    {
+     "name": "legL",
+     "parent": "hips",
+     "group": "core",
+     "rest": [
+      -0.14,
+      0.06,
+      0.0
+     ]
+    },
+    {
+     "name": "legR",
+     "parent": "hips",
+     "group": "core",
+     "rest": [
+      0.14,
+      0.06,
+      0.0
+     ]
+    },
+    {
+     "name": "base",
+     "parent": "hips",
+     "group": "core",
+     "rest": [
+      0.0,
+      0.04,
+      0.0
+     ]
+    },
+    {
+     "name": "tail_curl.01",
+     "parent": "hips",
+     "group": "extra",
+     "rest": [
+      0.0,
+      0.18,
+      -0.32
+     ]
+    },
+    {
+     "name": "tail_curl.02",
+     "parent": "tail_curl.01",
+     "group": "extra",
+     "rest": [
+      0.0,
+      0.28,
+      -0.48
+     ]
+    },
+    {
+     "name": "scale_hood",
+     "parent": "head",
+     "group": "extra",
+     "rest": [
+      0.0,
+      0.9,
+      -0.03
+     ]
+    },
+    {
+     "name": "armL",
+     "parent": "chest",
+     "group": "extra",
+     "rest": [
+      -0.22,
+      0.54,
+      0.05
+     ]
+    },
+    {
+     "name": "armR",
+     "parent": "chest",
+     "group": "extra",
+     "rest": [
+      0.22,
+      0.54,
+      0.05
+     ]
+    }
+   ],
+   "palette_srgb": [
+    "#B87E34",
+    "#DEAA55",
+    "#E2CEAB",
+    "#D47265"
+   ],
+   "blurb": "Indian Scaled Pangolin mascot with amber keratin pinecone armor and spring curl tail",
+   "build_seconds": 0.61
   }
  ],
  "clips": [

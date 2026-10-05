@@ -1016,10 +1016,560 @@ def build_kumbha():
                 ["#E4B43C", "#9C6E18", "#22883E", "#643D1E"], 1.05).finish(parts)
 
 
+# ============================================================== 6 · GRANTHA ===
+def build_grantha():
+    """
+    GRANTHA — Ancient Vedic Palm-Leaf Manuscript creature. State & Swap Counter.
+    Features: Rectangular bound palm-leaf manuscript stack between carved teak wood covers,
+    braided saffron silk cord with twin brass jingle bells, ornate peacock feather quill pen,
+    carved wooden feet, blank cream title badge plate.
+    """
+    M = dict(shared_mats())
+    M.update({
+        "teak_wood": dict(color=srgb("#5A2E14"), roughness=0.55, metallic=0.02, texture="ceramic"),
+        "palm_leaf": dict(color=srgb("#E2CEAB"), roughness=0.68, metallic=0.0),
+        "cord_red": dict(color=srgb("#BA2B25"), roughness=0.38, metallic=0.08),
+        "bell_brass": dict(color=srgb("#DDAA33"), roughness=0.25, metallic=0.88),
+        "quill_teal": dict(color=srgb("#1B6878"), roughness=0.35, metallic=0.08),
+        "quill_gold": dict(color=srgb("#D4A548"), roughness=0.28, metallic=0.65),
+        "quill_shaft": dict(color=srgb("#FFF8E7"), roughness=0.22, metallic=0.0),
+        "mouth_dark": dict(color=srgb("#4A220C"), roughness=0.45, metallic=0.0),
+        "lid": dict(color=srgb("#5A2E14"), roughness=0.55, metallic=0.02),
+    })
+    parts = []
+    shell = []
+
+    def add(p, to_shell=True):
+        parts.append(p)
+        if to_shell:
+            shell.append(p)
+        return p
+
+    # Two carved wooden feet
+    def wood_foot(sgn):
+        f = superellipsoid(0.065, 0.045, 0.090, e1=0.42, e2=0.42, seg=18, rings=8,
+                           name="wood_foot", mat="teak_wood")
+        f.move(sgn * 0.125, 0.045, 0.0)
+        f.tag("legL" if sgn < 0 else "legR")
+        return f
+
+    parts.extend(mirrored(wood_foot))
+
+    # Bottom carved wooden manuscript cover
+    bottom_cover = superellipsoid(0.240, 0.025, 0.170, e1=0.28, e2=0.28, seg=24, rings=8,
+                                  name="bottom_cover", mat="teak_wood")
+    bottom_cover.move(0.0, 0.105, 0.0)
+    bottom_cover.tag("base", "hips")
+    add(bottom_cover)
+
+    # Thick stack of rectangular palm-leaf / birch-bark folio leaves
+    leaf_stack = superellipsoid(0.225, 0.320, 0.155, e1=0.25, e2=0.25, seg=26, rings=16,
+                                name="leaf_stack", mat="palm_leaf")
+    leaf_stack.move(0.0, 0.445, 0.0)
+    leaf_stack.tag("hips", "spine", "chest", "head")
+    add(leaf_stack)
+
+    # Top carved wooden manuscript cover
+    top_cover = superellipsoid(0.240, 0.025, 0.170, e1=0.28, e2=0.28, seg=24, rings=8,
+                               name="top_cover", mat="teak_wood")
+    top_cover.move(0.0, 0.785, 0.0)
+    top_cover.tag("head", "cover_top")
+    add(top_cover)
+
+    # Braided red silk cord bound vertically around manuscript
+    cord = torus(0.180, 0.016, seg_major=32, seg_minor=8, name="binding_cord", mat="cord_red")
+    cord.rotate(rx=math.pi * 0.5)
+    cord.move(-0.080, 0.450, 0.0)
+    cord.tag("spine")
+    parts.append(cord)
+
+    # Traditional cord knot and dangling bells
+    knot = sphere(0.030, 0.030, 0.025, seg=12, rings=8, name="cord_knot", mat="cord_red")
+    knot.move(-0.080, 0.810, 0.120)
+    knot.tag("head", "cord_tassel")
+    parts.append(knot)
+
+    def tassel_bell(sgn):
+        stem = capsule(0.008, 0.075, seg=8, rings=4, name="bell_stem", mat="cord_red")
+        stem.move(-0.080 + sgn * 0.025, 0.740, 0.135)
+        stem.tag("head", "cord_tassel")
+        bell = sphere(0.022, 0.022, 0.022, seg=12, rings=8, name="brass_bell", mat="bell_brass")
+        bell.move(-0.080 + sgn * 0.025, 0.700, 0.135)
+        bell.tag("head", "cord_tassel")
+        return [stem, bell]
+
+    parts.extend(mirrored(tassel_bell))
+
+    # Ornate peacock feather quill pen tucked into the top binding
+    quill_shaft = capsule(0.009, 0.380, seg=10, rings=4, name="quill_shaft", mat="quill_shaft")
+    quill_shaft.rotate(rz=-0.35, rx=0.15)
+    quill_shaft.move(0.120, 0.950, -0.040)
+    quill_shaft.tag("head", "quill_pen")
+    parts.append(quill_shaft)
+
+    # Peacock feather vane
+    quill_vane = superellipsoid(0.055, 0.120, 0.012, e1=0.45, e2=0.45, seg=16, rings=8,
+                                name="quill_vane", mat="quill_teal")
+    quill_vane.rotate(rz=-0.35, rx=0.15)
+    quill_vane.move(0.180, 1.050, -0.050)
+    quill_vane.tag("head", "quill_pen")
+    parts.append(quill_vane)
+
+    quill_eye = sphere(0.024, 0.035, 0.015, seg=12, rings=6, name="quill_eye", mat="quill_gold")
+    quill_eye.rotate(rz=-0.35, rx=0.15)
+    quill_eye.move(0.185, 1.060, -0.045)
+    quill_eye.tag("head", "quill_pen")
+    parts.append(quill_eye)
+
+    # Cute short book-holding arms
+    def book_arm(sgn):
+        a = tube([(sgn * 0.220, 0.420, 0.020),
+                  (sgn * 0.240, 0.350, 0.120),
+                  (sgn * 0.160, 0.330, 0.160)], 0.040, radial=12, name="book_arm", mat="teak_wood",
+                 taper=[1.0, 0.92, 0.85])
+        a.tag("chest")
+        paw = sphere(0.038, 0.035, 0.038, seg=12, rings=8, name="book_paw", mat="teak_wood")
+        paw.move(sgn * 0.160, 0.330, 0.160)
+        paw.tag("chest")
+        return [a, paw]
+
+    parts.extend(mirrored(book_arm))
+
+    # Open friendly mouth
+    mouth = superellipsoid(0.040, 0.024, 0.020, e1=0.45, e2=0.45, seg=14, rings=6,
+                           name="mouth", mat="mouth_dark")
+    mouth.move(0.0, 0.490, 0.160)
+    mouth.tag("head")
+    parts.append(mouth)
+
+    # Big open expressive cartoon eyes
+    ex, ey = 0.095, 0.585
+    parts.extend(eye_pair(shell, ex, ey, 0.055, 0.065, 0.035, M,
+                          lid=(1.10, 0.35, 0.80), lid_lift=1.35, proud=0.80, lid_mat="lid"))
+
+    # Blank cream badge plate on lower stack
+    poly = rounded_rect_poly(0.170, 0.100, 0.025, seg=6)
+    parts.extend(conform_plate(shell, poly, 0.260, thickness=0.016, proud=0.012,
+                               rim=1.10, rim_proud=0.008, name="badge"))
+    pz = (probe_z(shell, 0.0, 0.260) or 0.16) + 0.012
+
+    props = dict(hipY=0.18, spineY=0.35, chestY=0.52, neckY=0.64, headY=0.72,
+                 legX=0.125, legY=0.06, baseY=0.04, badgeY=0.260, badgeZ=pz,
+                 eyeX=ex, eyeY=ey, eyeZ=(probe_z(shell, ex, ey) or 0.16),
+                 r_hips=0.24, r_spine=0.24, r_chest=0.24, r_neck=0.22, r_head=0.24,
+                 r_base=0.20, r_leg=0.08, badge_size=[0.170, 0.100])
+
+    bones = [
+        mat_bone("cover_top", "head", (0.0, 0.785 - 0.72, 0.0), (0, 1, 0), 0.12, 0.18),
+        mat_bone("cord_tassel", "head", (-0.080, 0.700 - 0.72, 0.135), (0, -1, 0), 0.10, 0.12),
+        mat_bone("quill_pen", "head", (0.120, 0.950 - 0.72, -0.040), (0.2, 0.9, -0.2), 0.25, 0.14),
+    ]
+
+    P = dict(clips.DEFAULT_PARAMS)
+    P.update({"hop_h": 0.27, "crouch_d": 0.065, "land_d": 0.080, "squash": 0.88,
+              "gaze_yaw": -0.32, "chest_yaw": 0.38, "leg_squash": 0.72, "leg_len": 0.14,
+              "up_scale": 1.0, "breath": 0.95, "sway": 0.85, "lid_close": 1.60})
+
+    def extras(clip, t, dur, ph):
+        b = ph["breath"]
+        lag = ph["lag_up"]
+        happy = ph["happy"]
+        imp = ph["impact"]
+        clap = 0.05 * imp - 0.08 * lag + 0.10 * happy
+        out = {
+            "cover_top": {"r": (clap, 0.0, 0.0)},
+            "cord_tassel": {"r": (0.08 * b - 2.0 * lag + 0.30 * happy, 0.0, 0.15 * ph["shake"])},
+            "quill_pen": {"r": (0.12 * b - 2.5 * lag + 0.40 * happy, 0.0, -0.10 * lag)},
+        }
+        return out
+
+    return Char("grantha", "Grantha", "The Memory Logger",
+                "Vedic palm-leaf manuscript mascot with carved teak covers, red cord and peacock quill",
+                M, P, props, extras, bones,
+                ["#5A2E14", "#E2CEAB", "#BA2B25", "#1B6878"], 1.15).finish(parts)
+
+
+# ============================================================== 7 · DHANESH ===
+def build_dhanesh():
+    """
+    DHANESH — Great Indian Hornbill mascot. Precision Comparator Pointer.
+    Features: Glossy jet-black body, bright white underbelly and neck ruffle,
+    magnificent curved golden-yellow bill with prominent arched casque helmet on top,
+    expressive ruby-rimmed eyes, fanned black & white banded tail, folded wings.
+    """
+    M = dict(shared_mats())
+    M.update({
+        "feather_black": dict(color=srgb("#1C1D24"), roughness=0.45, metallic=0.04),
+        "feather_white": dict(color=srgb("#F4F2EC"), roughness=0.50, metallic=0.01),
+        "casque_gold": dict(color=srgb("#E59E24"), roughness=0.28, metallic=0.35),
+        "bill_ivory": dict(color=srgb("#F0D8A8"), roughness=0.32, metallic=0.08),
+        "bill_accent": dict(color=srgb("#962818"), roughness=0.35, metallic=0.10),
+        "mouth_dark": dict(color=srgb("#3A1810"), roughness=0.45, metallic=0.0),
+        "lid": dict(color=srgb("#1C1D24"), roughness=0.45, metallic=0.04),
+    })
+    parts = []
+    shell = []
+
+    def add(p, to_shell=True):
+        parts.append(p)
+        if to_shell:
+            shell.append(p)
+        return p
+
+    # Bird legs with 3 front toes and 1 back toe
+    def bird_leg(sgn):
+        leg = capsule(0.028, 0.220, seg=16, rings=8, name="leg_col", mat="casque_gold")
+        leg.move(sgn * 0.120, 0.110, 0.0)
+        leg.tag("legL" if sgn < 0 else "legR")
+
+        toes = []
+        for fi, f_ang in enumerate((-0.40, 0.0, 0.40)):
+            toe = capsule(0.014, 0.090, seg=12, rings=6, name=f"toe_{fi}", mat="casque_gold")
+            toe.rotate(ry=f_ang)
+            toe.move(sgn * 0.120 + math.sin(f_ang) * 0.045, 0.014, math.cos(f_ang) * 0.045)
+            toe.tag("legL" if sgn < 0 else "legR")
+            toes.append(toe)
+        return [leg] + toes
+
+    parts.extend(mirrored(bird_leg))
+
+    # Plump upright bird body (lathe)
+    body = lathe([(0.120, 0.180), (0.240, 0.280), (0.295, 0.440), (0.280, 0.620),
+                  (0.210, 0.780), (0.160, 0.880)], seg=32, name="hornbill_body", mat="feather_black")
+    body.tag("hips", "spine", "chest", "base")
+    add(body)
+
+    # White chest bib / underbelly
+    bib = superellipsoid(0.180, 0.240, 0.090, e1=0.45, e2=0.45, seg=20, rings=10,
+                         name="white_bib", mat="feather_white")
+    bib.move(0.0, 0.480, 0.210)
+    bib.tag("spine", "chest")
+    parts.append(bib)
+
+    # Sleek rounded head and neck
+    head = sphere(0.200, 0.220, 0.210, seg=28, rings=18, name="hornbill_head", mat="feather_black")
+    head.move(0.0, 0.980, 0.040)
+    head.tag("head", "neck")
+    add(head)
+
+    # White neck ruff collar
+    ruff = torus(0.170, 0.035, seg_major=28, seg_minor=10, name="neck_ruff", mat="feather_white")
+    ruff.move(0.0, 0.860, 0.020)
+    ruff.tag("neck")
+    parts.append(ruff)
+
+    # Massive curved Hornbill Bill (upper + lower mandible)
+    bill_upper_pts = [
+        (0.0, 0.990, 0.180),
+        (0.0, 0.960, 0.360),
+        (0.0, 0.900, 0.540),
+        (0.0, 0.800, 0.660),
+    ]
+    bill_upper = tube(bill_upper_pts, 0.065, radial=16, name="bill_upper", mat="bill_ivory",
+                      taper=[1.0, 0.85, 0.60, 0.20])
+    bill_upper.tag("head", "beak_tip")
+    add(bill_upper, False)
+
+    bill_lower_pts = [
+        (0.0, 0.930, 0.180),
+        (0.0, 0.910, 0.340),
+        (0.0, 0.860, 0.490),
+        (0.0, 0.790, 0.630),
+    ]
+    bill_lower = tube(bill_lower_pts, 0.050, radial=14, name="bill_lower", mat="bill_accent",
+                      taper=[1.0, 0.80, 0.55, 0.18])
+    bill_lower.tag("head", "beak_tip")
+    parts.append(bill_lower)
+
+    # Arched Golden Casque Helmet sitting proudly on top of head & bill
+    casque_pts = [
+        (0.0, 1.060, -0.040),
+        (0.0, 1.140, 0.120),
+        (0.0, 1.150, 0.320),
+        (0.0, 1.080, 0.480),
+        (0.0, 1.020, 0.540),
+    ]
+    casque = tube(casque_pts, 0.075, radial=16, name="casque_horn", mat="casque_gold",
+                  taper=[0.55, 1.0, 0.95, 0.60, 0.15])
+    casque.tag("head", "casque_horn")
+    add(casque, False)
+
+    # Folded wings on sides
+    def wing(sgn):
+        w = superellipsoid(0.055, 0.280, 0.180, e1=0.48, e2=0.48, seg=18, rings=10,
+                           name="wing", mat="feather_black")
+        w.rotate(rx=0.25, rz=-sgn * 0.12)
+        w.move(sgn * 0.280, 0.520, -0.040)
+        w.tag("wingL" if sgn < 0 else "wingR", "chest")
+        tip = superellipsoid(0.035, 0.100, 0.080, e1=0.45, e2=0.45, seg=12, rings=8,
+                             name="wing_tip", mat="feather_white")
+        tip.rotate(rx=0.30, rz=-sgn * 0.12)
+        tip.move(sgn * 0.290, 0.320, -0.120)
+        tip.tag("wingL" if sgn < 0 else "wingR", "chest")
+        return [w, tip]
+
+    parts.extend(mirrored(wing))
+
+    # Long banded tail extending downward at back
+    tail = superellipsoid(0.120, 0.320, 0.035, e1=0.45, e2=0.45, seg=18, rings=10,
+                          name="tail", mat="feather_black")
+    tail.rotate(rx=-0.25)
+    tail.move(0.0, 0.280, -0.250)
+    tail.tag("hips", "tail_long")
+    parts.append(tail)
+
+    tail_band = superellipsoid(0.125, 0.090, 0.038, e1=0.45, e2=0.45, seg=18, rings=8,
+                               name="tail_band", mat="feather_white")
+    tail_band.rotate(rx=-0.25)
+    tail_band.move(0.0, 0.240, -0.270)
+    tail_band.tag("hips", "tail_long")
+    parts.append(tail_band)
+
+    # Big open expressive mascot eyes
+    ex, ey = 0.115, 0.985
+    parts.extend(eye_pair(shell, ex, ey, 0.055, 0.062, 0.035, M,
+                          lid=(1.10, 0.35, 0.80), lid_lift=1.35, proud=0.80, lid_mat="lid"))
+
+    # Blank cream badge on lower chest bib
+    poly = rounded_rect_poly(0.170, 0.100, 0.026, seg=6)
+    parts.extend(conform_plate(shell, poly, 0.350, thickness=0.016, proud=0.012,
+                               rim=1.10, rim_proud=0.008, name="badge"))
+    pz = (probe_z(shell, 0.0, 0.350) or 0.27) + 0.012
+
+    props = dict(hipY=0.22, spineY=0.44, chestY=0.66, neckY=0.84, headY=0.98,
+                 legX=0.120, legY=0.08, baseY=0.04, badgeY=0.350, badgeZ=pz,
+                 eyeX=ex, eyeY=ey, eyeZ=(probe_z(shell, ex, ey) or 0.18),
+                 r_hips=0.28, r_spine=0.28, r_chest=0.26, r_neck=0.20, r_head=0.22,
+                 r_base=0.18, r_leg=0.08, badge_size=[0.170, 0.100])
+
+    bones = [
+        mat_bone("casque_horn", "head", (0.0, 1.150 - 0.98, 0.220), (0, 0.3, 0.9), 0.25, 0.18),
+        mat_bone("beak_tip", "head", (0.0, 0.850 - 0.98, 0.550), (0, -0.2, 0.9), 0.20, 0.14),
+        mat_bone("wingL", "chest", (-0.280, 0.520 - 0.66, -0.040), (-0.4, -0.8, -0.2), 0.26, 0.16),
+        mat_bone("wingR", "chest", (0.280, 0.520 - 0.66, -0.040), (0.4, -0.8, -0.2), 0.26, 0.16),
+        mat_bone("tail_long", "hips", (0.0, 0.280 - 0.22, -0.250), (0, -0.9, -0.3), 0.28, 0.16),
+    ]
+
+    P = dict(clips.DEFAULT_PARAMS)
+    P.update({"hop_h": 0.34, "crouch_d": 0.075, "land_d": 0.085, "squash": 0.92,
+              "gaze_yaw": -0.40, "chest_yaw": 0.38, "leg_squash": 0.65, "leg_len": 0.18,
+              "up_scale": 1.0, "breath": 1.10, "sway": 1.05, "lid_close": 1.60})
+
+    def extras(clip, t, dur, ph):
+        b = ph["breath"]
+        lag = ph["lag_up"]
+        happy = ph["happy"]
+        flap = 0.25 * ph.get("air", 0.0) + 0.20 * happy
+        dip = 0.12 * b - 1.8 * lag + 0.30 * happy
+        out = {
+            "casque_horn": {"r": (dip * 0.8, 0.0, 0.0)},
+            "beak_tip": {"r": (dip, 0.0, 0.0)},
+            "wingL": {"r": (0.0, 0.0, -flap)},
+            "wingR": {"r": (0.0, 0.0, flap)},
+            "tail_long": {"r": (-0.15 * lag + 0.20 * happy, 0.0, 0.10 * ph["shake"])},
+        }
+        return out
+
+    return Char("dhanesh", "Dhanesh", "The Precision Comparator",
+                "Great Indian Hornbill mascot with golden arched casque helmet, ivory bill, black-and-white plumage",
+                M, P, props, extras, bones,
+                ["#1C1D24", "#F4F2EC", "#E59E24", "#F0D8A8"], 1.38).finish(parts)
+
+
+# ============================================================== 8 · SALYA =====
+def build_salya():
+    """
+    SALYA — Indian Scaled Pangolin mascot. Armored Ball Spring.
+    Features: Rounded biped stance, golden-amber overlapping keratin scales / shingle plates,
+    soft cream underbelly, tapered snout with curious twitching nose, curled armored tail
+    that uncoils to spring-bounce, blank cream badge on chest armor.
+    """
+    M = dict(shared_mats())
+    M.update({
+        "scale_amber": dict(color=srgb("#B87E34"), roughness=0.36, metallic=0.20),
+        "scale_edge": dict(color=srgb("#DEAA55"), roughness=0.32, metallic=0.25),
+        "skin_belly": dict(color=srgb("#E2CEAB"), roughness=0.55, metallic=0.01),
+        "claw_dark": dict(color=srgb("#4A321E"), roughness=0.40, metallic=0.10),
+        "nose_pink": dict(color=srgb("#D47265"), roughness=0.48, metallic=0.0),
+        "mouth_dark": dict(color=srgb("#553518"), roughness=0.45, metallic=0.0),
+        "lid": dict(color=srgb("#B87E34"), roughness=0.38, metallic=0.18),
+    })
+    parts = []
+    shell = []
+
+    def add(p, to_shell=True):
+        parts.append(p)
+        if to_shell:
+            shell.append(p)
+        return p
+
+    # Chubby biped feet with digging claws
+    def pangolin_foot(sgn):
+        f = superellipsoid(0.080, 0.048, 0.115, e1=0.42, e2=0.42, seg=18, rings=8,
+                           name="pangolin_foot", mat="scale_amber")
+        f.move(sgn * 0.140, 0.048, 0.02)
+        f.tag("legL" if sgn < 0 else "legR")
+
+        toes = []
+        for ti, tang in enumerate((-0.25, 0.0, 0.25)):
+            toe = capsule(0.015, 0.055, seg=10, rings=4, name=f"claw_{ti}", mat="claw_dark")
+            toe.rotate(rx=0.30)
+            toe.move(sgn * (0.140 + tang * 0.050), 0.025, 0.125)
+            toe.tag("legL" if sgn < 0 else "legR")
+            toes.append(toe)
+        return [f] + toes
+
+    parts.extend(mirrored(pangolin_foot))
+
+    # Chubby pear-shaped torso
+    body = lathe([(0.140, 0.140), (0.240, 0.240), (0.310, 0.380), (0.315, 0.540),
+                  (0.260, 0.680), (0.190, 0.780)], seg=32, name="pangolin_body", mat="skin_belly")
+    body.tag("hips", "spine", "chest", "base")
+    add(body)
+
+    # Shingled dorsal armor plates covering back and crown (tiered pinecone scales)
+    for si, sy, ssz, srx in [
+        (0, 0.780, 0.240, 0.35),
+        (1, 0.680, 0.290, 0.25),
+        (2, 0.540, 0.320, 0.10),
+        (3, 0.380, 0.310, -0.05),
+        (4, 0.240, 0.270, -0.20),
+    ]:
+        scale_plate = superellipsoid(0.240 - si * 0.015, 0.090, 0.120, e1=0.38, e2=0.38,
+                                     seg=20, rings=8, name=f"dorsal_scale_{si}", mat="scale_amber")
+        scale_plate.rotate(rx=srx)
+        scale_plate.move(0.0, sy, -0.080 - si * 0.030)
+        scale_plate.tag("spine" if si < 3 else "hips")
+        parts.append(scale_plate)
+
+        # Scale golden rim highlight
+        scale_rim = torus(0.210 - si * 0.015, 0.014, seg_major=24, seg_minor=8,
+                          name=f"scale_rim_{si}", mat="scale_edge")
+        scale_rim.rotate(rx=srx + 0.2)
+        scale_rim.move(0.0, sy - 0.02, -0.090 - si * 0.030)
+        scale_rim.tag("spine" if si < 3 else "hips")
+        parts.append(scale_rim)
+
+    # Scaled helmet hood over head
+    hood = superellipsoid(0.220, 0.140, 0.190, e1=0.40, e2=0.40, seg=22, rings=10,
+                          name="scale_hood", mat="scale_amber")
+    hood.rotate(rx=0.20)
+    hood.move(0.0, 0.900, -0.030)
+    hood.tag("head", "scale_hood")
+    add(hood)
+
+    # Friendly snout and head
+    snout_pts = [
+        (0.0, 0.860, 0.120),
+        (0.0, 0.840, 0.250),
+        (0.0, 0.810, 0.380),
+        (0.0, 0.780, 0.450),
+    ]
+    snout = tube(snout_pts, 0.090, radial=16, name="snout", mat="skin_belly",
+                 taper=[1.0, 0.85, 0.60, 0.35])
+    snout.tag("head")
+    add(snout, False)
+
+    # Cute rounded nose button
+    nose = sphere(0.032, 0.026, 0.026, seg=12, rings=8, name="nose", mat="nose_pink")
+    nose.move(0.0, 0.780, 0.465)
+    nose.tag("head")
+    parts.append(nose)
+
+    # Muscular curled armored tail at back (key spring physics anatomy!)
+    tail_pts = [
+        (0.0, 0.220, -0.160),
+        (0.0, 0.140, -0.320),
+        (0.0, 0.180, -0.460),
+        (0.0, 0.320, -0.480),
+        (0.0, 0.420, -0.360),
+    ]
+    tail = tube(tail_pts, 0.100, radial=16, name="tail_curl", mat="scale_amber",
+                taper=[1.0, 0.85, 0.70, 0.50, 0.25])
+    tail.tag("hips", "tail_curl.01", "tail_curl.02")
+    parts.append(tail)
+
+    # Short curved front paws
+    def pangolin_arm(sgn):
+        a = tube([(sgn * 0.220, 0.540, 0.050),
+                  (sgn * 0.250, 0.440, 0.160),
+                  (sgn * 0.150, 0.380, 0.220)], 0.045, radial=12, name="pangolin_arm", mat="scale_amber",
+                 taper=[1.0, 0.90, 0.80])
+        a.tag("armL" if sgn < 0 else "armR", "chest")
+        paw = sphere(0.040, 0.035, 0.040, seg=12, rings=8, name="paw", mat="skin_belly")
+        paw.move(sgn * 0.150, 0.380, 0.220)
+        paw.tag("armL" if sgn < 0 else "armR", "chest")
+        return [a, paw]
+
+    parts.extend(mirrored(pangolin_arm))
+
+    # Sweet open mouth
+    mouth = superellipsoid(0.038, 0.022, 0.020, e1=0.45, e2=0.45, seg=14, rings=6,
+                           name="mouth", mat="mouth_dark")
+    mouth.move(0.0, 0.740, 0.360)
+    mouth.tag("head")
+    parts.append(mouth)
+
+    # Big open expressive mascot eyes
+    ex, ey = 0.105, 0.850
+    parts.extend(eye_pair(shell, ex, ey, 0.055, 0.062, 0.035, M,
+                          lid=(1.10, 0.35, 0.80), lid_lift=1.35, proud=0.80, lid_mat="lid"))
+
+    # Blank cream badge on lower chest
+    poly = rounded_rect_poly(0.165, 0.095, 0.025, seg=6)
+    parts.extend(conform_plate(shell, poly, 0.250, thickness=0.016, proud=0.012,
+                               rim=1.10, rim_proud=0.008, name="badge"))
+    pz = (probe_z(shell, 0.0, 0.250) or 0.28) + 0.012
+
+    props = dict(hipY=0.18, spineY=0.34, chestY=0.52, neckY=0.68, headY=0.82,
+                 legX=0.140, legY=0.06, baseY=0.04, badgeY=0.250, badgeZ=pz,
+                 eyeX=ex, eyeY=ey, eyeZ=(probe_z(shell, ex, ey) or 0.25),
+                 r_hips=0.30, r_spine=0.30, r_chest=0.28, r_neck=0.22, r_head=0.24,
+                 r_base=0.22, r_leg=0.08, badge_size=[0.165, 0.095])
+
+    bones = [
+        mat_bone("tail_curl.01", "hips", (0.0, 0.180 - 0.18, -0.320), (0, -0.3, -0.9), 0.20, 0.18),
+        mat_bone("tail_curl.02", "tail_curl.01", (0.0, 0.280 - 0.18, -0.160), (0, 0.8, 0.2), 0.18, 0.14),
+        mat_bone("scale_hood", "head", (0.0, 0.900 - 0.82, -0.030), (0, 0.8, -0.4), 0.18, 0.18),
+        mat_bone("armL", "chest", (-0.220, 0.540 - 0.52, 0.050), (-0.4, -0.8, 0.4), 0.20, 0.12),
+        mat_bone("armR", "chest", (0.220, 0.540 - 0.52, 0.050), (0.4, -0.8, 0.4), 0.20, 0.12),
+    ]
+
+    P = dict(clips.DEFAULT_PARAMS)
+    P.update({"hop_h": 0.30, "crouch_d": 0.085, "land_d": 0.100, "squash": 1.10,
+              "gaze_yaw": -0.35, "chest_yaw": 0.40, "leg_squash": 0.60, "leg_len": 0.14,
+              "up_scale": 1.0, "breath": 1.0, "sway": 0.90, "lid_close": 1.60})
+
+    def extras(clip, t, dur, ph):
+        b = ph["breath"]
+        lag = ph["lag_up"]
+        happy = ph["happy"]
+        air = ph.get("air", 0.0)
+        crouch = max(0.0, -ph.get("up", 0.0) / 0.10)
+        # Tight ball curl during jump and crouch
+        tail_spring = 0.50 * crouch - 0.80 * air + 0.30 * happy
+        out = {
+            "tail_curl.01": {"r": (tail_spring, 0.0, 0.0)},
+            "tail_curl.02": {"r": (tail_spring * 1.3, 0.0, 0.0)},
+            "scale_hood": {"r": (0.08 * b - 1.2 * lag, 0.0, 0.0)},
+            "armL": {"r": (0.2 * air - 0.1 * happy, 0.0, -0.15 * lag)},
+            "armR": {"r": (0.2 * air - 0.1 * happy, 0.0, 0.15 * lag)},
+        }
+        return out
+
+    return Char("salya", "Salya", "The Invariance Defense",
+                "Indian Scaled Pangolin mascot with amber keratin pinecone armor and spring curl tail",
+                M, P, props, extras, bones,
+                ["#B87E34", "#DEAA55", "#E2CEAB", "#D47265"], 0.92).finish(parts)
+
+
 BUILDERS = {
     "gaja": build_gaja,
     "mayur": build_mayur,
     "diya": build_diya,
     "patra": build_patra,
     "kumbha": build_kumbha,
+    "grantha": build_grantha,
+    "dhanesh": build_dhanesh,
+    "salya": build_salya,
 }

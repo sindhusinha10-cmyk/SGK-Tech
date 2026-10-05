@@ -177,7 +177,7 @@
    "ground_z": 0.0,
    "front_y": -0.6321102976799011,
    "file": "source/gaja.blend",
-   "bytes": 505555
+   "bytes": 505028
   },
   {
    "id": "mayur",
@@ -339,7 +339,7 @@
    "ground_z": 0.0,
    "front_y": -0.33927980065345764,
    "file": "source/mayur.blend",
-   "bytes": 544489
+   "bytes": 544087
   },
   {
    "id": "diya",
@@ -499,7 +499,7 @@
    "ground_z": 0.0,
    "front_y": -0.37646833062171936,
    "file": "source/diya.blend",
-   "bytes": 388315
+   "bytes": 390686
   },
   {
    "id": "patra",
@@ -657,7 +657,7 @@
    "ground_z": 0.0,
    "front_y": -0.2639999985694885,
    "file": "source/patra.blend",
-   "bytes": 422898
+   "bytes": 423665
   },
   {
    "id": "kumbha",
@@ -816,26 +816,525 @@
    "ground_z": 0.0,
    "front_y": -0.3790000081062317,
    "file": "source/kumbha.blend",
-   "bytes": 448495
+   "bytes": 450314
+  },
+  {
+   "id": "grantha",
+   "mesh_object": "grantha_mesh",
+   "armature": "grantha_armature",
+   "bones": [
+    "root",
+    "hips",
+    "spine",
+    "chest",
+    "neck",
+    "head",
+    "lidL",
+    "lidR",
+    "eyeL",
+    "eyeR",
+    "cover_top",
+    "cord_tassel",
+    "quill_pen",
+    "badge",
+    "legL",
+    "legR",
+    "base"
+   ],
+   "bone_count": 17,
+   "core_bones_missing": [],
+   "extra_bones": [
+    "cover_top",
+    "cord_tassel",
+    "quill_pen"
+   ],
+   "badge_bone": true,
+   "badge_anchor_gltf": [
+    0.0,
+    0.26,
+    0.1661
+   ],
+   "clips": [
+    {
+     "name": "Idle",
+     "frame_start": 0.0,
+     "frame_end": 120.0,
+     "seconds": 4.0,
+     "fcurves": 59,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "GlanceL",
+     "frame_start": 0.0,
+     "frame_end": 27.0,
+     "seconds": 0.9,
+     "fcurves": 53,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "GlanceR",
+     "frame_start": 0.0,
+     "frame_end": 27.0,
+     "seconds": 0.9,
+     "fcurves": 53,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "Crouch",
+     "frame_start": 0.0,
+     "frame_end": 15.0,
+     "seconds": 0.5,
+     "fcurves": 50,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "Hop",
+     "frame_start": 0.0,
+     "frame_end": 21.600000381469727,
+     "seconds": 0.72,
+     "fcurves": 62,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "Land",
+     "frame_start": 0.0,
+     "frame_end": 15.0,
+     "seconds": 0.5,
+     "fcurves": 54,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "NoSwap",
+     "frame_start": 0.0,
+     "frame_end": 28.5,
+     "seconds": 0.95,
+     "fcurves": 47,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "Success",
+     "frame_start": 0.0,
+     "frame_end": 37.5,
+     "seconds": 1.25,
+     "fcurves": 69,
+     "fake_user": true,
+     "on_nla": true
+    }
+   ],
+   "clip_names": [
+    "Idle",
+    "GlanceL",
+    "GlanceR",
+    "Crouch",
+    "Hop",
+    "Land",
+    "NoSwap",
+    "Success"
+   ],
+   "clips_missing": [],
+   "images": [
+    "ceramic",
+    "matte"
+   ],
+   "node_groups": [],
+   "triangles": 8312,
+   "vertices": 4806,
+   "materials": [
+    "grantha_badge",
+    "grantha_badge_rim",
+    "grantha_bell_brass",
+    "grantha_cord_red",
+    "grantha_eye_dark",
+    "grantha_eye_glint",
+    "grantha_lid",
+    "grantha_mouth_dark",
+    "grantha_palm_leaf",
+    "grantha_quill_gold",
+    "grantha_quill_shaft",
+    "grantha_quill_teal",
+    "grantha_teak_wood"
+   ],
+   "vertex_groups": 17,
+   "max_influences": 4,
+   "modifiers": [
+    "ARMATURE"
+   ],
+   "bounds_blender_min": [
+    -0.2759999930858612,
+    -0.1979999989271164,
+    3.725290298461914e-09
+   ],
+   "bounds_blender_max": [
+    0.27438467741012573,
+    0.17000000178813934,
+    1.1700797080993652
+   ],
+   "height_m": 1.170079704374075,
+   "ground_z": 3.725290298461914e-09,
+   "front_y": -0.1979999989271164,
+   "file": "source/grantha.blend",
+   "bytes": 433015
+  },
+  {
+   "id": "dhanesh",
+   "mesh_object": "dhanesh_mesh",
+   "armature": "dhanesh_armature",
+   "bones": [
+    "root",
+    "hips",
+    "spine",
+    "chest",
+    "neck",
+    "head",
+    "lidL",
+    "lidR",
+    "eyeL",
+    "eyeR",
+    "casque_horn",
+    "beak_tip",
+    "badge",
+    "wingL",
+    "wingR",
+    "legL",
+    "legR",
+    "base",
+    "tail_long"
+   ],
+   "bone_count": 19,
+   "core_bones_missing": [],
+   "extra_bones": [
+    "casque_horn",
+    "beak_tip",
+    "wingL",
+    "wingR",
+    "tail_long"
+   ],
+   "badge_bone": true,
+   "badge_anchor_gltf": [
+    0.0,
+    0.35,
+    0.2761
+   ],
+   "clips": [
+    {
+     "name": "Idle",
+     "frame_start": 0.0,
+     "frame_end": 120.0,
+     "seconds": 4.0,
+     "fcurves": 59,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "GlanceL",
+     "frame_start": 0.0,
+     "frame_end": 27.0,
+     "seconds": 0.9,
+     "fcurves": 53,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "GlanceR",
+     "frame_start": 0.0,
+     "frame_end": 27.0,
+     "seconds": 0.9,
+     "fcurves": 53,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "Crouch",
+     "frame_start": 0.0,
+     "frame_end": 15.0,
+     "seconds": 0.5,
+     "fcurves": 50,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "Hop",
+     "frame_start": 0.0,
+     "frame_end": 21.600000381469727,
+     "seconds": 0.72,
+     "fcurves": 70,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "Land",
+     "frame_start": 0.0,
+     "frame_end": 15.0,
+     "seconds": 0.5,
+     "fcurves": 54,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "NoSwap",
+     "frame_start": 0.0,
+     "frame_end": 28.5,
+     "seconds": 0.95,
+     "fcurves": 51,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "Success",
+     "frame_start": 0.0,
+     "frame_end": 37.5,
+     "seconds": 1.25,
+     "fcurves": 77,
+     "fake_user": true,
+     "on_nla": true
+    }
+   ],
+   "clip_names": [
+    "Idle",
+    "GlanceL",
+    "GlanceR",
+    "Crouch",
+    "Hop",
+    "Land",
+    "NoSwap",
+    "Success"
+   ],
+   "clips_missing": [],
+   "images": [
+    "matte"
+   ],
+   "node_groups": [],
+   "triangles": 10728,
+   "vertices": 6050,
+   "materials": [
+    "dhanesh_badge",
+    "dhanesh_badge_rim",
+    "dhanesh_bill_accent",
+    "dhanesh_bill_ivory",
+    "dhanesh_casque_gold",
+    "dhanesh_eye_dark",
+    "dhanesh_eye_glint",
+    "dhanesh_feather_black",
+    "dhanesh_feather_white",
+    "dhanesh_lid"
+   ],
+   "vertex_groups": 19,
+   "max_influences": 4,
+   "modifiers": [
+    "ARMATURE"
+   ],
+   "bounds_blender_min": [
+    -0.35591474175453186,
+    -0.704940915107727,
+    0.0
+   ],
+   "bounds_blender_max": [
+    0.35591474175453186,
+    0.34848377108573914,
+    1.2652806043624878
+   ],
+   "height_m": 1.2652806043624878,
+   "ground_z": 0.0,
+   "front_y": -0.704940915107727,
+   "file": "source/dhanesh.blend",
+   "bytes": 485489
+  },
+  {
+   "id": "salya",
+   "mesh_object": "salya_mesh",
+   "armature": "salya_armature",
+   "bones": [
+    "root",
+    "hips",
+    "spine",
+    "chest",
+    "neck",
+    "head",
+    "lidL",
+    "lidR",
+    "eyeL",
+    "eyeR",
+    "scale_hood",
+    "badge",
+    "armL",
+    "armR",
+    "legL",
+    "legR",
+    "base",
+    "tail_curl.01",
+    "tail_curl.02"
+   ],
+   "bone_count": 19,
+   "core_bones_missing": [],
+   "extra_bones": [
+    "scale_hood",
+    "armL",
+    "armR",
+    "tail_curl.01",
+    "tail_curl.02"
+   ],
+   "badge_bone": true,
+   "badge_anchor_gltf": [
+    0.0,
+    0.25,
+    0.257
+   ],
+   "clips": [
+    {
+     "name": "Idle",
+     "frame_start": 0.0,
+     "frame_end": 120.0,
+     "seconds": 4.0,
+     "fcurves": 63,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "GlanceL",
+     "frame_start": 0.0,
+     "frame_end": 27.0,
+     "seconds": 0.9,
+     "fcurves": 49,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "GlanceR",
+     "frame_start": 0.0,
+     "frame_end": 27.0,
+     "seconds": 0.9,
+     "fcurves": 49,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "Crouch",
+     "frame_start": 0.0,
+     "frame_end": 15.0,
+     "seconds": 0.5,
+     "fcurves": 54,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "Hop",
+     "frame_start": 0.0,
+     "frame_end": 21.600000381469727,
+     "seconds": 0.72,
+     "fcurves": 70,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "Land",
+     "frame_start": 0.0,
+     "frame_end": 15.0,
+     "seconds": 0.5,
+     "fcurves": 62,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "NoSwap",
+     "frame_start": 0.0,
+     "frame_end": 28.5,
+     "seconds": 0.95,
+     "fcurves": 51,
+     "fake_user": true,
+     "on_nla": true
+    },
+    {
+     "name": "Success",
+     "frame_start": 0.0,
+     "frame_end": 37.5,
+     "seconds": 1.25,
+     "fcurves": 77,
+     "fake_user": true,
+     "on_nla": true
+    }
+   ],
+   "clip_names": [
+    "Idle",
+    "GlanceL",
+    "GlanceR",
+    "Crouch",
+    "Hop",
+    "Land",
+    "NoSwap",
+    "Success"
+   ],
+   "clips_missing": [],
+   "images": [
+    "matte"
+   ],
+   "node_groups": [],
+   "triangles": 10528,
+   "vertices": 6102,
+   "materials": [
+    "salya_badge",
+    "salya_badge_rim",
+    "salya_claw_dark",
+    "salya_eye_dark",
+    "salya_eye_glint",
+    "salya_lid",
+    "salya_mouth_dark",
+    "salya_nose_pink",
+    "salya_scale_amber",
+    "salya_scale_edge",
+    "salya_skin_belly"
+   ],
+   "vertex_groups": 19,
+   "max_influences": 4,
+   "modifiers": [
+    "ARMATURE"
+   ],
+   "bounds_blender_min": [
+    -0.3149999976158142,
+    -0.5244507193565369,
+    3.725290298461914e-09
+   ],
+   "bounds_blender_max": [
+    0.3149999976158142,
+    0.5261538624763489,
+    1.074191689491272
+   ],
+   "height_m": 1.0741916857659817,
+   "ground_z": 3.725290298461914e-09,
+   "front_y": -0.5244507193565369,
+   "file": "source/salya.blend",
+   "bytes": 466530
   }
  ],
  "roster": {
   "file": "source/bubblesort_squad_roster.blend",
-  "bytes": 1742802,
+  "bytes": 2681667,
   "slot_pitch_m": 1.1,
   "characters": [
    "gaja",
    "mayur",
    "diya",
    "patra",
-   "kumbha"
+   "kumbha",
+   "grantha",
+   "dhanesh",
+   "salya"
   ],
   "arms": [
+   "dhanesh_armature",
    "diya_armature",
    "gaja_armature",
+   "grantha_armature",
    "kumbha_armature",
    "mayur_armature",
-   "patra_armature"
+   "patra_armature",
+   "salya_armature"
   ]
  }
 }

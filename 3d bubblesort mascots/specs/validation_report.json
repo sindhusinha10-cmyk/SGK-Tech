@@ -177,182 +177,6 @@
    "pass": true
   },
   {
-   "id": "mayur",
-   "file": "mayur.glb",
-   "bytes": 729284,
-   "checks": [
-    {
-     "name": "glTF 2.0 asset",
-     "pass": true,
-     "detail": "SGK-Tech Bubble-Sort Mascots pipeline"
-    },
-    {
-     "name": "has a skin",
-     "pass": true,
-     "detail": "1 skin(s)"
-    },
-    {
-     "name": "skin has joints",
-     "pass": true,
-     "detail": "18 joints"
-    },
-    {
-     "name": "inverse bind matrices",
-     "pass": true,
-     "detail": ""
-    },
-    {
-     "name": "bufferViews inside BIN chunk",
-     "pass": true,
-     "detail": "0 out of range"
-    },
-    {
-     "name": "triangles under budget",
-     "pass": true,
-     "detail": "14664 / 15000"
-    },
-    {
-     "name": "single mesh, multiple materials",
-     "pass": true,
-     "detail": "1 mesh(es), 10 prims"
-    },
-    {
-     "name": "weights normalised",
-     "pass": true,
-     "detail": "min 1.0000 max 1.0000"
-    },
-    {
-     "name": "joint indices in range",
-     "pass": true,
-     "detail": "max joint 17 of 18"
-    },
-    {
-     "name": "origin on the ground",
-     "pass": true,
-     "detail": "min y = 0.0000"
-    },
-    {
-     "name": "Y up (taller than deep)",
-     "pass": true,
-     "detail": "h=1.232 d=0.599"
-    },
-    {
-     "name": "front faces +Z (eyes on +Z)",
-     "pass": true,
-     "detail": "front-most eye centroid z = 0.238"
-    },
-    {
-     "name": "all eight clips present",
-     "pass": true,
-     "detail": "Idle, GlanceL, GlanceR, Crouch, Hop, Land, NoSwap, Success"
-    },
-    {
-     "name": "keyframe budget",
-     "pass": true,
-     "detail": "max 346 keys/clip"
-    },
-    {
-     "name": "Hop lifts the body",
-     "pass": true,
-     "detail": "t=0.24 apex y=1.372 vs rest 1.232"
-    },
-    {
-     "name": "Hop keeps the feet near the ground",
-     "pass": true,
-     "detail": "t=0.24 min y=0.1490"
-    },
-    {
-     "name": "skinning deforms the mesh",
-     "pass": true,
-     "detail": "mesh follows the joint hierarchy"
-    },
-    {
-     "name": "badge bone exists at the chest",
-     "pass": true,
-     "detail": "anchor = [0.0, 0.38, 0.272]"
-    },
-    {
-     "name": "Idle loops seamlessly",
-     "pass": true,
-     "detail": "max joint delta over the loop = 0.00000"
-    }
-   ],
-   "warnings": [],
-   "triangles": 14664,
-   "vertices": 8504,
-   "primitives": 10,
-   "materials": 11,
-   "images": 1,
-   "max_influences_used": 4,
-   "bbox_min": [
-    -0.775,
-    0.0,
-    -0.26
-   ],
-   "bbox_max": [
-    0.775,
-    1.2317,
-    0.3393
-   ],
-   "height": 1.2317,
-   "clips": [
-    {
-     "name": "Idle",
-     "duration": 4.0,
-     "channels": 18,
-     "keys": 191
-    },
-    {
-     "name": "GlanceL",
-     "duration": 0.9,
-     "channels": 16,
-     "keys": 130
-    },
-    {
-     "name": "GlanceR",
-     "duration": 0.9,
-     "channels": 16,
-     "keys": 130
-    },
-    {
-     "name": "Crouch",
-     "duration": 0.5,
-     "channels": 15,
-     "keys": 113
-    },
-    {
-     "name": "Hop",
-     "duration": 0.72,
-     "channels": 17,
-     "keys": 216
-    },
-    {
-     "name": "Land",
-     "duration": 0.5,
-     "channels": 15,
-     "keys": 148
-    },
-    {
-     "name": "NoSwap",
-     "duration": 0.95,
-     "channels": 16,
-     "keys": 161
-    },
-    {
-     "name": "Success",
-     "duration": 1.25,
-     "channels": 22,
-     "keys": 346
-    }
-   ],
-   "badge_anchor": [
-    0.0,
-    0.38,
-    0.2722
-   ],
-   "pass": true
-  },
-  {
    "id": "diya",
    "file": "diya.glb",
    "bytes": 384648,
@@ -525,182 +349,6 @@
     0.0,
     0.155,
     0.2896
-   ],
-   "pass": true
-  },
-  {
-   "id": "patra",
-   "file": "patra.glb",
-   "bytes": 483720,
-   "checks": [
-    {
-     "name": "glTF 2.0 asset",
-     "pass": true,
-     "detail": "SGK-Tech Bubble-Sort Mascots pipeline"
-    },
-    {
-     "name": "has a skin",
-     "pass": true,
-     "detail": "1 skin(s)"
-    },
-    {
-     "name": "skin has joints",
-     "pass": true,
-     "detail": "15 joints"
-    },
-    {
-     "name": "inverse bind matrices",
-     "pass": true,
-     "detail": ""
-    },
-    {
-     "name": "bufferViews inside BIN chunk",
-     "pass": true,
-     "detail": "0 out of range"
-    },
-    {
-     "name": "triangles under budget",
-     "pass": true,
-     "detail": "8996 / 15000"
-    },
-    {
-     "name": "single mesh, multiple materials",
-     "pass": true,
-     "detail": "1 mesh(es), 11 prims"
-    },
-    {
-     "name": "weights normalised",
-     "pass": true,
-     "detail": "min 1.0000 max 1.0000"
-    },
-    {
-     "name": "joint indices in range",
-     "pass": true,
-     "detail": "max joint 14 of 15"
-    },
-    {
-     "name": "origin on the ground",
-     "pass": true,
-     "detail": "min y = 0.0000"
-    },
-    {
-     "name": "Y up (taller than deep)",
-     "pass": true,
-     "detail": "h=1.200 d=0.528"
-    },
-    {
-     "name": "front faces +Z (eyes on +Z)",
-     "pass": true,
-     "detail": "front-most eye centroid z = 0.189"
-    },
-    {
-     "name": "all eight clips present",
-     "pass": true,
-     "detail": "Idle, GlanceL, GlanceR, Crouch, Hop, Land, NoSwap, Success"
-    },
-    {
-     "name": "keyframe budget",
-     "pass": true,
-     "detail": "max 299 keys/clip"
-    },
-    {
-     "name": "Hop lifts the body",
-     "pass": true,
-     "detail": "t=0.24 apex y=1.389 vs rest 1.200"
-    },
-    {
-     "name": "Hop keeps the feet near the ground",
-     "pass": true,
-     "detail": "t=0.24 min y=0.1226"
-    },
-    {
-     "name": "skinning deforms the mesh",
-     "pass": true,
-     "detail": "mesh follows the joint hierarchy"
-    },
-    {
-     "name": "badge bone exists at the chest",
-     "pass": true,
-     "detail": "anchor = [0.0, 0.26, 0.244]"
-    },
-    {
-     "name": "Idle loops seamlessly",
-     "pass": true,
-     "detail": "max joint delta over the loop = 0.00000"
-    }
-   ],
-   "warnings": [],
-   "triangles": 8996,
-   "vertices": 5086,
-   "primitives": 11,
-   "materials": 12,
-   "images": 2,
-   "max_influences_used": 4,
-   "bbox_min": [
-    -0.2917,
-    0.0,
-    -0.264
-   ],
-   "bbox_max": [
-    0.2629,
-    1.2,
-    0.264
-   ],
-   "height": 1.2,
-   "clips": [
-    {
-     "name": "Idle",
-     "duration": 4.0,
-     "channels": 16,
-     "keys": 166
-    },
-    {
-     "name": "GlanceL",
-     "duration": 0.9,
-     "channels": 14,
-     "keys": 122
-    },
-    {
-     "name": "GlanceR",
-     "duration": 0.9,
-     "channels": 14,
-     "keys": 122
-    },
-    {
-     "name": "Crouch",
-     "duration": 0.5,
-     "channels": 13,
-     "keys": 102
-    },
-    {
-     "name": "Hop",
-     "duration": 0.72,
-     "channels": 15,
-     "keys": 196
-    },
-    {
-     "name": "Land",
-     "duration": 0.5,
-     "channels": 13,
-     "keys": 136
-    },
-    {
-     "name": "NoSwap",
-     "duration": 0.95,
-     "channels": 12,
-     "keys": 133
-    },
-    {
-     "name": "Success",
-     "duration": 1.25,
-     "channels": 18,
-     "keys": 299
-    }
-   ],
-   "badge_anchor": [
-    0.0,
-    0.26,
-    0.2439
    ],
    "pass": true
   },
@@ -879,15 +527,898 @@
     0.3205
    ],
    "pass": true
+  },
+  {
+   "id": "grantha",
+   "file": "grantha.glb",
+   "bytes": 469808,
+   "checks": [
+    {
+     "name": "glTF 2.0 asset",
+     "pass": true,
+     "detail": "SGK-Tech Bubble-Sort Mascots pipeline"
+    },
+    {
+     "name": "has a skin",
+     "pass": true,
+     "detail": "1 skin(s)"
+    },
+    {
+     "name": "skin has joints",
+     "pass": true,
+     "detail": "17 joints"
+    },
+    {
+     "name": "inverse bind matrices",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "bufferViews inside BIN chunk",
+     "pass": true,
+     "detail": "0 out of range"
+    },
+    {
+     "name": "triangles under budget",
+     "pass": true,
+     "detail": "8312 / 15000"
+    },
+    {
+     "name": "single mesh, multiple materials",
+     "pass": true,
+     "detail": "1 mesh(es), 13 prims"
+    },
+    {
+     "name": "weights normalised",
+     "pass": true,
+     "detail": "min 1.0000 max 1.0000"
+    },
+    {
+     "name": "joint indices in range",
+     "pass": true,
+     "detail": "max joint 16 of 17"
+    },
+    {
+     "name": "origin on the ground",
+     "pass": true,
+     "detail": "min y = 0.0000"
+    },
+    {
+     "name": "Y up (taller than deep)",
+     "pass": true,
+     "detail": "h=1.170 d=0.368"
+    },
+    {
+     "name": "front faces +Z (eyes on +Z)",
+     "pass": true,
+     "detail": "front-most eye centroid z = 0.147"
+    },
+    {
+     "name": "all eight clips present",
+     "pass": true,
+     "detail": "Idle, GlanceL, GlanceR, Crouch, Hop, Land, NoSwap, Success"
+    },
+    {
+     "name": "keyframe budget",
+     "pass": true,
+     "detail": "max 348 keys/clip"
+    },
+    {
+     "name": "Hop lifts the body",
+     "pass": true,
+     "detail": "t=0.24 apex y=1.365 vs rest 1.170"
+    },
+    {
+     "name": "Hop keeps the feet near the ground",
+     "pass": true,
+     "detail": "t=0.24 min y=0.1067"
+    },
+    {
+     "name": "skinning deforms the mesh",
+     "pass": true,
+     "detail": "mesh follows the joint hierarchy"
+    },
+    {
+     "name": "badge bone exists at the chest",
+     "pass": true,
+     "detail": "anchor = [0.0, 0.26, 0.166]"
+    },
+    {
+     "name": "Idle loops seamlessly",
+     "pass": true,
+     "detail": "max joint delta over the loop = 0.00000"
+    }
+   ],
+   "warnings": [],
+   "triangles": 8312,
+   "vertices": 4806,
+   "primitives": 13,
+   "materials": 14,
+   "images": 2,
+   "max_influences_used": 4,
+   "bbox_min": [
+    -0.276,
+    0.0,
+    -0.17
+   ],
+   "bbox_max": [
+    0.2744,
+    1.1701,
+    0.198
+   ],
+   "height": 1.1701,
+   "clips": [
+    {
+     "name": "Idle",
+     "duration": 4.0,
+     "channels": 17,
+     "keys": 185
+    },
+    {
+     "name": "GlanceL",
+     "duration": 0.9,
+     "channels": 15,
+     "keys": 128
+    },
+    {
+     "name": "GlanceR",
+     "duration": 0.9,
+     "channels": 15,
+     "keys": 128
+    },
+    {
+     "name": "Crouch",
+     "duration": 0.5,
+     "channels": 14,
+     "keys": 105
+    },
+    {
+     "name": "Hop",
+     "duration": 0.72,
+     "channels": 17,
+     "keys": 221
+    },
+    {
+     "name": "Land",
+     "duration": 0.5,
+     "channels": 15,
+     "keys": 153
+    },
+    {
+     "name": "NoSwap",
+     "duration": 0.95,
+     "channels": 13,
+     "keys": 147
+    },
+    {
+     "name": "Success",
+     "duration": 1.25,
+     "channels": 20,
+     "keys": 348
+    }
+   ],
+   "badge_anchor": [
+    0.0,
+    0.26,
+    0.1661
+   ],
+   "pass": true
+  },
+  {
+   "id": "dhanesh",
+   "file": "dhanesh.glb",
+   "bytes": 554424,
+   "checks": [
+    {
+     "name": "glTF 2.0 asset",
+     "pass": true,
+     "detail": "SGK-Tech Bubble-Sort Mascots pipeline"
+    },
+    {
+     "name": "has a skin",
+     "pass": true,
+     "detail": "1 skin(s)"
+    },
+    {
+     "name": "skin has joints",
+     "pass": true,
+     "detail": "19 joints"
+    },
+    {
+     "name": "inverse bind matrices",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "bufferViews inside BIN chunk",
+     "pass": true,
+     "detail": "0 out of range"
+    },
+    {
+     "name": "triangles under budget",
+     "pass": true,
+     "detail": "10728 / 15000"
+    },
+    {
+     "name": "single mesh, multiple materials",
+     "pass": true,
+     "detail": "1 mesh(es), 10 prims"
+    },
+    {
+     "name": "weights normalised",
+     "pass": true,
+     "detail": "min 1.0000 max 1.0000"
+    },
+    {
+     "name": "joint indices in range",
+     "pass": true,
+     "detail": "max joint 18 of 19"
+    },
+    {
+     "name": "origin on the ground",
+     "pass": true,
+     "detail": "min y = 0.0000"
+    },
+    {
+     "name": "Y up (taller than deep)",
+     "pass": true,
+     "detail": "h=1.265 d=1.053"
+    },
+    {
+     "name": "front faces +Z (eyes on +Z)",
+     "pass": true,
+     "detail": "front-most eye centroid z = 0.203"
+    },
+    {
+     "name": "all eight clips present",
+     "pass": true,
+     "detail": "Idle, GlanceL, GlanceR, Crouch, Hop, Land, NoSwap, Success"
+    },
+    {
+     "name": "keyframe budget",
+     "pass": true,
+     "detail": "max 389 keys/clip"
+    },
+    {
+     "name": "Hop lifts the body",
+     "pass": true,
+     "detail": "t=0.24 apex y=1.487 vs rest 1.265"
+    },
+    {
+     "name": "Hop keeps the feet near the ground",
+     "pass": true,
+     "detail": "t=0.24 min y=0.1424"
+    },
+    {
+     "name": "skinning deforms the mesh",
+     "pass": true,
+     "detail": "mesh follows the joint hierarchy"
+    },
+    {
+     "name": "badge bone exists at the chest",
+     "pass": true,
+     "detail": "anchor = [0.0, 0.35, 0.276]"
+    },
+    {
+     "name": "Idle loops seamlessly",
+     "pass": true,
+     "detail": "max joint delta over the loop = 0.00000"
+    }
+   ],
+   "warnings": [],
+   "triangles": 10728,
+   "vertices": 6050,
+   "primitives": 10,
+   "materials": 12,
+   "images": 1,
+   "max_influences_used": 4,
+   "bbox_min": [
+    -0.3559,
+    0.0,
+    -0.3485
+   ],
+   "bbox_max": [
+    0.3559,
+    1.2653,
+    0.7049
+   ],
+   "height": 1.2653,
+   "clips": [
+    {
+     "name": "Idle",
+     "duration": 4.0,
+     "channels": 17,
+     "keys": 195
+    },
+    {
+     "name": "GlanceL",
+     "duration": 0.9,
+     "channels": 15,
+     "keys": 124
+    },
+    {
+     "name": "GlanceR",
+     "duration": 0.9,
+     "channels": 15,
+     "keys": 124
+    },
+    {
+     "name": "Crouch",
+     "duration": 0.5,
+     "channels": 14,
+     "keys": 106
+    },
+    {
+     "name": "Hop",
+     "duration": 0.72,
+     "channels": 19,
+     "keys": 242
+    },
+    {
+     "name": "Land",
+     "duration": 0.5,
+     "channels": 15,
+     "keys": 149
+    },
+    {
+     "name": "NoSwap",
+     "duration": 0.95,
+     "channels": 14,
+     "keys": 146
+    },
+    {
+     "name": "Success",
+     "duration": 1.25,
+     "channels": 22,
+     "keys": 389
+    }
+   ],
+   "badge_anchor": [
+    0.0,
+    0.35,
+    0.2761
+   ],
+   "pass": true
+  },
+  {
+   "id": "salya",
+   "file": "salya.glb",
+   "bytes": 556460,
+   "checks": [
+    {
+     "name": "glTF 2.0 asset",
+     "pass": true,
+     "detail": "SGK-Tech Bubble-Sort Mascots pipeline"
+    },
+    {
+     "name": "has a skin",
+     "pass": true,
+     "detail": "1 skin(s)"
+    },
+    {
+     "name": "skin has joints",
+     "pass": true,
+     "detail": "19 joints"
+    },
+    {
+     "name": "inverse bind matrices",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "bufferViews inside BIN chunk",
+     "pass": true,
+     "detail": "0 out of range"
+    },
+    {
+     "name": "triangles under budget",
+     "pass": true,
+     "detail": "10528 / 15000"
+    },
+    {
+     "name": "single mesh, multiple materials",
+     "pass": true,
+     "detail": "1 mesh(es), 11 prims"
+    },
+    {
+     "name": "weights normalised",
+     "pass": true,
+     "detail": "min 1.0000 max 1.0000"
+    },
+    {
+     "name": "joint indices in range",
+     "pass": true,
+     "detail": "max joint 18 of 19"
+    },
+    {
+     "name": "origin on the ground",
+     "pass": true,
+     "detail": "min y = 0.0000"
+    },
+    {
+     "name": "Y up (taller than deep)",
+     "pass": true,
+     "detail": "h=1.074 d=1.051"
+    },
+    {
+     "name": "front faces +Z (eyes on +Z)",
+     "pass": true,
+     "detail": "front-most eye centroid z = 0.145"
+    },
+    {
+     "name": "all eight clips present",
+     "pass": true,
+     "detail": "Idle, GlanceL, GlanceR, Crouch, Hop, Land, NoSwap, Success"
+    },
+    {
+     "name": "keyframe budget",
+     "pass": true,
+     "detail": "max 382 keys/clip"
+    },
+    {
+     "name": "Hop lifts the body",
+     "pass": true,
+     "detail": "t=0.24 apex y=1.294 vs rest 1.074"
+    },
+    {
+     "name": "Hop keeps the feet near the ground",
+     "pass": true,
+     "detail": "t=0.24 min y=0.1012"
+    },
+    {
+     "name": "skinning deforms the mesh",
+     "pass": true,
+     "detail": "mesh follows the joint hierarchy"
+    },
+    {
+     "name": "badge bone exists at the chest",
+     "pass": true,
+     "detail": "anchor = [0.0, 0.25, 0.257]"
+    },
+    {
+     "name": "Idle loops seamlessly",
+     "pass": true,
+     "detail": "max joint delta over the loop = 0.00000"
+    }
+   ],
+   "warnings": [],
+   "triangles": 10528,
+   "vertices": 6102,
+   "primitives": 11,
+   "materials": 12,
+   "images": 1,
+   "max_influences_used": 4,
+   "bbox_min": [
+    -0.315,
+    0.0,
+    -0.5262
+   ],
+   "bbox_max": [
+    0.315,
+    1.0742,
+    0.5245
+   ],
+   "height": 1.0742,
+   "clips": [
+    {
+     "name": "Idle",
+     "duration": 4.0,
+     "channels": 18,
+     "keys": 188
+    },
+    {
+     "name": "GlanceL",
+     "duration": 0.9,
+     "channels": 14,
+     "keys": 124
+    },
+    {
+     "name": "GlanceR",
+     "duration": 0.9,
+     "channels": 14,
+     "keys": 124
+    },
+    {
+     "name": "Crouch",
+     "duration": 0.5,
+     "channels": 15,
+     "keys": 131
+    },
+    {
+     "name": "Hop",
+     "duration": 0.72,
+     "channels": 19,
+     "keys": 250
+    },
+    {
+     "name": "Land",
+     "duration": 0.5,
+     "channels": 17,
+     "keys": 164
+    },
+    {
+     "name": "NoSwap",
+     "duration": 0.95,
+     "channels": 14,
+     "keys": 150
+    },
+    {
+     "name": "Success",
+     "duration": 1.25,
+     "channels": 22,
+     "keys": 382
+    }
+   ],
+   "badge_anchor": [
+    0.0,
+    0.25,
+    0.257
+   ],
+   "pass": true
+  },
+  {
+   "id": "mayur",
+   "file": "mayur.glb",
+   "bytes": 729284,
+   "checks": [
+    {
+     "name": "glTF 2.0 asset",
+     "pass": true,
+     "detail": "SGK-Tech Bubble-Sort Mascots pipeline"
+    },
+    {
+     "name": "has a skin",
+     "pass": true,
+     "detail": "1 skin(s)"
+    },
+    {
+     "name": "skin has joints",
+     "pass": true,
+     "detail": "18 joints"
+    },
+    {
+     "name": "inverse bind matrices",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "bufferViews inside BIN chunk",
+     "pass": true,
+     "detail": "0 out of range"
+    },
+    {
+     "name": "triangles under budget",
+     "pass": true,
+     "detail": "14664 / 15000"
+    },
+    {
+     "name": "single mesh, multiple materials",
+     "pass": true,
+     "detail": "1 mesh(es), 10 prims"
+    },
+    {
+     "name": "weights normalised",
+     "pass": true,
+     "detail": "min 1.0000 max 1.0000"
+    },
+    {
+     "name": "joint indices in range",
+     "pass": true,
+     "detail": "max joint 17 of 18"
+    },
+    {
+     "name": "origin on the ground",
+     "pass": true,
+     "detail": "min y = 0.0000"
+    },
+    {
+     "name": "Y up (taller than deep)",
+     "pass": true,
+     "detail": "h=1.232 d=0.599"
+    },
+    {
+     "name": "front faces +Z (eyes on +Z)",
+     "pass": true,
+     "detail": "front-most eye centroid z = 0.238"
+    },
+    {
+     "name": "all eight clips present",
+     "pass": true,
+     "detail": "Idle, GlanceL, GlanceR, Crouch, Hop, Land, NoSwap, Success"
+    },
+    {
+     "name": "keyframe budget",
+     "pass": true,
+     "detail": "max 346 keys/clip"
+    },
+    {
+     "name": "Hop lifts the body",
+     "pass": true,
+     "detail": "t=0.24 apex y=1.372 vs rest 1.232"
+    },
+    {
+     "name": "Hop keeps the feet near the ground",
+     "pass": true,
+     "detail": "t=0.24 min y=0.1490"
+    },
+    {
+     "name": "skinning deforms the mesh",
+     "pass": true,
+     "detail": "mesh follows the joint hierarchy"
+    },
+    {
+     "name": "badge bone exists at the chest",
+     "pass": true,
+     "detail": "anchor = [0.0, 0.38, 0.272]"
+    },
+    {
+     "name": "Idle loops seamlessly",
+     "pass": true,
+     "detail": "max joint delta over the loop = 0.00000"
+    }
+   ],
+   "warnings": [],
+   "triangles": 14664,
+   "vertices": 8504,
+   "primitives": 10,
+   "materials": 11,
+   "images": 1,
+   "max_influences_used": 4,
+   "bbox_min": [
+    -0.775,
+    0.0,
+    -0.26
+   ],
+   "bbox_max": [
+    0.775,
+    1.2317,
+    0.3393
+   ],
+   "height": 1.2317,
+   "clips": [
+    {
+     "name": "Idle",
+     "duration": 4.0,
+     "channels": 18,
+     "keys": 191
+    },
+    {
+     "name": "GlanceL",
+     "duration": 0.9,
+     "channels": 16,
+     "keys": 130
+    },
+    {
+     "name": "GlanceR",
+     "duration": 0.9,
+     "channels": 16,
+     "keys": 130
+    },
+    {
+     "name": "Crouch",
+     "duration": 0.5,
+     "channels": 15,
+     "keys": 113
+    },
+    {
+     "name": "Hop",
+     "duration": 0.72,
+     "channels": 17,
+     "keys": 216
+    },
+    {
+     "name": "Land",
+     "duration": 0.5,
+     "channels": 15,
+     "keys": 148
+    },
+    {
+     "name": "NoSwap",
+     "duration": 0.95,
+     "channels": 16,
+     "keys": 161
+    },
+    {
+     "name": "Success",
+     "duration": 1.25,
+     "channels": 22,
+     "keys": 346
+    }
+   ],
+   "badge_anchor": [
+    0.0,
+    0.38,
+    0.2722
+   ],
+   "pass": true
+  },
+  {
+   "id": "patra",
+   "file": "patra.glb",
+   "bytes": 483720,
+   "checks": [
+    {
+     "name": "glTF 2.0 asset",
+     "pass": true,
+     "detail": "SGK-Tech Bubble-Sort Mascots pipeline"
+    },
+    {
+     "name": "has a skin",
+     "pass": true,
+     "detail": "1 skin(s)"
+    },
+    {
+     "name": "skin has joints",
+     "pass": true,
+     "detail": "15 joints"
+    },
+    {
+     "name": "inverse bind matrices",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "bufferViews inside BIN chunk",
+     "pass": true,
+     "detail": "0 out of range"
+    },
+    {
+     "name": "triangles under budget",
+     "pass": true,
+     "detail": "8996 / 15000"
+    },
+    {
+     "name": "single mesh, multiple materials",
+     "pass": true,
+     "detail": "1 mesh(es), 11 prims"
+    },
+    {
+     "name": "weights normalised",
+     "pass": true,
+     "detail": "min 1.0000 max 1.0000"
+    },
+    {
+     "name": "joint indices in range",
+     "pass": true,
+     "detail": "max joint 14 of 15"
+    },
+    {
+     "name": "origin on the ground",
+     "pass": true,
+     "detail": "min y = 0.0000"
+    },
+    {
+     "name": "Y up (taller than deep)",
+     "pass": true,
+     "detail": "h=1.200 d=0.528"
+    },
+    {
+     "name": "front faces +Z (eyes on +Z)",
+     "pass": true,
+     "detail": "front-most eye centroid z = 0.189"
+    },
+    {
+     "name": "all eight clips present",
+     "pass": true,
+     "detail": "Idle, GlanceL, GlanceR, Crouch, Hop, Land, NoSwap, Success"
+    },
+    {
+     "name": "keyframe budget",
+     "pass": true,
+     "detail": "max 299 keys/clip"
+    },
+    {
+     "name": "Hop lifts the body",
+     "pass": true,
+     "detail": "t=0.24 apex y=1.389 vs rest 1.200"
+    },
+    {
+     "name": "Hop keeps the feet near the ground",
+     "pass": true,
+     "detail": "t=0.24 min y=0.1226"
+    },
+    {
+     "name": "skinning deforms the mesh",
+     "pass": true,
+     "detail": "mesh follows the joint hierarchy"
+    },
+    {
+     "name": "badge bone exists at the chest",
+     "pass": true,
+     "detail": "anchor = [0.0, 0.26, 0.244]"
+    },
+    {
+     "name": "Idle loops seamlessly",
+     "pass": true,
+     "detail": "max joint delta over the loop = 0.00000"
+    }
+   ],
+   "warnings": [],
+   "triangles": 8996,
+   "vertices": 5086,
+   "primitives": 11,
+   "materials": 12,
+   "images": 2,
+   "max_influences_used": 4,
+   "bbox_min": [
+    -0.2917,
+    0.0,
+    -0.264
+   ],
+   "bbox_max": [
+    0.2629,
+    1.2,
+    0.264
+   ],
+   "height": 1.2,
+   "clips": [
+    {
+     "name": "Idle",
+     "duration": 4.0,
+     "channels": 16,
+     "keys": 166
+    },
+    {
+     "name": "GlanceL",
+     "duration": 0.9,
+     "channels": 14,
+     "keys": 122
+    },
+    {
+     "name": "GlanceR",
+     "duration": 0.9,
+     "channels": 14,
+     "keys": 122
+    },
+    {
+     "name": "Crouch",
+     "duration": 0.5,
+     "channels": 13,
+     "keys": 102
+    },
+    {
+     "name": "Hop",
+     "duration": 0.72,
+     "channels": 15,
+     "keys": 196
+    },
+    {
+     "name": "Land",
+     "duration": 0.5,
+     "channels": 13,
+     "keys": 136
+    },
+    {
+     "name": "NoSwap",
+     "duration": 0.95,
+     "channels": 12,
+     "keys": 133
+    },
+    {
+     "name": "Success",
+     "duration": 1.25,
+     "channels": 18,
+     "keys": 299
+    }
+   ],
+   "badge_anchor": [
+    0.0,
+    0.26,
+    0.2439
+   ],
+   "pass": true
   }
  ],
  "summary": {
-  "models": 5,
-  "passed": 5,
-  "total_triangles": 50212,
+  "models": 8,
+  "passed": 8,
+  "total_triangles": 79780,
   "max_triangles": 14664,
-  "total_bytes": 2711652,
+  "total_bytes": 4292344,
   "clips_per_model": [
+   8,
+   8,
+   8,
    8,
    8,
    8,

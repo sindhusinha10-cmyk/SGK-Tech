@@ -39,7 +39,7 @@ CORE_BONES = ["root", "hips", "spine", "chest", "neck", "head",
 
 CLIP_ORDER = ["Idle", "GlanceL", "GlanceR", "Crouch", "Hop", "Land", "NoSwap", "Success"]
 
-IDS = ["gaja", "mayur", "diya", "patra", "kumbha"]
+IDS = ["gaja", "mayur", "diya", "patra", "kumbha", "grantha", "dhanesh", "salya"]
 
 SLOT_PITCH = 1.10          # metres between array slots, matches index.html and the sheets
 FPS = 30

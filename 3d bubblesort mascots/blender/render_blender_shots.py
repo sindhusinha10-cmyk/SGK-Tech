@@ -32,7 +32,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 FONT_DIR = "/usr/share/fonts/truetype/dejavu/"
 
-IDS = ["gaja", "mayur", "diya", "patra", "kumbha"]
+IDS = ["gaja", "mayur", "diya", "patra", "kumbha", "grantha", "dhanesh", "salya"]
 
 # the array values used in the roster picture, and the poses in the performance sheet
 VALUES = {"gaja": 8, "mayur": 3, "diya": 1, "patra": 5, "kumbha": 9}
