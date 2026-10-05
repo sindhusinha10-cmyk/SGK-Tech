@@ -51,8 +51,8 @@
    "badge_bone": true,
    "badge_anchor_gltf": [
     0.0,
-    0.52,
-    0.3737
+    0.42,
+    0.3665
    ],
    "clips": [
     {
@@ -60,7 +60,7 @@
      "frame_start": 0.0,
      "frame_end": 120.0,
      "seconds": 4.0,
-     "fcurves": 79,
+     "fcurves": 71,
      "fake_user": true,
      "on_nla": true
     },
@@ -69,7 +69,7 @@
      "frame_start": 0.0,
      "frame_end": 27.0,
      "seconds": 0.9,
-     "fcurves": 73,
+     "fcurves": 65,
      "fake_user": true,
      "on_nla": true
     },
@@ -78,7 +78,7 @@
      "frame_start": 0.0,
      "frame_end": 27.0,
      "seconds": 0.9,
-     "fcurves": 73,
+     "fcurves": 65,
      "fake_user": true,
      "on_nla": true
     },
@@ -87,7 +87,7 @@
      "frame_start": 0.0,
      "frame_end": 15.0,
      "seconds": 0.5,
-     "fcurves": 70,
+     "fcurves": 62,
      "fake_user": true,
      "on_nla": true
     },
@@ -96,7 +96,7 @@
      "frame_start": 0.0,
      "frame_end": 21.600000381469727,
      "seconds": 0.72,
-     "fcurves": 78,
+     "fcurves": 70,
      "fake_user": true,
      "on_nla": true
     },
@@ -105,7 +105,7 @@
      "frame_start": 0.0,
      "frame_end": 15.0,
      "seconds": 0.5,
-     "fcurves": 70,
+     "fcurves": 62,
      "fake_user": true,
      "on_nla": true
     },
@@ -114,7 +114,7 @@
      "frame_start": 0.0,
      "frame_end": 28.5,
      "seconds": 0.95,
-     "fcurves": 67,
+     "fcurves": 59,
      "fake_user": true,
      "on_nla": true
     },
@@ -123,7 +123,7 @@
      "frame_start": 0.0,
      "frame_end": 37.5,
      "seconds": 1.25,
-     "fcurves": 85,
+     "fcurves": 77,
      "fake_user": true,
      "on_nla": true
     }
@@ -144,18 +144,22 @@
     "matte"
    ],
    "node_groups": [],
-   "triangles": 11272,
-   "vertices": 6444,
+   "triangles": 14696,
+   "vertices": 8527,
    "materials": [
     "gaja_badge",
     "gaja_badge_rim",
+    "gaja_cheek_blush",
     "gaja_ear_inner",
     "gaja_eye_dark",
-    "gaja_eye_glint",
+    "gaja_eye_glint_primary",
+    "gaja_eye_glint_secondary",
+    "gaja_eye_iris",
+    "gaja_eye_pupil",
     "gaja_lid",
     "gaja_mouth_dark",
     "gaja_skin",
-    "gaja_skin_light",
+    "gaja_trunk_tip",
     "gaja_tusk"
    ],
    "vertex_groups": 21,
@@ -164,20 +168,20 @@
     "ARMATURE"
    ],
    "bounds_blender_min": [
-    -0.5494106411933899,
-    -0.6321102976799011,
-    0.0
+    -0.5530473589897156,
+    -0.6392219662666321,
+    -2.7755575615628914e-17
    ],
    "bounds_blender_max": [
-    0.5494106411933899,
-    0.36500000953674316,
-    1.284999966621399
+    0.5530473589897156,
+    0.40880176424980164,
+    1.309999942779541
    ],
-   "height_m": 1.284999966621399,
-   "ground_z": 0.0,
-   "front_y": -0.6321102976799011,
+   "height_m": 1.309999942779541,
+   "ground_z": -2.7755575615628914e-17,
+   "front_y": -0.6392219662666321,
    "file": "source/gaja.blend",
-   "bytes": 505028
+   "bytes": 595079
   },
   {
    "id": "mayur",
@@ -215,7 +219,7 @@
    "badge_anchor_gltf": [
     0.0,
     0.38,
-    0.2722
+    0.2719
    ],
    "clips": [
     {
@@ -303,22 +307,28 @@
    ],
    "clips_missing": [],
    "images": [
+    "ceramic",
     "matte"
    ],
    "node_groups": [],
-   "triangles": 14664,
-   "vertices": 8504,
+   "triangles": 14512,
+   "vertices": 8542,
    "materials": [
     "mayur_badge",
     "mayur_badge_rim",
     "mayur_beak",
     "mayur_body_teal",
+    "mayur_cheek_blush",
     "mayur_eye_dark",
-    "mayur_eye_glint",
+    "mayur_eye_glint_primary",
+    "mayur_eye_glint_secondary",
+    "mayur_eye_iris",
+    "mayur_eye_pupil",
     "mayur_fan_emerald",
     "mayur_fan_gold",
     "mayur_fan_indigo",
-    "mayur_lid"
+    "mayur_lid",
+    "mayur_tail_base"
    ],
    "vertex_groups": 18,
    "max_influences": 4,
@@ -326,20 +336,20 @@
     "ARMATURE"
    ],
    "bounds_blender_min": [
-    -0.775049090385437,
+    -0.8393411040306091,
     -0.33927980065345764,
     0.0
    ],
    "bounds_blender_max": [
-    0.775049090385437,
+    0.8393411040306091,
     0.25999999046325684,
-    1.2316999435424805
+    1.2980999946594238
    ],
-   "height_m": 1.2316999435424805,
+   "height_m": 1.2980999946594238,
    "ground_z": 0.0,
    "front_y": -0.33927980065345764,
    "file": "source/mayur.blend",
-   "bytes": 544087
+   "bytes": 571431
   },
   {
    "id": "diya",
@@ -465,17 +475,22 @@
     "matte"
    ],
    "node_groups": [],
-   "triangles": 6244,
-   "vertices": 3582,
+   "triangles": 7480,
+   "vertices": 4386,
    "materials": [
     "diya_badge",
     "diya_badge_rim",
+    "diya_cheek_blush",
     "diya_clay",
     "diya_clay_dark",
     "diya_ember",
     "diya_eye_dark",
-    "diya_eye_glint",
+    "diya_eye_glint_primary",
+    "diya_eye_glint_secondary",
+    "diya_eye_iris",
+    "diya_eye_pupil",
     "diya_flame_core",
+    "diya_flame_mantle",
     "diya_flame_outer",
     "diya_lid",
     "diya_mouth_dark"
@@ -493,13 +508,13 @@
    "bounds_blender_max": [
     0.3609813451766968,
     0.3199999928474426,
-    1.096913456916809
+    0.9900000095367432
    ],
-   "height_m": 1.096913456916809,
+   "height_m": 0.9900000095367432,
    "ground_z": 0.0,
    "front_y": -0.37646833062171936,
    "file": "source/diya.blend",
-   "bytes": 390686
+   "bytes": 428711
   },
   {
    "id": "patra",
@@ -623,13 +638,17 @@
     "matte"
    ],
    "node_groups": [],
-   "triangles": 8996,
-   "vertices": 5086,
+   "triangles": 9892,
+   "vertices": 5660,
    "materials": [
     "patra_badge",
     "patra_badge_rim",
+    "patra_cheek_blush",
     "patra_eye_dark",
-    "patra_eye_glint",
+    "patra_eye_glint_primary",
+    "patra_eye_glint_secondary",
+    "patra_eye_iris",
+    "patra_eye_pupil",
     "patra_lid",
     "patra_mouth_dark",
     "patra_parchment",
@@ -657,7 +676,7 @@
    "ground_z": 0.0,
    "front_y": -0.2639999985694885,
    "file": "source/patra.blend",
-   "bytes": 423665
+   "bytes": 450772
   },
   {
    "id": "kumbha",
@@ -783,19 +802,24 @@
     "stone"
    ],
    "node_groups": [],
-   "triangles": 9036,
-   "vertices": 5146,
+   "triangles": 9804,
+   "vertices": 5689,
    "materials": [
     "kumbha_badge",
     "kumbha_badge_rim",
     "kumbha_brass",
     "kumbha_brass_dark",
+    "kumbha_cheek_blush",
     "kumbha_coconut",
     "kumbha_eye_dark",
-    "kumbha_eye_glint",
+    "kumbha_eye_glint_primary",
+    "kumbha_eye_glint_secondary",
+    "kumbha_eye_iris",
+    "kumbha_eye_pupil",
     "kumbha_lid",
     "kumbha_mango_leaf",
-    "kumbha_mouth_dark"
+    "kumbha_mouth_dark",
+    "kumbha_tuft_light"
    ],
    "vertex_groups": 16,
    "max_influences": 4,
@@ -810,13 +834,13 @@
    "bounds_blender_max": [
     0.40998929738998413,
     0.35499998927116394,
-    1.0815000534057617
+    1.0700000524520874
    ],
-   "height_m": 1.0815000534057617,
+   "height_m": 1.0700000524520874,
    "ground_z": 0.0,
    "front_y": -0.3790000081062317,
    "file": "source/kumbha.blend",
-   "bytes": 450314
+   "bytes": 475863
   },
   {
    "id": "grantha",
@@ -944,15 +968,19 @@
     "matte"
    ],
    "node_groups": [],
-   "triangles": 8312,
-   "vertices": 4806,
+   "triangles": 8936,
+   "vertices": 5230,
    "materials": [
     "grantha_badge",
     "grantha_badge_rim",
     "grantha_bell_brass",
+    "grantha_cheek_blush",
     "grantha_cord_red",
     "grantha_eye_dark",
-    "grantha_eye_glint",
+    "grantha_eye_glint_primary",
+    "grantha_eye_glint_secondary",
+    "grantha_eye_iris",
+    "grantha_eye_pupil",
     "grantha_lid",
     "grantha_mouth_dark",
     "grantha_palm_leaf",
@@ -974,13 +1002,13 @@
    "bounds_blender_max": [
     0.27438467741012573,
     0.17000000178813934,
-    1.1700797080993652
+    1.2175307273864746
    ],
-   "height_m": 1.170079704374075,
+   "height_m": 1.2175307236611843,
    "ground_z": 3.725290298461914e-09,
    "front_y": -0.1979999989271164,
    "file": "source/grantha.blend",
-   "bytes": 433015
+   "bytes": 454489
   },
   {
    "id": "dhanesh",
@@ -1111,8 +1139,8 @@
     "matte"
    ],
    "node_groups": [],
-   "triangles": 10728,
-   "vertices": 6050,
+   "triangles": 13512,
+   "vertices": 7781,
    "materials": [
     "dhanesh_badge",
     "dhanesh_badge_rim",
@@ -1120,7 +1148,11 @@
     "dhanesh_bill_ivory",
     "dhanesh_casque_gold",
     "dhanesh_eye_dark",
-    "dhanesh_eye_glint",
+    "dhanesh_eye_glint_primary",
+    "dhanesh_eye_glint_secondary",
+    "dhanesh_eye_iris",
+    "dhanesh_eye_pupil",
+    "dhanesh_eye_ring",
     "dhanesh_feather_black",
     "dhanesh_feather_white",
     "dhanesh_lid"
@@ -1132,19 +1164,19 @@
    ],
    "bounds_blender_min": [
     -0.35591474175453186,
-    -0.704940915107727,
+    -0.7384210228919983,
     0.0
    ],
    "bounds_blender_max": [
     0.35591474175453186,
     0.34848377108573914,
-    1.2652806043624878
+    1.2450000047683716
    ],
-   "height_m": 1.2652806043624878,
+   "height_m": 1.2450000047683716,
    "ground_z": 0.0,
-   "front_y": -0.704940915107727,
+   "front_y": -0.7384210228919983,
    "file": "source/dhanesh.blend",
-   "bytes": 485489
+   "bytes": 561329
   },
   {
    "id": "salya",
@@ -1275,19 +1307,22 @@
     "matte"
    ],
    "node_groups": [],
-   "triangles": 10528,
-   "vertices": 6102,
+   "triangles": 12080,
+   "vertices": 7245,
    "materials": [
     "salya_badge",
     "salya_badge_rim",
+    "salya_cheek_blush",
     "salya_claw_dark",
     "salya_eye_dark",
-    "salya_eye_glint",
+    "salya_eye_glint_primary",
+    "salya_eye_glint_secondary",
+    "salya_eye_iris",
+    "salya_eye_pupil",
     "salya_lid",
     "salya_mouth_dark",
     "salya_nose_pink",
     "salya_scale_amber",
-    "salya_scale_edge",
     "salya_skin_belly"
    ],
    "vertex_groups": 19,
@@ -1297,7 +1332,7 @@
    ],
    "bounds_blender_min": [
     -0.3149999976158142,
-    -0.5244507193565369,
+    -0.5385815501213074,
     3.725290298461914e-09
    ],
    "bounds_blender_max": [
@@ -1307,14 +1342,14 @@
    ],
    "height_m": 1.0741916857659817,
    "ground_z": 3.725290298461914e-09,
-   "front_y": -0.5244507193565369,
+   "front_y": -0.5385815501213074,
    "file": "source/salya.blend",
-   "bytes": 466530
+   "bytes": 505623
   }
  ],
  "roster": {
   "file": "source/bubblesort_squad_roster.blend",
-  "bytes": 2681667,
+  "bytes": 3020149,
   "slot_pitch_m": 1.1,
   "characters": [
    "gaja",

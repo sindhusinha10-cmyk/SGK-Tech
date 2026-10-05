@@ -107,10 +107,13 @@ def phases(clip, t, dur, P):
         p["sy"] = 1.0 + 0.016 * b * P["breath"]
         p["sxz"] = 1.0 - 0.008 * b * P["breath"]
         p["nod"] = -0.012 + 0.020 * math.sin(TAU * t / 4.0 + 0.9) * P["breath"]
-        p["gaze"] = 0.055 * math.sin(TAU * t / 2.0 + 0.4) * P["sway"]
+        # Subtle gaze micro-saccades (integer harmonics of 4.0s loop so t=0 equals t=4.0s seamlessly)
+        saccade = 0.010 * (math.sin(3.0 * TAU * t / 4.0) + 0.5 * math.sin(5.0 * TAU * t / 4.0))
+        p["gaze"] = 0.055 * math.sin(TAU * t / 2.0 + 0.4) * P["sway"] + saccade
         p["tilt"] = 0.014 * math.sin(TAU * t / 4.0 + 2.1) * P["sway"]
         p["chestgaze"] = p["gaze"] * 0.25
-        p["lid"] = blink(t, P["blink_ids"][0], 0.15) + blink(t, P["blink_ids"][1], 0.13)
+        # Dual natural blinks (asymmetric close vs open)
+        p["lid"] = blink(t, 1.10, 0.12) + blink(t, 2.50, 0.10)
         p["happy"] = 0.0
         p["pop"] = 0.10 + 0.05 * math.sin(TAU * t / 4.0 + 1.4)
 

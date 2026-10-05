@@ -3,7 +3,7 @@
   {
    "id": "gaja",
    "file": "gaja.glb",
-   "bytes": 610176,
+   "bytes": 754312,
    "checks": [
     {
      "name": "glTF 2.0 asset",
@@ -33,12 +33,12 @@
     {
      "name": "triangles under budget",
      "pass": true,
-     "detail": "11272 / 15000"
+     "detail": "14696 / 15000"
     },
     {
      "name": "single mesh, multiple materials",
      "pass": true,
-     "detail": "1 mesh(es), 10 prims"
+     "detail": "1 mesh(es), 14 prims"
     },
     {
      "name": "weights normalised",
@@ -53,17 +53,17 @@
     {
      "name": "origin on the ground",
      "pass": true,
-     "detail": "min y = 0.0000"
+     "detail": "min y = -0.0000"
     },
     {
      "name": "Y up (taller than deep)",
      "pass": true,
-     "detail": "h=1.285 d=0.997"
+     "detail": "h=1.310 d=1.048"
     },
     {
      "name": "front faces +Z (eyes on +Z)",
      "pass": true,
-     "detail": "front-most eye centroid z = 0.328"
+     "detail": "front-most eye centroid z = 0.339"
     },
     {
      "name": "all eight clips present",
@@ -73,17 +73,17 @@
     {
      "name": "keyframe budget",
      "pass": true,
-     "detail": "max 419 keys/clip"
+     "detail": "max 390 keys/clip"
     },
     {
      "name": "Hop lifts the body",
      "pass": true,
-     "detail": "t=0.24 apex y=1.479 vs rest 1.285"
+     "detail": "t=0.24 apex y=1.527 vs rest 1.310"
     },
     {
      "name": "Hop keeps the feet near the ground",
      "pass": true,
-     "detail": "t=0.24 min y=0.1279"
+     "detail": "t=0.24 min y=0.0855"
     },
     {
      "name": "skinning deforms the mesh",
@@ -93,7 +93,7 @@
     {
      "name": "badge bone exists at the chest",
      "pass": true,
-     "detail": "anchor = [0.0, 0.52, 0.374]"
+     "detail": "anchor = [0.0, 0.42, 0.366]"
     },
     {
      "name": "Idle loops seamlessly",
@@ -102,84 +102,84 @@
     }
    ],
    "warnings": [],
-   "triangles": 11272,
-   "vertices": 6444,
-   "primitives": 10,
-   "materials": 11,
+   "triangles": 14696,
+   "vertices": 8527,
+   "primitives": 14,
+   "materials": 16,
    "images": 2,
    "max_influences_used": 4,
    "bbox_min": [
-    -0.5494,
-    0.0,
-    -0.365
+    -0.553,
+    -0.0,
+    -0.4088
    ],
    "bbox_max": [
-    0.5494,
-    1.285,
-    0.6321
+    0.553,
+    1.31,
+    0.6392
    ],
-   "height": 1.285,
+   "height": 1.31,
    "clips": [
     {
      "name": "Idle",
      "duration": 4.0,
-     "channels": 22,
-     "keys": 254
+     "channels": 20,
+     "keys": 236
     },
     {
      "name": "GlanceL",
      "duration": 0.9,
-     "channels": 20,
-     "keys": 147
+     "channels": 18,
+     "keys": 139
     },
     {
      "name": "GlanceR",
      "duration": 0.9,
-     "channels": 20,
-     "keys": 147
+     "channels": 18,
+     "keys": 139
     },
     {
      "name": "Crouch",
      "duration": 0.5,
-     "channels": 19,
-     "keys": 119
+     "channels": 17,
+     "keys": 115
     },
     {
      "name": "Hop",
      "duration": 0.72,
-     "channels": 21,
-     "keys": 255
+     "channels": 19,
+     "keys": 266
     },
     {
      "name": "Land",
      "duration": 0.5,
-     "channels": 19,
-     "keys": 170
+     "channels": 17,
+     "keys": 179
     },
     {
      "name": "NoSwap",
      "duration": 0.95,
-     "channels": 18,
-     "keys": 157
+     "channels": 16,
+     "keys": 151
     },
     {
      "name": "Success",
      "duration": 1.25,
-     "channels": 24,
-     "keys": 419
+     "channels": 22,
+     "keys": 390
     }
    ],
    "badge_anchor": [
     0.0,
-    0.52,
-    0.3737
+    0.42,
+    0.3665
    ],
    "pass": true
   },
   {
    "id": "diya",
    "file": "diya.glb",
-   "bytes": 384648,
+   "bytes": 444052,
    "checks": [
     {
      "name": "glTF 2.0 asset",
@@ -209,12 +209,12 @@
     {
      "name": "triangles under budget",
      "pass": true,
-     "detail": "6244 / 15000"
+     "detail": "7480 / 15000"
     },
     {
      "name": "single mesh, multiple materials",
      "pass": true,
-     "detail": "1 mesh(es), 11 prims"
+     "detail": "1 mesh(es), 16 prims"
     },
     {
      "name": "weights normalised",
@@ -234,7 +234,7 @@
     {
      "name": "Y up (taller than deep)",
      "pass": true,
-     "detail": "h=1.097 d=0.696"
+     "detail": "h=0.990 d=0.696"
     },
     {
      "name": "front faces +Z (eyes on +Z)",
@@ -249,12 +249,12 @@
     {
      "name": "keyframe budget",
      "pass": true,
-     "detail": "max 363 keys/clip"
+     "detail": "max 356 keys/clip"
     },
     {
      "name": "Hop lifts the body",
      "pass": true,
-     "detail": "t=0.24 apex y=1.263 vs rest 1.097"
+     "detail": "t=0.24 apex y=1.147 vs rest 0.990"
     },
     {
      "name": "Hop keeps the feet near the ground",
@@ -278,10 +278,10 @@
     }
    ],
    "warnings": [],
-   "triangles": 6244,
-   "vertices": 3582,
-   "primitives": 11,
-   "materials": 12,
+   "triangles": 7480,
+   "vertices": 4386,
+   "primitives": 16,
+   "materials": 17,
    "images": 2,
    "max_influences_used": 4,
    "bbox_min": [
@@ -291,16 +291,16 @@
    ],
    "bbox_max": [
     0.361,
-    1.0969,
+    0.99,
     0.3765
    ],
-   "height": 1.0969,
+   "height": 0.99,
    "clips": [
     {
      "name": "Idle",
      "duration": 4.0,
      "channels": 17,
-     "keys": 363
+     "keys": 356
     },
     {
      "name": "GlanceL",
@@ -355,7 +355,7 @@
   {
    "id": "kumbha",
    "file": "kumbha.glb",
-   "bytes": 503824,
+   "bytes": 544044,
    "checks": [
     {
      "name": "glTF 2.0 asset",
@@ -385,12 +385,12 @@
     {
      "name": "triangles under budget",
      "pass": true,
-     "detail": "9036 / 15000"
+     "detail": "9804 / 15000"
     },
     {
      "name": "single mesh, multiple materials",
      "pass": true,
-     "detail": "1 mesh(es), 10 prims"
+     "detail": "1 mesh(es), 15 prims"
     },
     {
      "name": "weights normalised",
@@ -410,7 +410,7 @@
     {
      "name": "Y up (taller than deep)",
      "pass": true,
-     "detail": "h=1.082 d=0.734"
+     "detail": "h=1.070 d=0.734"
     },
     {
      "name": "front faces +Z (eyes on +Z)",
@@ -430,7 +430,7 @@
     {
      "name": "Hop lifts the body",
      "pass": true,
-     "detail": "t=0.24 apex y=1.258 vs rest 1.082"
+     "detail": "t=0.24 apex y=1.245 vs rest 1.070"
     },
     {
      "name": "Hop keeps the feet near the ground",
@@ -454,10 +454,10 @@
     }
    ],
    "warnings": [],
-   "triangles": 9036,
-   "vertices": 5146,
-   "primitives": 10,
-   "materials": 11,
+   "triangles": 9804,
+   "vertices": 5689,
+   "primitives": 15,
+   "materials": 16,
    "images": 2,
    "max_influences_used": 4,
    "bbox_min": [
@@ -467,16 +467,16 @@
    ],
    "bbox_max": [
     0.41,
-    1.0815,
+    1.07,
     0.379
    ],
-   "height": 1.0815,
+   "height": 1.07,
    "clips": [
     {
      "name": "Idle",
      "duration": 4.0,
      "channels": 17,
-     "keys": 189
+     "keys": 186
     },
     {
      "name": "GlanceL",
@@ -531,7 +531,7 @@
   {
    "id": "grantha",
    "file": "grantha.glb",
-   "bytes": 469808,
+   "bytes": 501588,
    "checks": [
     {
      "name": "glTF 2.0 asset",
@@ -561,12 +561,12 @@
     {
      "name": "triangles under budget",
      "pass": true,
-     "detail": "8312 / 15000"
+     "detail": "8936 / 15000"
     },
     {
      "name": "single mesh, multiple materials",
      "pass": true,
-     "detail": "1 mesh(es), 13 prims"
+     "detail": "1 mesh(es), 17 prims"
     },
     {
      "name": "weights normalised",
@@ -586,7 +586,7 @@
     {
      "name": "Y up (taller than deep)",
      "pass": true,
-     "detail": "h=1.170 d=0.368"
+     "detail": "h=1.218 d=0.368"
     },
     {
      "name": "front faces +Z (eyes on +Z)",
@@ -606,7 +606,7 @@
     {
      "name": "Hop lifts the body",
      "pass": true,
-     "detail": "t=0.24 apex y=1.365 vs rest 1.170"
+     "detail": "t=0.24 apex y=1.415 vs rest 1.218"
     },
     {
      "name": "Hop keeps the feet near the ground",
@@ -630,10 +630,10 @@
     }
    ],
    "warnings": [],
-   "triangles": 8312,
-   "vertices": 4806,
-   "primitives": 13,
-   "materials": 14,
+   "triangles": 8936,
+   "vertices": 5230,
+   "primitives": 17,
+   "materials": 18,
    "images": 2,
    "max_influences_used": 4,
    "bbox_min": [
@@ -643,16 +643,16 @@
    ],
    "bbox_max": [
     0.2744,
-    1.1701,
+    1.2175,
     0.198
    ],
-   "height": 1.1701,
+   "height": 1.2175,
    "clips": [
     {
      "name": "Idle",
      "duration": 4.0,
      "channels": 17,
-     "keys": 185
+     "keys": 184
     },
     {
      "name": "GlanceL",
@@ -707,7 +707,7 @@
   {
    "id": "dhanesh",
    "file": "dhanesh.glb",
-   "bytes": 554424,
+   "bytes": 680232,
    "checks": [
     {
      "name": "glTF 2.0 asset",
@@ -737,12 +737,12 @@
     {
      "name": "triangles under budget",
      "pass": true,
-     "detail": "10728 / 15000"
+     "detail": "13512 / 15000"
     },
     {
      "name": "single mesh, multiple materials",
      "pass": true,
-     "detail": "1 mesh(es), 10 prims"
+     "detail": "1 mesh(es), 14 prims"
     },
     {
      "name": "weights normalised",
@@ -762,7 +762,7 @@
     {
      "name": "Y up (taller than deep)",
      "pass": true,
-     "detail": "h=1.265 d=1.053"
+     "detail": "h=1.245 d=1.087"
     },
     {
      "name": "front faces +Z (eyes on +Z)",
@@ -782,7 +782,7 @@
     {
      "name": "Hop lifts the body",
      "pass": true,
-     "detail": "t=0.24 apex y=1.487 vs rest 1.265"
+     "detail": "t=0.24 apex y=1.474 vs rest 1.245"
     },
     {
      "name": "Hop keeps the feet near the ground",
@@ -806,10 +806,10 @@
     }
    ],
    "warnings": [],
-   "triangles": 10728,
-   "vertices": 6050,
-   "primitives": 10,
-   "materials": 12,
+   "triangles": 13512,
+   "vertices": 7781,
+   "primitives": 14,
+   "materials": 17,
    "images": 1,
    "max_influences_used": 4,
    "bbox_min": [
@@ -819,16 +819,16 @@
    ],
    "bbox_max": [
     0.3559,
-    1.2653,
-    0.7049
+    1.245,
+    0.7384
    ],
-   "height": 1.2653,
+   "height": 1.245,
    "clips": [
     {
      "name": "Idle",
      "duration": 4.0,
      "channels": 17,
-     "keys": 195
+     "keys": 189
     },
     {
      "name": "GlanceL",
@@ -883,7 +883,7 @@
   {
    "id": "salya",
    "file": "salya.glb",
-   "bytes": 556460,
+   "bytes": 636416,
    "checks": [
     {
      "name": "glTF 2.0 asset",
@@ -913,12 +913,12 @@
     {
      "name": "triangles under budget",
      "pass": true,
-     "detail": "10528 / 15000"
+     "detail": "12080 / 15000"
     },
     {
      "name": "single mesh, multiple materials",
      "pass": true,
-     "detail": "1 mesh(es), 11 prims"
+     "detail": "1 mesh(es), 14 prims"
     },
     {
      "name": "weights normalised",
@@ -938,7 +938,7 @@
     {
      "name": "Y up (taller than deep)",
      "pass": true,
-     "detail": "h=1.074 d=1.051"
+     "detail": "h=1.074 d=1.065"
     },
     {
      "name": "front faces +Z (eyes on +Z)",
@@ -982,10 +982,10 @@
     }
    ],
    "warnings": [],
-   "triangles": 10528,
-   "vertices": 6102,
-   "primitives": 11,
-   "materials": 12,
+   "triangles": 12080,
+   "vertices": 7245,
+   "primitives": 14,
+   "materials": 16,
    "images": 1,
    "max_influences_used": 4,
    "bbox_min": [
@@ -996,7 +996,7 @@
    "bbox_max": [
     0.315,
     1.0742,
-    0.5245
+    0.5386
    ],
    "height": 1.0742,
    "clips": [
@@ -1004,7 +1004,7 @@
      "name": "Idle",
      "duration": 4.0,
      "channels": 18,
-     "keys": 188
+     "keys": 185
     },
     {
      "name": "GlanceL",
@@ -1059,7 +1059,7 @@
   {
    "id": "mayur",
    "file": "mayur.glb",
-   "bytes": 729284,
+   "bytes": 743488,
    "checks": [
     {
      "name": "glTF 2.0 asset",
@@ -1089,12 +1089,12 @@
     {
      "name": "triangles under budget",
      "pass": true,
-     "detail": "14664 / 15000"
+     "detail": "14512 / 15000"
     },
     {
      "name": "single mesh, multiple materials",
      "pass": true,
-     "detail": "1 mesh(es), 10 prims"
+     "detail": "1 mesh(es), 15 prims"
     },
     {
      "name": "weights normalised",
@@ -1114,12 +1114,12 @@
     {
      "name": "Y up (taller than deep)",
      "pass": true,
-     "detail": "h=1.232 d=0.599"
+     "detail": "h=1.298 d=0.599"
     },
     {
      "name": "front faces +Z (eyes on +Z)",
      "pass": true,
-     "detail": "front-most eye centroid z = 0.238"
+     "detail": "front-most eye centroid z = 0.236"
     },
     {
      "name": "all eight clips present",
@@ -1134,7 +1134,7 @@
     {
      "name": "Hop lifts the body",
      "pass": true,
-     "detail": "t=0.24 apex y=1.372 vs rest 1.232"
+     "detail": "t=0.24 apex y=1.377 vs rest 1.298"
     },
     {
      "name": "Hop keeps the feet near the ground",
@@ -1158,29 +1158,29 @@
     }
    ],
    "warnings": [],
-   "triangles": 14664,
-   "vertices": 8504,
-   "primitives": 10,
-   "materials": 11,
-   "images": 1,
+   "triangles": 14512,
+   "vertices": 8542,
+   "primitives": 15,
+   "materials": 16,
+   "images": 2,
    "max_influences_used": 4,
    "bbox_min": [
-    -0.775,
+    -0.8393,
     0.0,
     -0.26
    ],
    "bbox_max": [
-    0.775,
-    1.2317,
+    0.8393,
+    1.2981,
     0.3393
    ],
-   "height": 1.2317,
+   "height": 1.2981,
    "clips": [
     {
      "name": "Idle",
      "duration": 4.0,
      "channels": 18,
-     "keys": 191
+     "keys": 185
     },
     {
      "name": "GlanceL",
@@ -1228,14 +1228,14 @@
    "badge_anchor": [
     0.0,
     0.38,
-    0.2722
+    0.2719
    ],
    "pass": true
   },
   {
    "id": "patra",
    "file": "patra.glb",
-   "bytes": 483720,
+   "bytes": 526580,
    "checks": [
     {
      "name": "glTF 2.0 asset",
@@ -1265,12 +1265,12 @@
     {
      "name": "triangles under budget",
      "pass": true,
-     "detail": "8996 / 15000"
+     "detail": "9892 / 15000"
     },
     {
      "name": "single mesh, multiple materials",
      "pass": true,
-     "detail": "1 mesh(es), 11 prims"
+     "detail": "1 mesh(es), 15 prims"
     },
     {
      "name": "weights normalised",
@@ -1334,10 +1334,10 @@
     }
    ],
    "warnings": [],
-   "triangles": 8996,
-   "vertices": 5086,
-   "primitives": 11,
-   "materials": 12,
+   "triangles": 9892,
+   "vertices": 5660,
+   "primitives": 15,
+   "materials": 16,
    "images": 2,
    "max_influences_used": 4,
    "bbox_min": [
@@ -1356,7 +1356,7 @@
      "name": "Idle",
      "duration": 4.0,
      "channels": 16,
-     "keys": 166
+     "keys": 165
     },
     {
      "name": "GlanceL",
@@ -1412,9 +1412,9 @@
  "summary": {
   "models": 8,
   "passed": 8,
-  "total_triangles": 79780,
-  "max_triangles": 14664,
-  "total_bytes": 4292344,
+  "total_triangles": 90912,
+  "max_triangles": 14696,
+  "total_bytes": 4830712,
   "clips_per_model": [
    8,
    8,
