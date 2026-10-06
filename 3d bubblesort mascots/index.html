@@ -42,6 +42,10 @@
   #err{position:fixed;inset:auto 20px 20px 20px;padding:14px 18px;z-index:9;display:none;
     background:#3a1620;border:1px solid #7d2b3c;border-radius:12px;font-size:13px}
   @media (max-width:720px){ #legend{display:none} #values{top:auto;bottom:78px;left:20px} }
+
+  .vtab{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#F2EEE6;padding:6px 14px;border-radius:20px;cursor:pointer;font-size:13px;transition:all .15s ease;}
+  .vtab:hover{background:rgba(255,255,255,0.15);}
+  .vtab.on{background:#6FD9BE;color:#0B0D12;border-color:#6FD9BE;font-weight:600;}
 </style>
 </head>
 <body>
@@ -69,11 +73,43 @@
   <button id="btnShuffle">Shuffle</button>
   <button id="btnSquad" style="background:rgba(111,217,190,.15);border-color:#6FD9BE;color:#6FD9BE">Squad: 8 Mascots</button>
   <button id="btnSpeed">Speed ×1</button>
-  <button id="btnSpin">Auto-orbit</button>
+    <button id="btnViews" style="background:rgba(255,180,50,0.15);border-color:#FFB432;color:#FFB432">📷 Turnaround Views</button>
+<button id="btnSpin">Auto-orbit</button>
 </div>
 
 <div class="hud" id="status">ready — <b>drag</b> to orbit, <b>scroll</b> to zoom</div>
 <div id="err"></div>
+
+
+<!-- Turnaround Views Modal -->
+<div id="viewsModal" style="display:none;position:fixed;inset:0;z-index:999;background:rgba(8,10,14,0.92);backdrop-filter:blur(12px);flex-direction:column;align-items:center;padding:24px;overflow-y:auto;box-sizing:border-box;">
+  <div style="width:100%;max-width:1100px;display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+    <div>
+      <h2 style="margin:0;font-size:20px;color:#F2EEE6;letter-spacing:0.3px;">Mascot Multi-View Turnaround Sheets (Blender / Cycles)</h2>
+      <p style="margin:4px 0 0;font-size:13px;color:#8C8798;">Real orthographic Front, Side, and Back renders directly from native 3D assets</p>
+    </div>
+    <button id="btnCloseModal" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:8px;padding:8px 16px;cursor:pointer;font-weight:600;">✕ Close</button>
+  </div>
+
+  <!-- Character Tab Selector -->
+  <div id="viewTabs" style="display:flex;gap:8px;flex-wrap:wrap;max-width:1100px;width:100%;margin-bottom:18px;">
+    <button class="vtab on" data-img="shots/blender_views_gaja.png" data-name="Gaja (Elephant)">Gaja</button>
+    <button class="vtab" data-img="shots/blender_views_diya.png" data-name="Diya (Earthen Lamp)">Diya</button>
+    <button class="vtab" data-img="shots/blender_views_kumbha.png" data-name="Kumbha (Brass Kalash)">Kumbha</button>
+    <button class="vtab" data-img="shots/blender_views_grantha.png" data-name="Grantha (Palm-Leaf Manuscript)">Grantha</button>
+    <button class="vtab" data-img="shots/blender_views_dhanesh.png" data-name="Dhanesh (Hornbill)">Dhanesh</button>
+    <button class="vtab" data-img="shots/blender_views_salya.png" data-name="Salya (Pangolin)">Salya</button>
+    <button class="vtab" data-img="shots/blender_views_mayur.png" data-name="Mayur (Peacock)">Mayur</button>
+    <button class="vtab" data-img="shots/roster_sheet.png" data-name="Full Studio Roster">Studio Roster</button>
+    <button class="vtab" data-img="shots/silhouettes.png" data-name="Solid-Black Silhouettes">Silhouettes</button>
+  </div>
+
+  <!-- Active Sheet Image Container -->
+  <div style="width:100%;max-width:1100px;background:#101218;border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:12px;display:flex;flex-direction:column;align-items:center;box-shadow:0 12px 36px rgba(0,0,0,0.6);">
+    <div id="modalTitle" style="align-self:flex-start;font-size:14px;font-weight:600;color:#6FD9BE;margin-bottom:8px;">Gaja (Elephant) — Front / Side / Back Orthographic Views</div>
+    <img id="modalImg" src="shots/blender_views_gaja.png" style="width:100%;height:auto;border-radius:8px;display:block;" alt="Mascot Views" />
+  </div>
+</div>
 
 <script src="vendor/three.min.js"></script>
 <script src="vendor/GLTFLoader.js"></script>
@@ -728,6 +764,36 @@
       '3d bubblesort mascots" &amp;&amp; python3 -m http.server 8080</code><br>' +
       'then open <code>http://localhost:8080/</code><br><br><small>' + err + '</small>';
   });
+
+  /* -------------------------------------------------------------- Modal & Turnaround Views */
+  var viewsModal = document.getElementById('viewsModal');
+  var modalImg = document.getElementById('modalImg');
+  var modalTitle = document.getElementById('modalTitle');
+  var btnViews = document.getElementById('btnViews');
+  var btnCloseModal = document.getElementById('btnCloseModal');
+  var tabs = document.querySelectorAll('.vtab');
+
+  if (btnViews && viewsModal) {
+    btnViews.addEventListener('click', function() {
+      viewsModal.style.display = 'flex';
+    });
+  }
+
+  if (btnCloseModal && viewsModal) {
+    btnCloseModal.addEventListener('click', function() {
+      viewsModal.style.display = 'none';
+    });
+  }
+
+  tabs.forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      tabs.forEach(function(t) { t.classList.remove('on'); });
+      tab.classList.add('on');
+      modalImg.src = tab.getAttribute('data-img');
+      modalTitle.textContent = tab.getAttribute('data-name') + ' — High-Resolution Render Sheet';
+    });
+  });
+
 })();
 </script>
 </body>
