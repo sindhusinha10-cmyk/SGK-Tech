@@ -477,13 +477,26 @@
     S.t += dt * S.speed;
 
     if (st.kind === 'swap') {
-      var u = Math.min(Math.max((S.t - 0.10) / 0.55, 0), 1);
-      var e = 1 - Math.pow(1 - u, 3);            // easeOutCubic, matches the sheet render
+      var u = Math.min(Math.max((S.t - 0.08) / 0.58, 0), 1);
+      // Smooth quintic ease in-out curve
+      var e = u < 0.5 ? 16 * u * u * u * u * u : 1 - Math.pow(-2 * u + 2, 5) / 2;
       S.slotX[st.i] = st.fromA + (st.fromB - st.fromA) * e;
       S.slotX[st.j] = st.fromB + (st.fromA - st.fromB) * e;
+
+      // Parabolic vertical jump arc & depth bypass offset (Zero clipping!)
+      var arcSin = Math.sin(u * Math.PI);
+      S.slotY = S.slotY || {};
+      S.slotZ = S.slotZ || {};
+      S.slotY[st.i] = arcSin * 0.42;
+      S.slotY[st.j] = arcSin * 0.42;
+      S.slotZ[st.i] = arcSin * 0.32;  // Left character leaps forward in Z
+      S.slotZ[st.j] = -arcSin * 0.32; // Right character leaps backward in Z
+
       // hand the array order over at touchdown, then play Land
       if (u >= 1 && !st.done) {
         st.done = true;
+        S.slotY[st.i] = 0; S.slotY[st.j] = 0;
+        S.slotZ[st.i] = 0; S.slotZ[st.j] = 0;
         var tmp = order[st.i]; order[st.i] = order[st.j]; order[st.j] = tmp;
         S.slotX[st.i] = st.fromB; S.slotX[st.j] = st.fromA;
         var idA = idAtSlot(st.i), idB = idAtSlot(st.j);
@@ -608,7 +621,15 @@
     order = vals.map(function (v, i) { return { value: v, id: IDS[i] }; });
     S.steps = makeSteps(vals);
     S.step = 0; S.t = 0; S.playing = false;
-    var mid = (vals.length - 1) / 2; S.slotX = vals.map(function (_, i) { return (i - mid) * SPACING; });
+    var mid = (vals.length - 1) / 2;
+    S.slotX = vals.map(function (_, i) { return (i - mid) * SPACING; });
+    S.slotY = {}; S.slotZ = {};
+    IDS.forEach(function(id) {
+      if (chars[id]) {
+        chars[id].root.position.set(0, 0, 0);
+        chars[id].root.rotation.set(0, 0, 0);
+      }
+    });
     chipEls.forEach(function (c) { c.classList.remove('on', 'done'); });
     buildChips(vals);
     setStatus('ready — <b>' + vals.join(' · ') + '</b> — press Run');
@@ -634,13 +655,29 @@
       for (var i = 0; i < order.length; i++) if (order[i].id === id) slotIdx = i;
       if (slotIdx < 0) return;
       c.root.position.x = S.slotX[slotIdx];
-      c.root.position.y = 0;
+      var yOff = (S.slotY && S.slotY[slotIdx]) || 0;
+      var zOff = (S.slotZ && S.slotZ[slotIdx]) || 0;
+      c.root.position.y = yOff;
+      c.root.position.z = zOff;
       c.mixer.update(dt * (S.playing ? S.speed : 1));
     });
 
     if (autoSpin) CAM.yaw += dt * 0.14;
 
     updateParticles(dt);
+    // Subtle tilt toward jump trajectory when in air
+    IDS.forEach(function (id) {
+      var c = chars[id];
+      if (!c) return;
+      var slotIdx = -1;
+      for (var i = 0; i < order.length; i++) if (order[i].id === id) slotIdx = i;
+      if (slotIdx >= 0 && S.slotY && S.slotY[slotIdx] > 0.02) {
+        var zOff = S.slotZ ? S.slotZ[slotIdx] : 0;
+        c.root.rotation.x = -zOff * 0.65;
+      } else if (c.root.rotation.x !== 0) {
+        c.root.rotation.x *= 0.85;
+      }
+    });
 
     // camera shake decay
     var shakeOffsetY = 0;
