@@ -389,7 +389,7 @@
   var loadedCount = 0;
   function load(id) {
     return new Promise(function (res, rej) {
-      loader.load('models/' + id + '.glb', function (g) {
+      loader.load('models/' + id + '.glb?v=v2_target_' + 1791406174, function (g) {
         var root = g.scene;
         root.traverse(function (o) {
           if (o.isMesh) {
