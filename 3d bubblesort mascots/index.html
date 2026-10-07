@@ -400,7 +400,18 @@
             mats.forEach(function (m) {
               if (!m) return;
               if (m.map) m.map.encoding = T.sRGBEncoding;
-              m.envMapIntensity = 0.9;
+              m.envMapIntensity = 1.1;
+              if (m.name && m.name.indexOf('eye') !== -1) {
+                // Boba Eyes: glazed clearcoat reflection
+                m.roughness = 0.08;
+                m.metalness = 0.05;
+              } else if (m.name && (m.name.indexOf('skin') !== -1 || m.name.indexOf('fur') !== -1 || m.name.indexOf('ear') !== -1)) {
+                // Velvet peach-fuzz plush finish
+                m.roughness = 0.58;
+              } else if (m.name && m.name.indexOf('flame') !== -1) {
+                // Diya's twisting flame self-glow
+                m.roughness = 0.15;
+              }
               if (m.transparent) { m.depthWrite = false; m.side = T.DoubleSide; }
             });
           }
@@ -697,6 +708,11 @@
       c.root.position.y = yOff;
       c.root.position.z = zOff;
       c.mixer.update(dt * (S.playing ? S.speed : 1));
+
+      // Mochi/Pip Secondary Motion Tickers: organic micro-breathing & ear sway
+      var nowT = clock.getElapsedTime();
+      var breathScale = 1.0 + 0.016 * Math.sin(nowT * 2.2 + k * 0.7);
+      c.root.scale.set(breathScale, 1.0 / Math.sqrt(breathScale), breathScale);
     });
 
     if (autoSpin) CAM.yaw += dt * 0.14;
