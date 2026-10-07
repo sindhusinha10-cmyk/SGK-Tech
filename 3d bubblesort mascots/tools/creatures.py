@@ -320,26 +320,33 @@ class Char(object):
 # ============================================================== 1 · GAJA ======
 def build_gaja():
     """
-    GAJA — Chubby cheerful biped baby elephant mascot (Audited by AI MAX & AI B).
-    Architecture & Fixes:
-    - Replaced stacked primitive squircles with a continuous pear-shaped toddler bean loft with gravity sag.
-    - Mochi's 3-tier cupped ears: outer shell (narrow base -> full mid -> rounded dome tip),
-      inner pink cup extruded and proud at center line (+0.006m) while tucking under fur at edges.
-    - Expressive J-curved trumpet trunk with 6 edge loops and prehensile lip tip.
-    - Columnar toddler biped legs with 3 rounded toenail pads per foot.
-    - Boba eyes with pupil parallax depth, dual specular glints (primary + secondary) & plush blush.
+    GAJA — The "Jumbo Mochi Baby" Heavyweight Anchor Mascot.
+    Faithful recreation of reference image-1.png (3D turnaround render):
+    - Color Palette: Soft pastel periwinkle-slate blue skin (#8FA6CE), warm peach pink blush (#FF9AA2) & inner ear (#F4B6CD),
+      creamy milk ivory tusks & toenails (#FFF9E6), gold badge bezel (#E3B768) with cream badge face (#FFF6E5).
+    - Proportions: Dominant oversized spherical mochi head (0.42m radius), squishy pot-belly pear body with low center of gravity.
+    - Face: Giant glossy boba eyes (0.088m) with dual circular specular highlights, wide pill blush pads,
+      curling upturned trunk with horizontal flesh folds, and two tiny rounded ivory tusklets flanking trunk.
+    - Ears: Large cupped plush elephant ears with thick rounded rims and soft pink inner cups.
+    - Limbs: Thick cylindrical tree-stump legs with rounded bottom pads and 3 cream toenail caps;
+      chubby tapered arms with rounded mitten paws resting symmetrically at body sides.
+    - Tail: Tiny curled spiral piglet-style tail with soft tuft at rear.
+    - Badge: Horizontal pill/rounded rectangle badge centered on the lower belly.
     """
     M = dict(shared_mats())
     M.update({
-        "skin": dict(color=srgb("#8B8589"), roughness=0.65, metallic=0.0, texture="ceramic"),
-        "skin_light": dict(color=srgb("#A8A0A6"), roughness=0.60, metallic=0.0),
-        "ear_inner": dict(color=srgb("#D4A0A0"), roughness=0.55, metallic=0.0,
-                          emissive=tuple(c * 0.15 for c in srgb("#3D1515"))),
-        "tusk": dict(color=srgb("#FFFDF2"), roughness=0.25, metallic=0.0),
-        "mouth_dark": dict(color=srgb("#5A2020"), roughness=0.45, metallic=0.0),
-        "lid": dict(color=srgb("#7A7478"), roughness=0.60, metallic=0.0),
-        "eye_iris": dict(color=srgb("#4A3020"), roughness=0.25, metallic=0.0),
-        "trunk_tip": dict(color=srgb("#7A7075"), roughness=0.45, metallic=0.0),
+        "skin": dict(color=srgb("#8FA6CE"), roughness=0.55, metallic=0.0, texture="ceramic"),
+        "skin_light": dict(color=srgb("#A4B9DC"), roughness=0.52, metallic=0.0),
+        "ear_inner": dict(color=srgb("#F4B6CD"), roughness=0.58, metallic=0.0,
+                          emissive=tuple(c * 0.10 for c in srgb("#5A1D2D"))),
+        "tusk": dict(color=srgb("#FFF9E6"), roughness=0.30, metallic=0.0),
+        "mouth_dark": dict(color=srgb("#4A1822"), roughness=0.45, metallic=0.0),
+        "lid": dict(color=srgb("#7B93BD"), roughness=0.55, metallic=0.0),
+        "eye_iris": dict(color=srgb("#1B2230"), roughness=0.10, metallic=0.0),
+        "trunk_tip": dict(color=srgb("#7F98C4"), roughness=0.48, metallic=0.0),
+        "blush": dict(color=srgb("#FF9AA2"), roughness=0.65, metallic=0.0),
+        "badge_plate": dict(color=srgb("#FFF6E5"), roughness=0.35, metallic=0.0),
+        "badge_rim": dict(color=srgb("#E3B768"), roughness=0.25, metallic=0.80),
     })
     parts = []
     shell = []
@@ -350,168 +357,203 @@ def build_gaja():
             shell.append(p)
         return p
 
-    # Chunky columnar biped legs with rounded toddler feet & 3 toenail pads
+    # 1. Columnar Tree-Stump Bipedal Legs & 3 Toenail Caps
     def biped_leg(sgn):
-        foot = superellipsoid(0.130, 0.065, 0.150, e1=0.38, e2=0.38, seg=20, rings=10,
+        # Broad rounded foot pad
+        foot = superellipsoid(0.135, 0.055, 0.155, e1=0.35, e2=0.35, seg=16, rings=8,
                               name="foot", mat="skin")
-        foot.move(sgn * 0.190, 0.065, 0.02)
+        foot.move(sgn * 0.205, 0.050, 0.020)
         foot.tag("legL" if sgn < 0 else "legR")
 
-        leg_col = capsule(0.100, 0.210, seg=18, rings=8, name="leg_col", mat="skin")
-        leg_col.move(sgn * 0.190, 0.205, 0.0)
+        # Straight columnar leg column
+        leg_col = capsule(0.115, 0.180, seg=16, rings=6, name="leg_col", mat="skin")
+        leg_col.move(sgn * 0.205, 0.170, 0.005)
         leg_col.tag("legL" if sgn < 0 else "legR")
 
-        # 3 rounded toenail pads
+        # Soft ankle crease roll
+        ankle_roll = torus(0.112, 0.030, seg_major=16, seg_minor=6, name="ankle_roll", mat="skin_light")
+        ankle_roll.move(sgn * 0.205, 0.075, 0.015)
+        ankle_roll.tag("legL" if sgn < 0 else "legR")
+
+        # 3 rounded cream-ivory toenail caps
         toes = []
         for ti, tang in enumerate((-0.26, 0.0, 0.26)):
-            toe = sphere(0.026, 0.024, 0.028, seg=12, rings=6, name=f"toe_{ti}", mat="tusk")
-            toe.move(sgn * (0.190 + tang * 0.075), 0.026, 0.155)
+            toe = superellipsoid(0.026, 0.022, 0.030, e1=0.38, e2=0.38, seg=12, rings=6,
+                                 name=f"toe_{ti}", mat="tusk")
+            toe.move(sgn * (0.205 + tang * 0.075), 0.024, 0.165)
             toe.tag("legL" if sgn < 0 else "legR")
             toes.append(toe)
-        return [foot, leg_col] + toes
+        return [foot, leg_col, ankle_roll] + toes
 
     parts.extend(mirrored(biped_leg))
 
-    # Single continuous pear-shaped toddler bean loft with gravity sag (No meatball stacking!)
+    # 2. Pear-Shaped Pot-Belly Torso (Low center of gravity, sagging chubby belly)
     belly_profile = [
-        (0.180, 0.200),
-        (0.290, 0.310),
-        (0.365, 0.440),
-        (0.375, 0.580),
-        (0.325, 0.720),
-        (0.240, 0.820),
-        (0.190, 0.880)
+        (0.190, 0.140),
+        (0.310, 0.220),
+        (0.400, 0.340),
+        (0.425, 0.470),  # Max pot belly girth
+        (0.395, 0.600),
+        (0.330, 0.720),
+        (0.250, 0.810),
+        (0.195, 0.860)
     ]
-    belly = lathe(belly_profile, seg=36, name="bean_body", mat="skin")
+    belly = lathe(belly_profile, seg=28, name="bean_body", mat="skin")
     belly.tag("hips", "spine", "chest", "base")
     add(belly)
 
-    # Large expressive domed head flowing smoothly from neck
-    head = sphere(0.340, 0.330, 0.335, seg=32, rings=22, name="head", mat="skin")
-    head.move(0.0, 0.980, 0.035)
+    # Soft neck fold connecting head to torso
+    neck_fold = torus(0.260, 0.045, seg_major=18, seg_minor=6, name="neck_fold", mat="skin_light")
+    neck_fold.move(0.0, 0.850, 0.025)
+    neck_fold.tag("chest", "neck")
+    add(neck_fold)
+
+    # 3. Giant Spherical Mochi Head (Dominant 1.2 : 1 chibi silhouette)
+    head = sphere(0.385, 0.355, 0.365, seg=28, rings=18, name="head", mat="skin")
+    head.move(0.0, 1.020, 0.035)
     head.tag("head", "neck")
     add(head)
 
-    # Mochi's 3-Tier Cupped Ears (tapered base -> full mid -> rounded dome, hollow pink inner cup)
-    def mochi_cupped_ear(sgn):
-        ear_group = []
-        # Outer ear shell: 3 blended volumes forming an organic shield with thickness
-        outer_base = superellipsoid(0.042, 0.130, 0.140, e1=0.48, e2=0.48, seg=16, rings=8,
+    # Chubby dumpling cheek pads flanking the lower face
+    def cheek_pad(sgn):
+        c = superellipsoid(0.155, 0.135, 0.145, e1=0.45, e2=0.45, seg=16, rings=8,
+                           name="cheek_pad", mat="skin_light")
+        c.move(sgn * 0.245, 0.940, 0.170)
+        c.tag("head")
+        return c
+
+    parts.extend(mirrored(cheek_pad))
+
+    # 4. Large Cupped Plush Velvet Ears with Inner Pink Cup
+    def mochi_ear(sgn):
+        outer_base = superellipsoid(0.046, 0.155, 0.165, e1=0.45, e2=0.45, seg=16, rings=8,
                                     name="ear_base", mat="skin")
-        outer_base.rotate(rz=sgn * 0.10, ry=sgn * 0.45)
-        outer_base.move(sgn * 0.360, 1.050, -0.060)
+        outer_base.rotate(rx=math.radians(8), ry=sgn * 0.36, rz=sgn * 0.15)
+        outer_base.move(sgn * 0.395, 1.070, -0.045)
         outer_base.tag("earL" if sgn < 0 else "earR")
 
-        outer_mid = superellipsoid(0.046, 0.220, 0.230, e1=0.50, e2=0.50, seg=20, rings=10,
+        outer_mid = superellipsoid(0.045, 0.235, 0.245, e1=0.48, e2=0.48, seg=18, rings=8,
                                    name="ear_mid", mat="skin")
-        outer_mid.rotate(rz=sgn * 0.08, ry=sgn * 0.48)
-        outer_mid.move(sgn * 0.420, 0.980, -0.055)
+        outer_mid.rotate(rx=math.radians(12), ry=sgn * 0.40, rz=sgn * 0.12)
+        outer_mid.move(sgn * 0.465, 0.990, -0.040)
         outer_mid.tag("earL" if sgn < 0 else "earR")
 
-        outer_dome = superellipsoid(0.038, 0.140, 0.150, e1=0.52, e2=0.52, seg=16, rings=8,
-                                    name="ear_dome", mat="skin")
-        outer_dome.rotate(rz=sgn * 0.06, ry=sgn * 0.50)
-        outer_dome.move(sgn * 0.440, 0.880, -0.050)
-        outer_dome.tag("earL" if sgn < 0 else "earR")
-
-        # Inner cup: hollowed and proud by +0.006m at center ridge, sinking under outer rim
-        inner_cup = superellipsoid(0.022, 0.190, 0.200, e1=0.50, e2=0.50, seg=18, rings=10,
+        inner_cup = superellipsoid(0.022, 0.205, 0.215, e1=0.48, e2=0.48, seg=16, rings=8,
                                    name="ear_inner_cup", mat="ear_inner")
-        inner_cup.rotate(rz=sgn * 0.08, ry=sgn * 0.48)
-        inner_cup.move(sgn * 0.426, 0.980, -0.040)
+        inner_cup.rotate(rx=math.radians(12), ry=sgn * 0.40, rz=sgn * 0.12)
+        inner_cup.move(sgn * 0.472, 0.990, -0.025)
         inner_cup.tag("earL" if sgn < 0 else "earR")
 
-        return [outer_base, outer_mid, outer_dome, inner_cup]
+        return [outer_base, outer_mid, inner_cup]
 
-    parts.extend(mirrored(mochi_cupped_ear))
+    parts.extend(mirrored(mochi_ear))
 
-    # Expressive J-Curved Trunk with prehensile tip
+    # 5. Upturned S-Curling Trunk with Fleshy Wrinkle Folds
     trunk_pts = [
-        (0.0, 0.920, 0.290),
-        (0.0, 0.830, 0.380),
-        (0.0, 0.800, 0.500),
-        (0.0, 0.930, 0.590),
-        (0.0, 1.080, 0.600),
-        (0.0, 1.150, 0.550),
+        (0.0, 0.970, 0.300),  # Root between cheeks
+        (0.0, 0.880, 0.410),  # Forward dip
+        (0.0, 0.840, 0.510),  # Forward basin
+        (0.0, 0.940, 0.600),  # Upturn
+        (0.0, 1.100, 0.630),  # S-curl peak
+        (0.0, 1.170, 0.580),  # Upturned tip
     ]
-    trunk = tube(trunk_pts, 0.088, radial=18, name="trunk", mat="skin",
-                 taper=[1.0, 0.86, 0.72, 0.58, 0.46, 0.38])
+    trunk = tube(trunk_pts, 0.090, radial=16, name="trunk", mat="skin",
+                 taper=[1.0, 0.88, 0.75, 0.62, 0.50, 0.42])
     trunk.tag("trunk.01", "trunk.02", "trunk.03", "head")
     add(trunk)
 
-    # Prehensile trunk tip lip
-    trunk_lip = sphere(0.036, 0.024, 0.032, seg=12, rings=6, name="trunk_tip_lip", mat="trunk_tip")
-    trunk_lip.move(0.0, 1.155, 0.540)
+    # 4 Horizontal flesh wrinkle rolls on trunk
+    for wi, wz in enumerate((0.35, 0.42, 0.49, 0.55)):
+        wy = 0.950 - wi * 0.025
+        w_rad = 0.082 - wi * 0.008
+        w_ring = torus(w_rad, 0.011, seg_major=12, seg_minor=5, name=f"trunk_wrinkle_{wi}", mat="skin_light")
+        w_ring.move(0.0, wy, wz)
+        w_ring.tag("trunk.01" if wi < 2 else "trunk.02")
+        parts.append(w_ring)
+
+    # Snout tip lip
+    trunk_lip = sphere(0.038, 0.025, 0.032, seg=12, rings=6, name="trunk_tip_lip", mat="trunk_tip")
+    trunk_lip.move(0.0, 1.175, 0.570)
     trunk_lip.tag("trunk.03", "head")
     parts.append(trunk_lip)
 
-    # Friendly open smile beneath trunk
-    mouth = superellipsoid(0.056, 0.038, 0.040, e1=0.45, e2=0.45, seg=14, rings=8,
-                           name="mouth", mat="mouth_dark")
-    mouth.move(0.0, 0.825, 0.305)
-    mouth.tag("head")
-    parts.append(mouth)
-
-    # Curved joyful ivory tusks
-    def tusk(sgn):
-        t = arc_tube((0.0, 0.865, 0.300), 0.080, 0.2, 1.45, 0.026, steps=10, plane="YZ",
-                     radial=8, name="tusk", mat="tusk")
-        t.move(sgn * 0.130, 0.0, 0.0)
-        t.rotate(ry=sgn * 0.35, rx=0.15)
+    # 6. Tiny Ivory Tusklets nestled beside trunk
+    def tusklet(sgn):
+        t = superellipsoid(0.022, 0.050, 0.022, e1=0.35, e2=0.35, seg=12, rings=6,
+                           name="tusklet", mat="tusk")
+        t.move(sgn * 0.155, 0.880, 0.310)
+        t.rotate(rx=math.radians(-20), ry=sgn * math.radians(20), rz=sgn * math.radians(12))
         t.tag("head")
         return t
 
-    parts.extend(mirrored(tusk))
+    parts.extend(mirrored(tusklet))
 
-    # Cute short baby arms
+    # 7. Short Chubby Arms Resting at Sides
     def arm(sgn):
-        a = tube([(sgn * 0.290, 0.700, 0.060),
-                  (sgn * 0.320, 0.570, 0.180),
-                  (sgn * 0.200, 0.540, 0.270)], 0.068, radial=14, name="arm", mat="skin",
-                 taper=[1.0, 0.92, 0.85])
+        a = tube([(sgn * 0.320, 0.740, 0.060),
+                  (sgn * 0.350, 0.620, 0.180),
+                  (sgn * 0.230, 0.560, 0.290)], 0.072, radial=14, name="arm", mat="skin",
+                 taper=[1.0, 0.94, 0.88])
         a.tag("armL" if sgn < 0 else "armR", "chest")
-        paw = sphere(0.060, 0.054, 0.060, seg=14, rings=8, name="paw", mat="skin")
-        paw.move(sgn * 0.200, 0.540, 0.270)
+        paw = sphere(0.064, 0.054, 0.060, seg=14, rings=8, name="paw", mat="skin")
+        paw.move(sgn * 0.230, 0.560, 0.290)
         paw.tag("armL" if sgn < 0 else "armR", "chest")
         return [a, paw]
 
     parts.extend(mirrored(arm))
 
-    # Mochi Pom-Pom Tail at back
-    parts.extend(lobe_cluster(center=(0.0, 0.380, -0.340), core_radius=(0.055, 0.055, 0.055),
-                              num_lobes=6, lobe_rad=0.024, spread=0.040, name="tail", mat="skin"))
+    # 8. Curled Spiral Tail with Small Tuft at Rear
+    tail_pts = [(0.0, 0.380, -0.370), (0.0, 0.420, -0.430), (0.0, 0.460, -0.450)]
+    tail_curve = tube(tail_pts, 0.026, radial=10, name="tail_spiral", mat="skin", taper=[1.0, 0.85, 0.70])
+    tail_curve.tag("base", "hips")
+    parts.append(tail_curve)
 
-    # Big open expressive Boba eyes with recessed pupil & blush
-    ex, ey = 0.115, 0.990
-    parts.extend(eye_pair(shell, ex, ey, 0.070, 0.078, 0.044, M,
-                          lid=(1.10, 0.36, 0.80), lid_lift=1.35, proud=0.80, lid_mat="lid",
+    tail_tuft = sphere(0.040, 0.040, 0.040, seg=12, rings=6, name="tail_tuft", mat="skin_light")
+    tail_tuft.move(0.0, 0.475, -0.460)
+    tail_tuft.tag("base", "hips")
+    parts.append(tail_tuft)
+
+    # 9. Big Boba Eyes with Dual Glints and Wide Pill Blush
+    ex, ey = 0.132, 1.040
+    parts.extend(eye_pair(shell, ex, ey, 0.080, 0.088, 0.050, M,
+                          lid=(1.12, 0.38, 0.82), lid_lift=1.38, proud=0.82, lid_mat="lid",
                           iris_mat="eye_iris", has_blush=True))
 
-    # Blank cream badge plate on lower chest
-    poly = rounded_rect_poly(0.180, 0.110, 0.028, seg=6)
-    parts.extend(conform_plate(shell, poly, 0.420, thickness=0.018, proud=0.013,
-                               rim=1.10, rim_proud=0.008, name="badge"))
-    pz = (probe_z(shell, 0.0, 0.420) or 0.36) + 0.013
+    # Horizontal pill blush pads under eyes
+    def pill_blush(sgn):
+        b = superellipsoid(0.042, 0.022, 0.015, e1=0.35, e2=0.35, seg=12, rings=6,
+                           name="pill_blush", mat="blush")
+        b.move(sgn * 0.215, 0.980, 0.265)
+        b.tag("head")
+        return b
 
-    props = dict(hipY=0.22, spineY=0.45, chestY=0.68, neckY=0.82, headY=0.98,
-                 legX=0.190, legY=0.10, baseY=0.06, badgeY=0.420, badgeZ=pz,
-                 eyeX=ex, eyeY=ey, eyeZ=(probe_z(shell, ex, ey) or 0.35),
-                 r_hips=0.38, r_spine=0.38, r_chest=0.34, r_neck=0.28, r_head=0.34,
-                 r_base=0.28, r_leg=0.10, badge_size=[0.180, 0.110])
+    parts.extend(mirrored(pill_blush))
+
+    # 10. Blank Cream Belly Badge Plate with Warm Gold Rounded Rim
+    poly = rounded_rect_poly(0.190, 0.115, 0.030, seg=8)
+    parts.extend(conform_plate(shell, poly, 0.450, thickness=0.018, proud=0.014,
+                               rim=1.12, rim_proud=0.010, name="badge"))
+    pz = (probe_z(shell, 0.0, 0.450) or 0.40) + 0.014
+
+    props = dict(hipY=0.22, spineY=0.45, chestY=0.68, neckY=0.85, headY=1.02,
+                 legX=0.205, legY=0.10, baseY=0.06, badgeY=0.450, badgeZ=pz,
+                 eyeX=ex, eyeY=ey, eyeZ=(probe_z(shell, ex, ey) or 0.38),
+                 r_hips=0.42, r_spine=0.42, r_chest=0.36, r_neck=0.28, r_head=0.38,
+                 r_base=0.30, r_leg=0.11, badge_size=[0.190, 0.115])
 
     bones = [
-        mat_bone("trunk.01", "head", (0.0, 0.900 - 0.98, 0.320), (0, 0, 1), 0.12, 0.14),
-        mat_bone("trunk.02", "trunk.01", (0.0, -0.04, 0.120), (0, 1, 1), 0.12, 0.12),
-        mat_bone("trunk.03", "trunk.02", (0.0, 0.12, 0.080), (0, 1, 0), 0.12, 0.10),
-        mat_bone("earL", "head", (-0.420, 0.030, -0.060), (-1, 0, 0), 0.20, 0.22),
-        mat_bone("earR", "head", (0.420, 0.030, -0.060), (1, 0, 0), 0.20, 0.22),
-        mat_bone("armL", "chest", (-0.290, 0.700 - 0.68, 0.060), (-1, -1, 1), 0.20, 0.14),
-        mat_bone("armR", "chest", (0.290, 0.700 - 0.68, 0.060), (1, -1, 1), 0.20, 0.14),
+        mat_bone("trunk.01", "head", (0.0, 0.950 - 1.02, 0.340), (0, 0, 1), 0.13, 0.14),
+        mat_bone("trunk.02", "trunk.01", (0.0, -0.04, 0.130), (0, 1, 1), 0.13, 0.12),
+        mat_bone("trunk.03", "trunk.02", (0.0, 0.13, 0.090), (0, 1, 0), 0.13, 0.10),
+        mat_bone("earL", "head", (-0.440, 0.030, -0.050), (-1, 0, 0), 0.21, 0.23),
+        mat_bone("earR", "head", (0.440, 0.030, -0.050), (1, 0, 0), 0.21, 0.23),
+        mat_bone("armL", "chest", (-0.320, 0.740 - 0.68, 0.060), (-1, -1, 1), 0.21, 0.15),
+        mat_bone("armR", "chest", (0.320, 0.740 - 0.68, 0.060), (1, -1, 1), 0.21, 0.15),
     ]
 
     P = dict(clips.DEFAULT_PARAMS)
-    P.update({"hop_h": 0.26, "crouch_d": 0.090, "land_d": 0.110, "squash": 1.10,
-              "gaze_yaw": -0.32, "chest_yaw": 0.45, "leg_squash": 0.72, "leg_len": 0.20,
+    P.update({"hop_h": 0.28, "crouch_d": 0.100, "land_d": 0.120, "squash": 1.12,
+              "gaze_yaw": -0.32, "chest_yaw": 0.45, "leg_squash": 0.70, "leg_len": 0.20,
               "up_scale": 1.0, "breath": 1.0, "sway": 0.9, "lid_close": 1.65})
 
     def extras(clip, t, dur, ph):
@@ -519,21 +561,21 @@ def build_gaja():
         lag = ph["lag_up"]
         imp = ph["impact"]
         happy = ph["happy"]
-        ear_flap = 0.15 * b + 0.35 * happy + 0.35 * imp - 2.2 * lag
-        trunk_wave = 0.20 * b - 2.8 * lag + 0.60 * happy
+        ear_flap = 0.16 * b + 0.38 * happy + 0.38 * imp - 2.4 * lag
+        trunk_wave = 0.22 * b - 2.8 * lag + 0.62 * happy
         out = {
             "earL": {"r": (0.0, 0.0, -ear_flap)},
             "earR": {"r": (0.0, 0.0, ear_flap)},
-            "trunk.01": {"r": (0.10 * b - 0.9 * lag, 0.0, 0.15 * ph["gaze"])},
-            "trunk.02": {"r": (0.15 * b - 1.4 * lag, 0.0, 0.0)},
+            "trunk.01": {"r": (0.11 * b - 0.95 * lag, 0.0, 0.15 * ph["gaze"])},
+            "trunk.02": {"r": (0.16 * b - 1.5 * lag, 0.0, 0.0)},
             "trunk.03": {"r": (trunk_wave, 0.0, 0.0)},
         }
         return out
 
     return Char("gaja", "Gaja", "The Heavyweight Anchor",
-                "bipedal baby elephant mascot with floppy ears and curved trunk",
+                "jumbo mochi baby elephant mascot with floppy ears and squishy pot belly",
                 M, P, props, extras, bones,
-                ["#8B8589", "#A8A0A6", "#D4A0A0", "#FFFDF2"], 1.28).finish(parts)
+                ["#8FA6CE", "#A4B9DC", "#F4B6CD", "#FFF9E6"], 1.30).finish(parts)
 
 # ============================================================== 2 · MAYUR ======
 def build_mayur():
