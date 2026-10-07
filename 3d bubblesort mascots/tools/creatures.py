@@ -297,6 +297,24 @@ class Char(object):
             mesh.v = mesh.v - np.array([0.0, lo[1], 0.0])
             self.meta["ground_shift"] = round(float(lo[1]), 4)
         lo, hi = mesh.bbox()
+
+        # If a target height is specified and differs from raw mesh bbox, scale mesh and skeleton
+        curr_h = float(hi[1] - lo[1])
+        if self.height and abs(self.height - curr_h) > 0.02:
+            scale_f = self.height / curr_h
+            mesh.v *= scale_f
+            for k in ("hipY", "spineY", "chestY", "neckY", "headY", "legX", "legY", "baseY", "badgeY", "badgeZ", "eyeX", "eyeY", "eyeZ", "r_hips", "r_spine", "r_chest", "r_neck", "r_head", "r_base", "r_leg"):
+                if k in self.props:
+                    self.props[k] *= scale_f
+            scaled_bones = []
+            for b in self.bones:
+                b_scaled = Bone(b.name, b.parent, b.offset * scale_f, deform=b.deform,
+                                w_dir=b.w_dir, w_len=b.w_len * scale_f,
+                                w_radius=b.w_radius * scale_f, group=b.group)
+                scaled_bones.append(b_scaled)
+            self.bones = scaled_bones
+            lo, hi = mesh.bbox()
+
         self.mesh = mesh
         self.skel = Skeleton(core_bones(self.props) + self.bones)
         self.meta.update({
@@ -572,10 +590,7 @@ def build_gaja():
         }
         return out
 
-    return Char("gaja", "Gaja", "The Heavyweight Anchor",
-                "jumbo mochi baby elephant mascot with floppy ears and squishy pot belly",
-                M, P, props, extras, bones,
-                ["#8FA6CE", "#A4B9DC", "#F4B6CD", "#FFF9E6"], 1.30).finish(parts)
+    return Char("gaja", "Gaja", "The Heavyweight Anchor", "jumbo mochi baby elephant mascot with floppy ears and squishy pot belly", M, P, props, extras, bones, ["#8FA6CE", "#A4B9DC", "#F4B6CD", "#FFF9E6"], 1.85).finish(parts)
 
 # ============================================================== 2 · MAYUR ======
 def build_mayur():
@@ -755,30 +770,31 @@ def build_mayur():
 # ============================================================== 3 · DIYA ======
 def build_diya():
     """
-    DIYA — Terracotta oil lamp with living sculpted flame crest (Audited by AI MAX & AI B).
-    Architecture & Fixes:
-    - Handcrafted earthen bowl with pinched pouring spout and soft rounded rim.
-    - 3 Nested Translucent Flame Lobes (Core, Mantle, Outer) built with Pip's lathed teardrops.
-    - Warm glowing amber cheek ember with emissive subsurface warmth.
-    - Cute hugging clay arms pulled organically from the body.
-    - Boba eyes with warm amber iris, pupil depth, dual catchlights, and blush.
+    DIYA — The Sacred Clay Lamp Mascot (char_diya_art.png target).
+    - Chunky rounded terracotta pot body (#C86A45) with pinched pouring spout.
+    - Thick rolled rim with carved geometric ring band (#9C482B).
+    - Dynamic twisting sculpted teardrop flame (#FF8C00 -> #FFF176) floating over concave pool.
+    - Sweet smiling boba face right on the pot wall with warm amber teardrop blush (#FF9D42).
+    - Chubby rounded clay arms resting on lower belly, stubby tripod clay feet nubs.
+    - Height: 0.88m (compact, adorable warmth).
     """
     M = dict(shared_mats())
     M.update({
-        "clay": dict(color=srgb("#C86A4A"), roughness=0.85, metallic=0.0, texture="ceramic",
-                     emissive=tuple(c * 0.12 for c in srgb("#4A1A00"))),
-        "clay_dark": dict(color=srgb("#8C4325"), roughness=0.88, metallic=0.0),
-        "flame_outer": dict(color=srgb("#FF4400"), roughness=0.25, metallic=0.0, alpha=0.85,
-                            emissive=tuple(c * 0.90 for c in srgb("#FF8C1A"))),
-        "flame_mantle": dict(color=srgb("#FF8C00"), roughness=0.20, metallic=0.0, alpha=0.90,
-                             emissive=tuple(c * 1.60 for c in srgb("#FF7500"))),
-        "flame_core": dict(color=srgb("#FFF4D6"), roughness=0.10, metallic=0.0,
-                           emissive=tuple(c * 2.80 for c in srgb("#FFE9A8"))),
-        "ember": dict(color=srgb("#FF6A2B"), roughness=0.30, metallic=0.0,
-                      emissive=tuple(c * 1.80 for c in srgb("#FF4500"))),
-        "mouth_dark": dict(color=srgb("#602512"), roughness=0.50, metallic=0.0),
-        "lid": dict(color=srgb("#A85533"), roughness=0.75, metallic=0.0),
-        "eye_iris": dict(color=srgb("#FF8C00"), roughness=0.25, metallic=0.0),
+        "clay": dict(color=srgb("#C86A45"), roughness=0.68, metallic=0.0, texture="ceramic"),
+        "clay_dark": dict(color=srgb("#9C482B"), roughness=0.72, metallic=0.0),
+        "clay_light": dict(color=srgb("#D87B56"), roughness=0.62, metallic=0.0),
+        "flame_core": dict(color=srgb("#FFF9D2"), roughness=0.20, metallic=0.0,
+                           emissive=tuple(c * 1.5 for c in srgb("#FFF3A0"))),
+        "flame_outer": dict(color=srgb("#FF7A18"), roughness=0.25, metallic=0.0,
+                            emissive=tuple(c * 1.2 for c in srgb("#FF5E00"))),
+        "oil_pool": dict(color=srgb("#6A4522"), roughness=0.18, metallic=0.0),
+        "mouth_dark": dict(color=srgb("#4A1810"), roughness=0.50, metallic=0.0),
+        "lid": dict(color=srgb("#B05835"), roughness=0.65, metallic=0.0),
+        "eye_iris": dict(color=srgb("#4A2810"), roughness=0.15, metallic=0.0),
+        "blush": dict(color=srgb("#FF9D42"), roughness=0.45, metallic=0.0,
+                      emissive=tuple(c * 0.35 for c in srgb("#FF8A00"))),
+        "badge_plate": dict(color=srgb("#FFF6E5"), roughness=0.35, metallic=0.0),
+        "badge_rim": dict(color=srgb("#D4A050"), roughness=0.28, metallic=0.70),
     })
     parts = []
     shell = []
@@ -789,114 +805,152 @@ def build_diya():
             shell.append(p)
         return p
 
-    # 3 stubby clay feet
-    for fi, f_ang in enumerate((math.pi * 0.5, math.pi * 1.15, math.pi * 1.85)):
-        foot = superellipsoid(0.052, 0.042, 0.052, e1=0.45, e2=0.45, seg=16, rings=8,
-                              name=f"clay_foot_{fi}", mat="clay_dark")
-        foot.move(math.cos(f_ang) * 0.150, 0.042, math.sin(f_ang) * 0.150)
-        foot.tag("base")
-        parts.append(foot)
+    # 1. 3 Stubby Tripod Clay Foot Nubs
+    def tripod_foot(ang):
+        fx = 0.22 * math.cos(ang)
+        fz = 0.22 * math.sin(ang)
+        f = superellipsoid(0.080, 0.055, 0.080, e1=0.40, e2=0.40, seg=16, rings=8,
+                           name="foot_nub", mat="clay")
+        f.move(fx, 0.045, fz)
+        f.tag("legL" if fx < 0 else "legR")
+        return f
 
-    # Terracotta lamp bowl body (lathe with thick hand-crafted rounded rim)
-    bowl = lathe([(0.140, 0.035), (0.250, 0.110), (0.315, 0.220), (0.320, 0.340),
-                  (0.290, 0.430), (0.270, 0.470), (0.300, 0.500)], seg=38, name="bowl", mat="clay")
-    bowl.tag("hips", "spine", "chest", "base")
-    add(bowl)
+    parts.append(tripod_foot(-math.pi * 0.70))
+    parts.append(tripod_foot(-math.pi * 0.30))
+    parts.append(tripod_foot(math.pi * 0.50))
 
-    # Pinched pouring spout at front rim
-    spout = superellipsoid(0.065, 0.042, 0.085, e1=0.42, e2=0.42, seg=18, rings=10,
-                           name="spout", mat="clay")
-    spout.rotate(rx=-0.25)
-    spout.move(0.0, 0.505, 0.290)
+    # 2. Chunky Rounded Terracotta Pot Body with Pinched Spout
+    pot_profile = [
+        (0.240, 0.070),
+        (0.380, 0.160),
+        (0.440, 0.290),  # Chubby pot belly
+        (0.430, 0.420),
+        (0.370, 0.530),  # Neck pinch
+        (0.400, 0.570),  # Flared rim base
+        (0.420, 0.600),  # Top rim outer
+        (0.350, 0.600),  # Top rim inner
+        (0.310, 0.550),  # Inner pool basin
+        (0.000, 0.520)   # Basin center
+    ]
+    pot = lathe(pot_profile, seg=32, name="clay_pot", mat="clay")
+    pot.tag("hips", "spine", "chest", "head")
+    add(pot)
+
+    # Pinched triangular pouring spout lip at front-top rim
+    spout = superellipsoid(0.095, 0.045, 0.080, e1=0.35, e2=0.35, seg=14, rings=8,
+                           name="spout_lip", mat="clay")
+    spout.rotate(rx=math.radians(-18))
+    spout.move(0.0, 0.610, 0.390)
     spout.tag("head")
-    add(spout, False)
+    add(spout)
 
-    # Chubby clay arms resting on belly
-    def arm(sgn):
-        a = tube([(sgn * 0.280, 0.330, 0.020),
-                  (sgn * 0.320, 0.240, 0.120),
-                  (sgn * 0.230, 0.180, 0.200)], 0.045, radial=14, name="clay_arm", mat="clay",
-                 taper=[1.0, 0.95, 0.90])
-        a.tag("chest")
-        return a
+    # Carved geometric band ring around upper rim
+    rim_band = torus(0.405, 0.016, seg_major=28, seg_minor=6, name="rim_band", mat="clay_dark")
+    rim_band.move(0.0, 0.550, 0.0)
+    rim_band.tag("head")
+    parts.append(rim_band)
 
-    parts.extend(mirrored(arm))
+    # Inner warm molten oil pool surface
+    oil = ngon_prism(0.320, 24, 0.020, name="oil_surface", mat="oil_pool")
+    oil.move(0.0, 0.535, 0.0)
+    oil.tag("head")
+    parts.append(oil)
 
-    # 3 Nested Pip Lathed Teardrop Flame Lobes (Core, Mantle, Outer)
-    flame_outer = teardrop_blade(length=0.480, width=0.140, thickness=0.085, seg=18, rings=10,
-                                 name="flame_outer", mat="flame_outer")
-    flame_outer.move(0.0, 0.510, 0.0)
-    flame_outer.tag("flame_tip", "flame_base", "head")
-    add(flame_outer, False)
+    # 3. Dynamic Twisting Sculpted Teardrop Flame (#FF8C00 -> #FFF176)
+    flame_pts = [
+        (0.0, 0.540, 0.020),
+        (0.0, 0.640, 0.030),
+        (0.015, 0.760, 0.010),
+        (-0.020, 0.880, -0.015),
+        (0.010, 0.980, 0.010),
+        (0.0, 1.060, 0.000),
+    ]
+    flame_outer = tube(flame_pts, 0.125, radial=18, name="flame_outer", mat="flame_outer",
+                       taper=[0.60, 1.0, 0.82, 0.55, 0.30, 0.08])
+    flame_outer.tag("head")
+    parts.append(flame_outer)
 
-    flame_mantle = teardrop_blade(length=0.380, width=0.105, thickness=0.065, seg=16, rings=8,
-                                  name="flame_mantle", mat="flame_mantle")
-    flame_mantle.move(0.0, 0.520, 0.005)
-    flame_mantle.tag("flame_tip", "flame_base", "head")
-    add(flame_mantle, False)
+    flame_core = tube(flame_pts[:4], 0.075, radial=14, name="flame_core", mat="flame_core",
+                      taper=[0.50, 1.0, 0.70, 0.25])
+    flame_core.tag("head")
+    parts.append(flame_core)
 
-    flame_core = teardrop_blade(length=0.250, width=0.070, thickness=0.045, seg=14, rings=6,
-                                name="flame_core", mat="flame_core")
-    flame_core.move(0.0, 0.530, 0.010)
-    flame_core.tag("flame_tip", "flame_base", "head")
-    add(flame_core, False)
+    # 4. Chubby Clay Arms Resting on Lower Belly
+    def clay_arm(sgn):
+        a = tube([(sgn * 0.380, 0.360, 0.040),
+                  (sgn * 0.390, 0.260, 0.180),
+                  (sgn * 0.250, 0.220, 0.340)], 0.062, radial=14, name="arm", mat="clay",
+                 taper=[1.0, 0.94, 0.85])
+        a.tag("armL" if sgn < 0 else "armR", "chest")
+        paw = sphere(0.055, 0.048, 0.052, seg=14, rings=8, name="paw", mat="clay")
+        paw.move(sgn * 0.250, 0.220, 0.340)
+        paw.tag("armL" if sgn < 0 else "armR", "chest")
+        return [a, paw]
 
-    # Radiant amber gem on cheek
-    ember = sphere(0.026, 0.026, 0.022, seg=16, rings=8, name="ember", mat="ember")
-    ember.move(0.195, 0.285, 0.225)
-    ember.tag("head")
-    parts.append(ember)
+    parts.extend(mirrored(clay_arm))
 
-    # Sweet open smile on clay bowl
-    mouth = superellipsoid(0.045, 0.028, 0.025, e1=0.45, e2=0.45, seg=16, rings=8,
+    # 5. Sweet Smiling Boba Eyes on Pot Wall
+    ex, ey = 0.125, 0.380
+    parts.extend(eye_pair(shell, ex, ey, 0.068, 0.075, 0.042, M,
+                          lid=(1.10, 0.35, 0.80), lid_lift=1.35, proud=0.80, lid_mat="lid",
+                          iris_mat="eye_iris", has_blush=False))
+
+    # Sweet subtle mouth beneath spout
+    mouth = superellipsoid(0.042, 0.024, 0.025, e1=0.45, e2=0.45, seg=12, rings=6,
                            name="mouth", mat="mouth_dark")
-    mouth.move(0.0, 0.260, 0.315)
+    mouth.move(0.0, 0.315, 0.435)
     mouth.tag("head")
     parts.append(mouth)
 
-    # Big warm friendly Boba eyes with amber iris & blush
-    ex, ey = 0.110, 0.335
-    parts.extend(eye_pair(shell, ex, ey, 0.062, 0.068, 0.040, M,
-                          lid=(1.10, 0.35, 0.80), lid_lift=1.35, proud=0.80, lid_mat="lid",
-                          iris_mat="eye_iris", has_blush=True))
+    # Glowing Teardrop Blush under left eye (per char_diya_art.png)
+    tear_blush = superellipsoid(0.026, 0.040, 0.020, e1=0.35, e2=0.35, seg=12, rings=6,
+                                name="tear_blush", mat="blush")
+    tear_blush.rotate(rz=math.radians(-15))
+    tear_blush.move(0.245, 0.340, 0.380)
+    tear_blush.tag("head")
+    parts.append(tear_blush)
 
-    # Blank cream badge on lower belly
-    poly = rounded_rect_poly(0.180, 0.100, 0.028, seg=6)
-    parts.extend(conform_plate(shell, poly, 0.155, thickness=0.018, proud=0.013,
-                               rim=1.10, rim_proud=0.008, name="badge"))
-    pz = (probe_z(shell, 0.0, 0.155) or 0.29) + 0.013
+    # 6. Blank Rounded Badge Plate with Warm Gold Rim
+    poly = rounded_rect_poly(0.180, 0.095, 0.028, seg=8)
+    parts.extend(conform_plate(shell, poly, 0.210, thickness=0.016, proud=0.012,
+                               rim=1.12, rim_proud=0.008, name="badge"))
+    pz = (probe_z(shell, 0.0, 0.210) or 0.42) + 0.012
 
-    props = dict(hipY=0.15, spineY=0.25, chestY=0.35, neckY=0.44, headY=0.55,
-                 legX=0.150, legY=0.06, baseY=0.04, badgeY=0.155, badgeZ=pz,
-                 eyeX=ex, eyeY=ey, eyeZ=(probe_z(shell, ex, ey) or 0.30),
-                 r_hips=0.32, r_spine=0.32, r_chest=0.30, r_neck=0.26, r_head=0.28,
-                 r_base=0.28, r_leg=0.08, badge_size=[0.180, 0.100])
+    props = dict(hipY=0.10, spineY=0.22, chestY=0.36, neckY=0.45, headY=0.58,
+                 legX=0.180, legY=0.04, baseY=0.02, badgeY=0.210, badgeZ=pz,
+                 eyeX=ex, eyeY=ey, eyeZ=(probe_z(shell, ex, ey) or 0.42),
+                 r_hips=0.42, r_spine=0.42, r_chest=0.40, r_neck=0.36, r_head=0.38,
+                 r_base=0.26, r_leg=0.08, badge_size=[0.180, 0.095])
 
     bones = [
-        mat_bone("flame_base", "head", (0.0, 0.510 - 0.55, 0.0), (0, 1, 0), 0.18, 0.16),
-        mat_bone("flame_tip", "flame_base", (0.0, 0.260, 0.0), (0, 1, 0), 0.20, 0.14),
+        mat_bone("flame.01", "head", (0.0, 0.650 - 0.58, 0.020), (0, 1, 0), 0.15, 0.16),
+        mat_bone("flame.02", "flame.01", (0.0, 0.180, 0.0), (0, 1, 0), 0.15, 0.14),
+        mat_bone("flame.03", "flame.02", (0.0, 0.180, 0.0), (0, 1, 0), 0.15, 0.12),
+        mat_bone("armL", "chest", (-0.380, 0.360 - 0.36, 0.040), (-1, -1, 1), 0.18, 0.14),
+        mat_bone("armR", "chest", (0.380, 0.360 - 0.36, 0.040), (1, -1, 1), 0.18, 0.14),
     ]
 
     P = dict(clips.DEFAULT_PARAMS)
-    P.update({"hop_h": 0.24, "crouch_d": 0.055, "land_d": 0.070, "squash": 1.15,
-              "gaze_yaw": -0.35, "chest_yaw": 0.45, "legs": False, "leg_squash": 1.0,
-              "up_scale": 0.70, "breath": 1.1, "sway": 1.0, "lid_close": 1.75})
+    P.update({"hop_h": 0.24, "crouch_d": 0.080, "land_d": 0.095, "squash": 1.15,
+              "gaze_yaw": -0.30, "chest_yaw": 0.40, "leg_squash": 0.75, "leg_len": 0.10,
+              "up_scale": 1.0, "breath": 1.0, "sway": 0.8, "lid_close": 1.65})
 
     def extras(clip, t, dur, ph):
         b = ph["breath"]
         lag = ph["lag_up"]
-        happy = ph["happy"]
-        flame_dance = math.sin(TAU * t * 2.5) * 0.15 + 0.10 * b
+        imp = ph["impact"]
+        flame_flicker = 0.20 * math.sin(b * 2.0 * math.pi) + 0.35 * b - 2.5 * lag
         out = {
-            "flame_base": {"r": (0.08 * b - 1.2 * lag, 0.0, flame_dance)},
-            "flame_tip": {"r": (0.15 * b - 2.5 * lag + 0.30 * happy, 0.0, flame_dance * 1.5)},
+            "flame.01": {"r": (0.08 * b - 0.8 * lag, 0.0, 0.15 * math.sin(b * 2.0 * math.pi))},
+            "flame.02": {"r": (0.12 * b - 1.4 * lag, 0.0, -0.22 * math.cos(b * 2.0 * math.pi))},
+            "flame.03": {"r": (flame_flicker, 0.0, 0.25 * math.sin(b * 4.0 * math.pi))},
         }
         return out
 
-    return Char("diya", "Diya", "The Traversal Pointer",
-                "sacred terracotta oil lamp with glowing living flame crest",
+    return Char("diya", "Diya", "The Sacred Hearth",
+                "chunky pinched terracotta oil lamp with glowing sculpted flame and teardrop blush",
                 M, P, props, extras, bones,
-                ["#C86A4A", "#FF4400", "#FF8C00", "#FFF4D6"], 1.02).finish(parts)
+                ["#C86A45", "#9C482B", "#FF8C00", "#FFF176"], 0.92).finish(parts)
 
 # ============================================================== 4 · PATRA =====
 def build_patra():
@@ -1045,23 +1099,28 @@ def build_patra():
 # ============================================================== 5 · KUMBHA ====
 def build_kumbha():
     """
-    KUMBHA — Golden Kalasha pot with mango leaves & coconut (Audited by AI MAX & AI B).
-    Architecture & Fixes:
-    - High-polish sacred temple brass body with engraved neck relief ring and hand-hammered bulges.
-    - 5 Pip Lathed Teardrop Mango Leaves arranged in a radiating collar with midrib folds.
-    - Coconut with Mochi fibrous coir tufts and organic surface texture.
-    - Wise, serene Boba eyes with emerald iris, pupil depth, dual catchlights, and blush.
+    KUMBHA — The Sacred Golden Kalash Mascot (char_kumbha_art.png target).
+    - Spherical polished brass body (#D4AF37, Metallic 0.85).
+    - Authentic coconut dome (nariyal) with pointed fibrous husk tip (#6E4023).
+    - 5 radiating curved mango leaves (aam ke patte) (#2E7D32).
+    - Lotus bas-relief embossing around mid-belly.
+    - Articulated chubby brass arms waving joyfully, flared ornamental pedestal feet.
+    - Height: 1.12m.
     """
     M = dict(shared_mats())
     M.update({
-        "brass": dict(color=srgb("#D4AF37"), roughness=0.25, metallic=0.95),
-        "brass_dark": dict(color=srgb("#A68020"), roughness=0.35, metallic=0.92),
-        "mango_leaf": dict(color=srgb("#2E8B57"), roughness=0.55, metallic=0.0),
-        "coconut": dict(color=srgb("#5C4033"), roughness=0.88, metallic=0.0, texture="stone"),
-        "tuft_light": dict(color=srgb("#8B6834"), roughness=0.90, metallic=0.0),
-        "mouth_dark": dict(color=srgb("#553810"), roughness=0.45, metallic=0.15),
-        "lid": dict(color=srgb("#C49E30"), roughness=0.30, metallic=0.85),
-        "eye_iris": dict(color=srgb("#2A4A20"), roughness=0.25, metallic=0.0),
+        "brass": dict(color=srgb("#E2B852"), roughness=0.24, metallic=0.88, texture="metal"),
+        "brass_dark": dict(color=srgb("#B0882A"), roughness=0.32, metallic=0.85),
+        "brass_light": dict(color=srgb("#F5D77F"), roughness=0.20, metallic=0.90),
+        "coconut": dict(color=srgb("#6E4023"), roughness=0.82, metallic=0.0, texture="weave"),
+        "coconut_fiber": dict(color=srgb("#542E16"), roughness=0.88, metallic=0.0),
+        "leaf": dict(color=srgb("#2E7D32"), roughness=0.38, metallic=0.0),
+        "leaf_light": dict(color=srgb("#4CAF50"), roughness=0.35, metallic=0.0),
+        "mouth_dark": dict(color=srgb("#4A2810"), roughness=0.45, metallic=0.0),
+        "lid": dict(color=srgb("#C49E3A"), roughness=0.30, metallic=0.70),
+        "eye_iris": dict(color=srgb("#362010"), roughness=0.15, metallic=0.0),
+        "badge_plate": dict(color=srgb("#FFF6E5"), roughness=0.35, metallic=0.0),
+        "badge_rim": dict(color=srgb("#B0882A"), roughness=0.25, metallic=0.85),
     })
     parts = []
     shell = []
@@ -1072,151 +1131,203 @@ def build_kumbha():
             shell.append(p)
         return p
 
-    # Two short golden feet
-    def brass_foot(sgn):
-        foot = superellipsoid(0.070, 0.048, 0.085, e1=0.42, e2=0.42, seg=20, rings=10,
-                              name="brass_foot", mat="brass")
-        foot.move(sgn * 0.140, 0.048, 0.0)
-        foot.tag("legL" if sgn < 0 else "legR")
-        return foot
+    # 1. Flared Ornamental Pedestal Feet
+    def pedestal_foot(sgn):
+        f = superellipsoid(0.110, 0.045, 0.125, e1=0.35, e2=0.35, seg=16, rings=8,
+                           name="pedestal_foot", mat="brass_dark")
+        f.move(sgn * 0.185, 0.040, 0.010)
+        f.tag("legL" if sgn < 0 else "legR")
 
-    parts.extend(mirrored(brass_foot))
+        stem = capsule(0.065, 0.110, seg=14, rings=6, name="foot_stem", mat="brass")
+        stem.move(sgn * 0.185, 0.110, 0.0)
+        stem.tag("legL" if sgn < 0 else "legR")
 
-    # Lathed ornate Kalasha pot belly with authentic urn profile
+        ring = torus(0.075, 0.016, seg_major=16, seg_minor=6, name="foot_ring", mat="brass_light")
+        ring.move(sgn * 0.185, 0.060, 0.0)
+        ring.tag("legL" if sgn < 0 else "legR")
+        return [f, stem, ring]
+
+    parts.extend(mirrored(pedestal_foot))
+
+    # 2. Spherical Golden Brass Kalash Pot Body
     pot_profile = [
-        (0.140, 0.045),
-        (0.240, 0.110),
-        (0.330, 0.230),
-        (0.355, 0.360),
-        (0.320, 0.500),
-        (0.245, 0.580),
-        (0.195, 0.620),
-        (0.245, 0.660)
+        (0.180, 0.120),  # Flared round base
+        (0.340, 0.220),
+        (0.440, 0.360),
+        (0.460, 0.480),  # Max spherical belly
+        (0.410, 0.600),
+        (0.310, 0.690),  # Narrow pot neck
+        (0.340, 0.720),  # Neck collar flare
+        (0.410, 0.750),  # Flared top rim lip
+        (0.350, 0.750),  # Inner rim
+        (0.240, 0.720),  # Inner throat
+        (0.000, 0.700)
     ]
-    pot = lathe(pot_profile, seg=42, name="kalasha_pot", mat="brass")
-    pot.tag("hips", "spine", "chest", "head", "base")
+    pot = lathe(pot_profile, seg=32, name="kalash_pot", mat="brass")
+    pot.tag("hips", "spine", "chest", "head")
     add(pot)
 
-    # Flared neck rim with engraved ornamental relief ring
-    rim = torus(0.225, 0.024, seg_major=38, seg_minor=12, name="neck_rim", mat="brass_dark")
-    rim.move(0.0, 0.640, 0.0)
-    rim.tag("head")
-    parts.append(rim)
+    # Ornamental neck filigree torus
+    neck_ring = torus(0.335, 0.018, seg_major=24, seg_minor=6, name="neck_ring", mat="brass_light")
+    neck_ring.move(0.0, 0.710, 0.0)
+    neck_ring.tag("head")
+    parts.append(neck_ring)
 
-    # Short golden arms
-    def arm(sgn):
-        a = tube([(sgn * 0.325, 0.440, 0.0),
-                  (sgn * 0.365, 0.330, 0.06),
-                  (sgn * 0.290, 0.250, 0.12)], 0.048, radial=14, name="brass_arm", mat="brass",
-                 taper=[1.0, 0.95, 0.90])
-        a.tag("chest")
-        return a
+    # Lotus bas-relief ring around mid-belly
+    for li, lang in enumerate(range(0, 360, 45)):
+        rad = math.radians(lang)
+        lx = 0.455 * math.cos(rad)
+        lz = 0.455 * math.sin(rad)
+        petal = superellipsoid(0.045, 0.065, 0.018, e1=0.35, e2=0.35, seg=12, rings=6,
+                               name=f"lotus_petal_{li}", mat="brass_light")
+        petal.rotate(ry=-rad, rx=math.radians(10))
+        petal.move(lx, 0.450, lz)
+        petal.tag("chest")
+        parts.append(petal)
 
-    parts.extend(mirrored(arm))
-
-    # Textured fibrous coconut nestled in center
-    coconut = superellipsoid(0.130, 0.185, 0.130, e1=0.48, e2=0.48, seg=26, rings=18,
-                             name="coconut", mat="coconut")
-    coconut.move(0.0, 0.810, 0.0)
-    coconut.tag("head", "coconut_top")
-    add(coconut, False)
-
-    # 3-tier curved fibrous coir tufts (Kumbha's hair)
-    for ti, tang in enumerate((-0.20, 0.0, 0.20)):
-        tuft = teardrop_blade(length=0.100, width=0.032, thickness=0.016, seg=12, rings=6,
-                              name=f"tuft_{ti}", mat="tuft_light")
-        tuft.rotate(rz=-tang)
-        tuft.move(math.sin(tang) * 0.025, 0.970, 0.0)
-        tuft.tag("head", "coconut_top")
-        parts.append(tuft)
-
-    # 5 Pip Lathed Teardrop Mango Leaves cupping the coconut collar
-    N_LEAVES = 5
-    for li in range(N_LEAVES):
-        l_ang = li * (TAU / N_LEAVES)
-        leaf = teardrop_blade(length=0.240, width=0.078, thickness=0.022, seg=16, rings=8,
-                              name=f"mango_leaf_{li}", mat="mango_leaf")
-        leaf.rotate(rx=0.62)
-        leaf.rotate(ry=l_ang)
-        lx = math.sin(l_ang) * 0.190
-        lz = math.cos(l_ang) * 0.190
-        leaf.move(lx, 0.720, lz)
-        leaf.tag("head", "leaf_crown")
+    # 3. 5 Radiating Mango Leaves (Aam ke Patte)
+    for mi, mang in enumerate((-65, -32, 0, 32, 65)):
+        rad = math.radians(mang)
+        leaf = superellipsoid(0.055, 0.160, 0.018, e1=0.35, e2=0.35, seg=14, rings=8,
+                              name=f"mango_leaf_{mi}", mat="leaf")
+        leaf.rotate(rx=math.radians(18), rz=math.radians(-mang * 0.45), ry=rad)
+        leaf.move(0.260 * math.sin(rad), 0.810, 0.260 * math.cos(rad) * 0.50)
+        leaf.tag("head")
         parts.append(leaf)
 
-    # Sweet open smile on brass belly
-    mouth = superellipsoid(0.046, 0.028, 0.024, e1=0.45, e2=0.45, seg=16, rings=8,
+    # 4. Fibrous Pointed Coconut Dome (Nariyal)
+    coconut_profile = [
+        (0.220, 0.740),
+        (0.250, 0.820),
+        (0.230, 0.920),
+        (0.160, 1.020),
+        (0.080, 1.100),
+        (0.010, 1.160),
+        (0.000, 1.170)
+    ]
+    coconut = lathe(coconut_profile, seg=24, name="coconut_dome", mat="coconut")
+    coconut.tag("head")
+    parts.append(coconut)
+
+    # Pointed fiber tuft on top of coconut
+    fiber_tuft = superellipsoid(0.024, 0.060, 0.024, e1=0.35, e2=0.35, seg=10, rings=6,
+                                name="coconut_tuft", mat="coconut_fiber")
+    fiber_tuft.move(0.0, 1.180, 0.0)
+    fiber_tuft.tag("head")
+    parts.append(fiber_tuft)
+
+    # 5. Articulated Chubby Brass Arms (Right arm waving, Left arm resting)
+    arm_r = tube([(0.390, 0.480, 0.020),
+                  (0.480, 0.580, 0.120),
+                  (0.460, 0.720, 0.180)], 0.055, radial=14, name="arm_wave", mat="brass",
+                 taper=[1.0, 0.92, 0.85])
+    arm_r.tag("armR", "chest")
+    parts.append(arm_r)
+    hand_r = superellipsoid(0.055, 0.050, 0.040, e1=0.35, e2=0.35, seg=14, rings=8,
+                            name="hand_r", mat="brass_light")
+    hand_r.move(0.460, 0.730, 0.190)
+    hand_r.tag("armR", "chest")
+    parts.append(hand_r)
+
+    arm_l = tube([(-0.390, 0.480, 0.020),
+                  (-0.440, 0.360, 0.140),
+                  (-0.350, 0.280, 0.240)], 0.055, radial=14, name="arm_rest", mat="brass",
+                 taper=[1.0, 0.92, 0.85])
+    arm_l.tag("armL", "chest")
+    parts.append(arm_l)
+    hand_l = superellipsoid(0.050, 0.045, 0.040, e1=0.35, e2=0.35, seg=14, rings=8,
+                            name="hand_l", mat="brass_light")
+    hand_l.move(-0.350, 0.280, 0.240)
+    hand_l.tag("armL", "chest")
+    parts.append(hand_l)
+
+    # 6. Smiling Boba Face Embossed on Brass Wall
+    ex, ey = 0.125, 0.500
+    parts.extend(eye_pair(shell, ex, ey, 0.068, 0.075, 0.040, M,
+                          lid=(1.10, 0.35, 0.80), lid_lift=1.35, proud=0.80, lid_mat="lid",
+                          iris_mat="eye_iris", has_blush=False))
+
+    # Cute nose button & warm mouth
+    nose = sphere(0.022, 0.018, 0.020, seg=12, rings=6, name="nose", mat="brass_light")
+    nose.move(0.0, 0.470, 0.465)
+    nose.tag("head")
+    parts.append(nose)
+
+    mouth = superellipsoid(0.045, 0.022, 0.020, e1=0.45, e2=0.45, seg=12, rings=6,
                            name="mouth", mat="mouth_dark")
-    mouth.move(0.0, 0.315, 0.355)
+    mouth.move(0.0, 0.420, 0.455)
     mouth.tag("head")
     parts.append(mouth)
 
-    # Big open serene Boba eyes with emerald iris & blush
-    ex, ey = 0.115, 0.395
-    parts.extend(eye_pair(shell, ex, ey, 0.065, 0.072, 0.040, M,
-                          lid=(1.10, 0.35, 0.80), lid_lift=1.35, proud=0.80, lid_mat="lid",
-                          iris_mat="eye_iris", has_blush=True))
+    # 7. Blank Cream Belly Badge with Filigree Brass Frame
+    poly = rounded_rect_poly(0.190, 0.095, 0.028, seg=8)
+    parts.extend(conform_plate(shell, poly, 0.310, thickness=0.018, proud=0.014,
+                               rim=1.12, rim_proud=0.010, name="badge"))
+    pz = (probe_z(shell, 0.0, 0.310) or 0.44) + 0.014
 
-    # Blank cream badge on lower pot belly
-    poly = rounded_rect_poly(0.180, 0.105, 0.028, seg=6)
-    parts.extend(conform_plate(shell, poly, 0.200, thickness=0.018, proud=0.013,
-                               rim=1.10, rim_proud=0.008, name="badge"))
-    pz = (probe_z(shell, 0.0, 0.200) or 0.33) + 0.013
-
-    props = dict(hipY=0.18, spineY=0.30, chestY=0.42, neckY=0.54, headY=0.64,
-                 legX=0.140, legY=0.08, baseY=0.05, badgeY=0.200, badgeZ=pz,
-                 eyeX=ex, eyeY=ey, eyeZ=(probe_z(shell, ex, ey) or 0.32),
-                 r_hips=0.34, r_spine=0.34, r_chest=0.32, r_neck=0.26, r_head=0.28,
-                 r_base=0.30, r_leg=0.10, badge_size=[0.180, 0.105])
+    props = dict(hipY=0.15, spineY=0.32, chestY=0.48, neckY=0.65, headY=0.85,
+                 legX=0.185, legY=0.08, baseY=0.04, badgeY=0.310, badgeZ=pz,
+                 eyeX=ex, eyeY=ey, eyeZ=(probe_z(shell, ex, ey) or 0.44),
+                 r_hips=0.44, r_spine=0.46, r_chest=0.44, r_neck=0.34, r_head=0.38,
+                 r_base=0.28, r_leg=0.08, badge_size=[0.190, 0.095])
 
     bones = [
-        mat_bone("coconut_top", "head", (0.0, 0.810 - 0.64, 0.0), (0, 1, 0), 0.18, 0.20),
-        mat_bone("leaf_crown", "head", (0.0, 0.720 - 0.64, 0.0), (0, 1, 0), 0.14, 0.25),
+        mat_bone("armL", "chest", (-0.390, 0.480 - 0.48, 0.020), (-1, -1, 1), 0.20, 0.14),
+        mat_bone("armR", "chest", (0.390, 0.480 - 0.48, 0.020), (1, 1, 1), 0.20, 0.14),
+        mat_bone("leaf.01", "head", (0.0, 0.810 - 0.85, 0.150), (0, 1, 1), 0.15, 0.14),
+        mat_bone("leaf.02", "head", (-0.20, 0.810 - 0.85, 0.0), (-1, 1, 0), 0.15, 0.14),
+        mat_bone("leaf.03", "head", (0.20, 0.810 - 0.85, 0.0), (1, 1, 0), 0.15, 0.14),
     ]
 
     P = dict(clips.DEFAULT_PARAMS)
-    P.update({"hop_h": 0.25, "crouch_d": 0.060, "land_d": 0.075, "squash": 0.85,
-              "gaze_yaw": -0.32, "chest_yaw": 0.45, "leg_squash": 0.75, "leg_len": 0.12,
-              "up_scale": 1.0, "breath": 0.95, "sway": 0.80, "lid_close": 1.65})
+    P.update({"hop_h": 0.25, "crouch_d": 0.085, "land_d": 0.100, "squash": 1.12,
+              "gaze_yaw": -0.32, "chest_yaw": 0.42, "leg_squash": 0.72, "leg_len": 0.12,
+              "up_scale": 1.0, "breath": 1.0, "sway": 0.85, "lid_close": 1.65})
 
     def extras(clip, t, dur, ph):
         b = ph["breath"]
         lag = ph["lag_up"]
         happy = ph["happy"]
+        wave = 0.35 * math.sin(ph["breath"] * 2.0 * math.pi) + 0.45 * happy
         out = {
-            "coconut_top": {"r": (0.06 * b - 1.2 * lag + 0.20 * happy, 0.0, 0.0)},
-            "leaf_crown": {"r": (0.08 * b - 1.6 * lag, 0.0, 0.10 * ph["shake"])},
+            "armR": {"r": (0.0, 0.0, wave)},
+            "leaf.01": {"r": (0.10 * b - 0.8 * lag, 0.0, 0.0)},
+            "leaf.02": {"r": (0.0, 0.0, -0.12 * b + 0.8 * lag)},
+            "leaf.03": {"r": (0.0, 0.0, 0.12 * b - 0.8 * lag)},
         }
         return out
 
-    return Char("kumbha", "Kumbha", "The Boundary Buffer",
-                "sacred golden Kalasha brass vessel crowned with mango leaves and coconut",
+    return Char("kumbha", "Kumbha", "The Golden Vessel",
+                "sacred golden kalash pot with fibrous coconut dome, mango leaves and lotus filigree",
                 M, P, props, extras, bones,
-                ["#D4AF37", "#A68020", "#2E8B57", "#5C4033"], 1.05).finish(parts)
+                ["#E2B852", "#B0882A", "#6E4023", "#2E7D32"], 1.10).finish(parts)
 
 # ============================================================== 6 · GRANTHA ===
 def build_grantha():
     """
-    GRANTHA — Ancient Vedic Palm-Leaf Manuscript creature (Audited by AI MAX & AI B).
-    Architecture & Fixes:
-    - Carved dark teak wood covers with rounded beveled edges that act like clapping hands.
-    - Fanned palm-leaf / birch-bark folio pages with layered fibrous edges.
-    - Braided crimson silk cord with dangling brass jingle bells.
-    - Springy peacock feather quill pen tucked into the spine binding.
-    - Boba eyes on front cover with indigo/ink iris, pupil depth, dual catchlights, and blush.
+    GRANTHA — The Living Manuscript Mascot (char_grantha_art.png target).
+    - Thick stacked palm-leaf folio with layered parchment striations (#E8D5B5).
+    - Carved dark teak-wood top and bottom cover boards (#4A2E1B) with brass corner brackets (#C49E3A).
+    - Wrapped ceremonial red cords (#A32020) with dangling golden brass bells (#E2B852).
+    - Cheerful wise face carved into parchment center.
+    - Holding a peacock quill pen in right hand, wearing traditional paduka shoes.
+    - Height: 1.15m.
     """
     M = dict(shared_mats())
     M.update({
-        "teak_wood": dict(color=srgb("#4A3018"), roughness=0.65, metallic=0.0, texture="ceramic"),
-        "palm_leaf": dict(color=srgb("#F5E6D3"), roughness=0.80, metallic=0.0),
-        "cord_red": dict(color=srgb("#B71C1C"), roughness=0.45, metallic=0.0),
-        "bell_brass": dict(color=srgb("#D4AF37"), roughness=0.20, metallic=0.95),
-        "quill_teal": dict(color=srgb("#004B49"), roughness=0.30, metallic=0.10),
-        "quill_gold": dict(color=srgb("#D4A548"), roughness=0.25, metallic=0.70),
-        "quill_shaft": dict(color=srgb("#FFF8E7"), roughness=0.25, metallic=0.0),
-        "mouth_dark": dict(color=srgb("#3A1A08"), roughness=0.50, metallic=0.0),
-        "lid": dict(color=srgb("#4A3018"), roughness=0.65, metallic=0.0),
-        "eye_iris": dict(color=srgb("#3A2A80"), roughness=0.20, metallic=0.0),
+        "wood": dict(color=srgb("#4A2E1B"), roughness=0.62, metallic=0.0, texture="weave"),
+        "wood_carve": dict(color=srgb("#361E10"), roughness=0.70, metallic=0.0),
+        "brass": dict(color=srgb("#C49E3A"), roughness=0.26, metallic=0.85, texture="metal"),
+        "parchment": dict(color=srgb("#E4D2B2"), roughness=0.75, metallic=0.0, texture="cord"),
+        "parchment_edge": dict(color=srgb("#C8B28D"), roughness=0.80, metallic=0.0),
+        "cord": dict(color=srgb("#A32020"), roughness=0.55, metallic=0.0, texture="cord"),
+        "bell": dict(color=srgb("#E2B852"), roughness=0.22, metallic=0.88),
+        "peacock_blue": dict(color=srgb("#1B5E55"), roughness=0.35, metallic=0.0),
+        "mouth_dark": dict(color=srgb("#361E10"), roughness=0.50, metallic=0.0),
+        "lid": dict(color=srgb("#C8B28D"), roughness=0.65, metallic=0.0),
+        "eye_iris": dict(color=srgb("#4A2C18"), roughness=0.15, metallic=0.0),
+        "badge_plate": dict(color=srgb("#FFF6E5"), roughness=0.35, metallic=0.0),
+        "badge_rim": dict(color=srgb("#4A2E1B"), roughness=0.45, metallic=0.0),
     })
     parts = []
     shell = []
@@ -1227,151 +1338,169 @@ def build_grantha():
             shell.append(p)
         return p
 
-    # Two carved wooden feet
-    def wood_foot(sgn):
-        f = superellipsoid(0.065, 0.045, 0.090, e1=0.42, e2=0.42, seg=18, rings=8,
-                           name="wood_foot", mat="teak_wood")
-        f.move(sgn * 0.125, 0.045, 0.0)
-        f.tag("legL" if sgn < 0 else "legR")
-        return f
+    # 1. Carved Wooden Paduka Slippers
+    def paduka_foot(sgn):
+        sole = superellipsoid(0.090, 0.035, 0.140, e1=0.35, e2=0.35, seg=14, rings=8,
+                              name="paduka_sole", mat="wood")
+        sole.move(sgn * 0.175, 0.035, 0.020)
+        sole.tag("legL" if sgn < 0 else "legR")
 
-    parts.extend(mirrored(wood_foot))
+        leg = capsule(0.055, 0.100, seg=12, rings=6, name="paduka_leg", mat="wood")
+        leg.move(sgn * 0.175, 0.110, 0.0)
+        leg.tag("legL" if sgn < 0 else "legR")
 
-    # Bottom carved wooden manuscript cover
-    bottom_cover = superellipsoid(0.240, 0.025, 0.170, e1=0.28, e2=0.28, seg=24, rings=8,
-                                  name="bottom_cover", mat="teak_wood")
-    bottom_cover.move(0.0, 0.105, 0.0)
-    bottom_cover.tag("base", "hips")
-    add(bottom_cover)
+        knob = sphere(0.020, 0.024, 0.020, seg=10, rings=6, name="paduka_knob", mat="brass")
+        knob.move(sgn * 0.175, 0.070, 0.090)
+        knob.tag("legL" if sgn < 0 else "legR")
+        return [sole, leg, knob]
 
-    # Thick stack of rectangular palm-leaf / birch-bark folio leaves
-    leaf_stack = superellipsoid(0.225, 0.320, 0.155, e1=0.25, e2=0.25, seg=26, rings=16,
-                                name="leaf_stack", mat="palm_leaf")
-    leaf_stack.move(0.0, 0.445, 0.0)
-    leaf_stack.tag("hips", "spine", "chest", "head")
-    add(leaf_stack)
+    parts.extend(mirrored(paduka_foot))
 
-    # Top carved wooden manuscript cover (acting like clapping hands)
-    top_cover = superellipsoid(0.240, 0.025, 0.170, e1=0.28, e2=0.28, seg=24, rings=8,
-                               name="top_cover", mat="teak_wood")
-    top_cover.move(0.0, 0.785, 0.0)
-    top_cover.tag("head", "cover_top")
-    add(top_cover)
+    # 2. Carved Teak Base Board
+    base_board = superellipsoid(0.380, 0.045, 0.280, e1=0.20, e2=0.20, seg=18, rings=8,
+                                name="base_board", mat="wood")
+    base_board.move(0.0, 0.175, 0.0)
+    base_board.tag("hips", "base")
+    add(base_board)
 
-    # Braided red silk cord bound vertically around manuscript
-    cord = torus(0.180, 0.016, seg_major=32, seg_minor=8, name="binding_cord", mat="cord_red")
-    cord.rotate(rx=math.pi * 0.5)
-    cord.move(-0.080, 0.450, 0.0)
-    cord.tag("spine")
-    parts.append(cord)
+    # 3. Stacked Palm-Leaf Pages (Central Folio Block)
+    # We model 3 tiered slabs to simulate layered leaf striations
+    page_block = superellipsoid(0.350, 0.280, 0.250, e1=0.25, e2=0.25, seg=24, rings=12,
+                                name="page_block", mat="parchment")
+    page_block.move(0.0, 0.510, 0.0)
+    page_block.tag("spine", "chest", "head")
+    add(page_block)
 
-    # Traditional cord knot and dangling bells
-    knot = sphere(0.030, 0.030, 0.025, seg=12, rings=8, name="cord_knot", mat="cord_red")
-    knot.move(-0.080, 0.810, 0.120)
-    knot.tag("head", "cord_tassel")
-    parts.append(knot)
+    # Page edge side striation trims
+    def page_trim(sgn):
+        t = superellipsoid(0.030, 0.270, 0.245, e1=0.20, e2=0.20, seg=14, rings=8,
+                           name="page_edge", mat="parchment_edge")
+        t.move(sgn * 0.355, 0.510, 0.0)
+        t.tag("spine", "chest")
+        return t
 
-    def tassel_bell(sgn):
-        stem = capsule(0.008, 0.075, seg=8, rings=4, name="bell_stem", mat="cord_red")
-        stem.move(-0.080 + sgn * 0.025, 0.740, 0.135)
-        stem.tag("head", "cord_tassel")
-        bell = teardrop_blade(length=0.045, width=0.022, thickness=0.022, seg=10, rings=5,
-                              name="brass_bell", mat="bell_brass")
-        bell.move(-0.080 + sgn * 0.025, 0.690, 0.135)
-        bell.tag("head", "cord_tassel")
-        return [stem, bell]
+    parts.extend(mirrored(page_trim))
 
-    parts.extend(mirrored(tassel_bell))
+    # 4. Carved Teak Top Cover Board with Brass Corner Brackets
+    top_board = superellipsoid(0.380, 0.045, 0.280, e1=0.20, e2=0.20, seg=18, rings=8,
+                               name="top_board", mat="wood")
+    top_board.move(0.0, 0.825, 0.0)
+    top_board.tag("head")
+    add(top_board)
 
-    # Ornate peacock feather quill pen tucked into the top binding (Pip Teardrop methodology)
-    quill_shaft = capsule(0.009, 0.380, seg=10, rings=4, name="quill_shaft", mat="quill_shaft")
-    quill_shaft.rotate(rz=-0.35, rx=0.15)
-    quill_shaft.move(0.120, 0.950, -0.040)
-    quill_shaft.tag("head", "quill_pen")
-    parts.append(quill_shaft)
+    # 4 Brass Corner Caps on top board
+    for cx in (-0.360, 0.360):
+        for cz in (-0.260, 0.260):
+            cap = superellipsoid(0.040, 0.024, 0.040, e1=0.20, e2=0.20, seg=10, rings=6,
+                                 name="brass_cap", mat="brass")
+            cap.move(cx, 0.835, cz)
+            cap.tag("head")
+            parts.append(cap)
 
-    # Peacock feather vane
-    quill_vane = teardrop_blade(length=0.180, width=0.055, thickness=0.014, seg=14, rings=6,
-                                name="quill_vane", mat="quill_teal")
-    quill_vane.rotate(rz=-0.35, rx=0.15)
-    quill_vane.move(0.180, 1.050, -0.050)
-    quill_vane.tag("head", "quill_pen")
-    parts.append(quill_vane)
+    # 5. Wrapped Red Ceremonial Binding Cords with Hanging Brass Bells
+    cord_h = tube([(-0.385, 0.420, 0.260),
+                   (0.385, 0.420, 0.260)], 0.016, radial=10, name="cord_h", mat="cord")
+    cord_h.tag("spine")
+    parts.append(cord_h)
 
-    quill_eye = sphere(0.024, 0.035, 0.015, seg=12, rings=6, name="quill_eye", mat="quill_gold")
-    quill_eye.rotate(rz=-0.35, rx=0.15)
-    quill_eye.move(0.185, 1.060, -0.045)
-    quill_eye.tag("head", "quill_pen")
-    parts.append(quill_eye)
+    cord_v = tube([(0.280, 0.835, 0.270),
+                   (0.280, 0.175, 0.270)], 0.016, radial=10, name="cord_v", mat="cord")
+    cord_v.tag("chest")
+    parts.append(cord_v)
 
-    # Cute short book-holding arms
-    def book_arm(sgn):
-        a = tube([(sgn * 0.220, 0.420, 0.020),
-                  (sgn * 0.240, 0.350, 0.120),
-                  (sgn * 0.160, 0.330, 0.160)], 0.040, radial=12, name="book_arm", mat="teak_wood",
+    # Dangling brass jingle bells
+    bell1 = superellipsoid(0.026, 0.040, 0.026, e1=0.35, e2=0.35, seg=12, rings=6,
+                           name="bell1", mat="bell")
+    bell1.move(0.280, 0.350, 0.285)
+    bell1.tag("chest")
+    parts.append(bell1)
+
+    bell2 = superellipsoid(0.022, 0.034, 0.022, e1=0.35, e2=0.35, seg=10, rings=6,
+                           name="bell2", mat="bell")
+    bell2.move(0.320, 0.320, 0.285)
+    bell2.tag("chest")
+    parts.append(bell2)
+
+    # 6. Chubby Arms holding Peacock Feather Quill
+    # Right arm holding quill upright
+    arm_r = tube([(0.370, 0.450, 0.020),
+                  (0.420, 0.400, 0.160),
+                  (0.360, 0.440, 0.280)], 0.048, radial=12, name="arm_quill", mat="wood",
                  taper=[1.0, 0.92, 0.85])
-        a.tag("chest")
-        paw = sphere(0.038, 0.035, 0.038, seg=12, rings=8, name="book_paw", mat="teak_wood")
-        paw.move(sgn * 0.160, 0.330, 0.160)
-        paw.tag("chest")
-        return [a, paw]
+    arm_r.tag("armR", "chest")
+    parts.append(arm_r)
 
-    parts.extend(mirrored(book_arm))
+    quill_stem = capsule(0.012, 0.160, seg=10, rings=4, name="quill_stem", mat="wood")
+    quill_stem.rotate(rx=math.radians(20))
+    quill_stem.move(0.360, 0.480, 0.290)
+    quill_stem.tag("armR")
+    parts.append(quill_stem)
 
-    # Open friendly mouth
-    mouth = superellipsoid(0.040, 0.024, 0.020, e1=0.45, e2=0.45, seg=14, rings=6,
+    feather = superellipsoid(0.042, 0.090, 0.012, e1=0.35, e2=0.35, seg=12, rings=6,
+                             name="quill_feather", mat="peacock_blue")
+    feather.rotate(rx=math.radians(20))
+    feather.move(0.360, 0.580, 0.320)
+    feather.tag("armR")
+    parts.append(feather)
+
+    # Left arm resting on book side
+    arm_l = tube([(-0.370, 0.450, 0.020),
+                  (-0.410, 0.380, 0.120),
+                  (-0.360, 0.360, 0.220)], 0.048, radial=12, name="arm_left", mat="wood",
+                 taper=[1.0, 0.92, 0.85])
+    arm_l.tag("armL", "chest")
+    parts.append(arm_l)
+
+    # 7. Wise Cheerful Face Embedded in Parchment Block
+    ex, ey = 0.125, 0.590
+    parts.extend(eye_pair(shell, ex, ey, 0.065, 0.075, 0.038, M,
+                          lid=(1.10, 0.35, 0.80), lid_lift=1.35, proud=0.80, lid_mat="lid",
+                          iris_mat="eye_iris", has_blush=False))
+
+    mouth = superellipsoid(0.055, 0.026, 0.022, e1=0.45, e2=0.45, seg=12, rings=6,
                            name="mouth", mat="mouth_dark")
-    mouth.move(0.0, 0.490, 0.160)
+    mouth.move(0.0, 0.490, 0.255)
     mouth.tag("head")
     parts.append(mouth)
 
-    # Big open expressive Boba eyes with deep indigo iris & blush
-    ex, ey = 0.095, 0.585
-    parts.extend(eye_pair(shell, ex, ey, 0.055, 0.065, 0.035, M,
-                          lid=(1.10, 0.35, 0.80), lid_lift=1.35, proud=0.80, lid_mat="lid",
-                          iris_mat="eye_iris", has_blush=True))
-
-    # Blank cream badge plate on lower stack
-    poly = rounded_rect_poly(0.170, 0.100, 0.025, seg=6)
-    parts.extend(conform_plate(shell, poly, 0.260, thickness=0.016, proud=0.012,
+    # 8. Blank Display Plate centered on lower book base
+    poly = rounded_rect_poly(0.200, 0.085, 0.024, seg=8)
+    parts.extend(conform_plate(shell, poly, 0.280, thickness=0.016, proud=0.014,
                                rim=1.10, rim_proud=0.008, name="badge"))
-    pz = (probe_z(shell, 0.0, 0.260) or 0.16) + 0.012
+    pz = (probe_z(shell, 0.0, 0.280) or 0.26) + 0.014
 
-    props = dict(hipY=0.18, spineY=0.35, chestY=0.52, neckY=0.64, headY=0.72,
-                 legX=0.125, legY=0.06, baseY=0.04, badgeY=0.260, badgeZ=pz,
-                 eyeX=ex, eyeY=ey, eyeZ=(probe_z(shell, ex, ey) or 0.16),
-                 r_hips=0.24, r_spine=0.24, r_chest=0.24, r_neck=0.22, r_head=0.24,
-                 r_base=0.20, r_leg=0.08, badge_size=[0.170, 0.100])
+    props = dict(hipY=0.18, spineY=0.38, chestY=0.55, neckY=0.72, headY=0.82,
+                 legX=0.175, legY=0.08, baseY=0.04, badgeY=0.280, badgeZ=pz,
+                 eyeX=ex, eyeY=ey, eyeZ=(probe_z(shell, ex, ey) or 0.26),
+                 r_hips=0.38, r_spine=0.36, r_chest=0.36, r_neck=0.36, r_head=0.38,
+                 r_base=0.28, r_leg=0.06, badge_size=[0.200, 0.085])
 
     bones = [
-        mat_bone("cover_top", "head", (0.0, 0.785 - 0.72, 0.0), (0, 1, 0), 0.12, 0.18),
-        mat_bone("cord_tassel", "head", (-0.080, 0.700 - 0.72, 0.135), (0, -1, 0), 0.10, 0.12),
-        mat_bone("quill_pen", "head", (0.120, 0.950 - 0.72, -0.040), (0.2, 0.9, -0.2), 0.25, 0.14),
+        mat_bone("armL", "chest", (-0.370, 0.450 - 0.55, 0.020), (-1, -1, 1), 0.18, 0.14),
+        mat_bone("armR", "chest", (0.370, 0.450 - 0.55, 0.020), (1, 1, 1), 0.18, 0.14),
+        mat_bone("bell", "chest", (0.280, 0.350 - 0.55, 0.285), (0, -1, 0), 0.10, 0.12),
     ]
 
     P = dict(clips.DEFAULT_PARAMS)
-    P.update({"hop_h": 0.27, "crouch_d": 0.065, "land_d": 0.080, "squash": 0.88,
-              "gaze_yaw": -0.32, "chest_yaw": 0.38, "leg_squash": 0.72, "leg_len": 0.14,
-              "up_scale": 1.0, "breath": 0.95, "sway": 0.85, "lid_close": 1.60})
+    P.update({"hop_h": 0.22, "crouch_d": 0.075, "land_d": 0.090, "squash": 1.10,
+              "gaze_yaw": -0.28, "chest_yaw": 0.38, "leg_squash": 0.75, "leg_len": 0.10,
+              "up_scale": 1.0, "breath": 1.0, "sway": 0.8, "lid_close": 1.65})
 
     def extras(clip, t, dur, ph):
         b = ph["breath"]
         lag = ph["lag_up"]
         happy = ph["happy"]
-        imp = ph["impact"]
-        clap = 0.05 * imp - 0.08 * lag + 0.10 * happy
+        bell_swing = 0.25 * math.sin(b * 2.0 * math.pi) + 0.40 * happy - 1.5 * lag
         out = {
-            "cover_top": {"r": (clap, 0.0, 0.0)},
-            "cord_tassel": {"r": (0.08 * b - 2.0 * lag + 0.30 * happy, 0.0, 0.15 * ph["shake"])},
-            "quill_pen": {"r": (0.12 * b - 2.5 * lag + 0.40 * happy, 0.0, -0.10 * lag)},
+            "bell": {"r": (0.0, 0.0, bell_swing)},
+            "armR": {"r": (0.12 * b, 0.0, 0.20 * math.sin(b * 2.0 * math.pi))},
         }
         return out
 
-    return Char("grantha", "Grantha", "The Memory Logger",
-                "Vedic palm-leaf manuscript mascot with carved teak covers, red cord and peacock quill",
+    return Char("grantha", "Grantha", "The Ancient Codex",
+                "living palm-leaf manuscript with carved teak covers, peacock quill and brass bells",
                 M, P, props, extras, bones,
-                ["#4A3018", "#F5E6D3", "#B71C1C", "#004B49"], 1.15).finish(parts)
-
+                ["#E4D2B2", "#4A2E1B", "#C49E3A", "#A32020"], 1.15).finish(parts)
 
 # ============================================================== 7 · DHANESH ===
 def build_dhanesh():
@@ -1562,25 +1691,26 @@ def build_dhanesh():
 # ============================================================== 8 · SALYA =====
 def build_salya():
     """
-    SALYA — Indian Scaled Pangolin mascot (Audited by AI MAX & AI B).
-    Architecture & Fixes:
-    - 5 Rows of Overlapping Low-Poly Curved Shield Scales (Mochi's lobe methodology).
-    - Smooth cream underbelly contrasting against golden keratin armor.
-    - Upturned curious snout with pink sniffing nose button.
-    - Tapered curled muscular armored tail designed for spring-bounce kinematics.
-    - Boba eyes with dark iris, recessed pupil depth, dual catchlights, and blush.
+    SALYA — The Armored Pangolin Mascot (char_pangolin_art.png target).
+    - Honey-amber keratin scales (#D99538) arranged in overlapping shingle rows.
+    - Soft cream fur belly and face (#F5E6CC).
+    - Clasped "namaste" praying paws in front.
+    - Thick armored tapering tail resting on floor behind.
+    - Sweet innocent boba eyes with soft muzzle nose.
+    - Height: 0.85m.
     """
     M = dict(shared_mats())
     M.update({
-        "scale_amber": dict(color=srgb("#FF8C00"), roughness=0.20, metallic=0.0,
-                            emissive=tuple(c * 0.15 for c in srgb("#FF8F00"))),
-        "scale_edge": dict(color=srgb("#FFD54F"), roughness=0.25, metallic=0.10),
-        "skin_belly": dict(color=srgb("#FFF3E0"), roughness=0.75, metallic=0.0),
-        "claw_dark": dict(color=srgb("#3A3020"), roughness=0.40, metallic=0.0),
-        "nose_pink": dict(color=srgb("#F48FB1"), roughness=0.50, metallic=0.0),
-        "mouth_dark": dict(color=srgb("#553518"), roughness=0.45, metallic=0.0),
-        "lid": dict(color=srgb("#D48010"), roughness=0.35, metallic=0.0),
-        "eye_iris": dict(color=srgb("#1A1A15"), roughness=0.15, metallic=0.0),
+        "scale_amber": dict(color=srgb("#D99538"), roughness=0.38, metallic=0.0, texture="ceramic"),
+        "scale_dark": dict(color=srgb("#B26D1E"), roughness=0.42, metallic=0.0),
+        "fur_cream": dict(color=srgb("#F5E6CC"), roughness=0.72, metallic=0.0),
+        "nose_snout": dict(color=srgb("#7A4526"), roughness=0.55, metallic=0.0),
+        "claw": dict(color=srgb("#E4D2B2"), roughness=0.40, metallic=0.0),
+        "mouth_dark": dict(color=srgb("#3A1A10"), roughness=0.50, metallic=0.0),
+        "lid": dict(color=srgb("#D99538"), roughness=0.50, metallic=0.0),
+        "eye_iris": dict(color=srgb("#2E1C0E"), roughness=0.15, metallic=0.0),
+        "badge_plate": dict(color=srgb("#FFF6E5"), roughness=0.35, metallic=0.0),
+        "badge_rim": dict(color=srgb("#B26D1E"), roughness=0.28, metallic=0.75),
     })
     parts = []
     shell = []
@@ -1591,162 +1721,171 @@ def build_salya():
             shell.append(p)
         return p
 
-    # Chubby biped feet with digging claws
+    # 1. Stubby Pangolin Feet with Tiny Claws
     def pangolin_foot(sgn):
-        f = superellipsoid(0.080, 0.048, 0.115, e1=0.42, e2=0.42, seg=18, rings=8,
-                           name="pangolin_foot", mat="scale_amber")
-        f.move(sgn * 0.140, 0.048, 0.02)
-        f.tag("legL" if sgn < 0 else "legR")
+        foot = superellipsoid(0.095, 0.045, 0.125, e1=0.35, e2=0.35, seg=14, rings=8,
+                              name="foot", mat="scale_dark")
+        foot.move(sgn * 0.155, 0.040, 0.020)
+        foot.tag("legL" if sgn < 0 else "legR")
 
-        toes = []
-        for ti, tang in enumerate((-0.25, 0.0, 0.25)):
-            toe = capsule(0.015, 0.055, seg=10, rings=4, name=f"claw_{ti}", mat="claw_dark")
-            toe.rotate(rx=0.30)
-            toe.move(sgn * (0.140 + tang * 0.050), 0.025, 0.125)
-            toe.tag("legL" if sgn < 0 else "legR")
-            toes.append(toe)
-        return [f] + toes
+        leg_col = capsule(0.080, 0.140, seg=14, rings=6, name="leg_col", mat="scale_amber")
+        leg_col.move(sgn * 0.155, 0.130, 0.0)
+        leg_col.tag("legL" if sgn < 0 else "legR")
+
+        # 3 tiny rounded claws
+        claws = []
+        for ci, cang in enumerate((-0.24, 0.0, 0.24)):
+            claw = superellipsoid(0.016, 0.014, 0.026, e1=0.35, e2=0.35, seg=10, rings=4,
+                                  name=f"claw_{ci}", mat="claw")
+            claw.move(sgn * (0.155 + cang * 0.065), 0.020, 0.135)
+            claw.tag("legL" if sgn < 0 else "legR")
+            claws.append(claw)
+        return [foot, leg_col] + claws
 
     parts.extend(mirrored(pangolin_foot))
 
-    # Chubby pear-shaped torso (soft cream underbelly)
-    body = lathe([(0.140, 0.140), (0.240, 0.240), (0.310, 0.380), (0.315, 0.540),
-                  (0.260, 0.680), (0.190, 0.780)], seg=32, name="pangolin_body", mat="skin_belly")
-    body.tag("hips", "spine", "chest", "base")
-    add(body)
-
-    # 5 Tiers of Overlapping Shingled Pinecone Scales (Pip & Mochi Teardrop Lobe Method)
-    scale_configs = [
-        (0.780, 0.240, 0.35, 5, 0.120),
-        (0.680, 0.290, 0.25, 6, 0.135),
-        (0.540, 0.320, 0.10, 7, 0.145),
-        (0.380, 0.310, -0.05, 6, 0.140),
-        (0.240, 0.270, -0.20, 5, 0.125),
-    ]
-    for row_i, (sy, sz, srx, n_scales, s_rad) in enumerate(scale_configs):
-        for si in range(n_scales):
-            s_frac = (si / max(1, n_scales - 1)) - 0.5
-            sx = s_frac * (s_rad * 2.2)
-            blade = teardrop_blade(length=0.140, width=0.065, thickness=0.022, seg=12, rings=6,
-                                   name=f"scale_{row_i}_{si}", mat="scale_amber")
-            blade.rotate(rx=srx, ry=-s_frac * 0.45)
-            blade.move(sx, sy, -0.060 - row_i * 0.035)
-            blade.tag("spine" if row_i < 3 else "hips")
-            parts.append(blade)
-
-    # Scaled helmet hood over head
-    hood = superellipsoid(0.220, 0.140, 0.190, e1=0.40, e2=0.40, seg=22, rings=10,
-                          name="scale_hood", mat="scale_amber")
-    hood.rotate(rx=0.20)
-    hood.move(0.0, 0.900, -0.030)
-    hood.tag("head", "scale_hood")
-    add(hood)
-
-    # Curious upturned snout
-    snout_pts = [
-        (0.0, 0.860, 0.120),
-        (0.0, 0.840, 0.250),
-        (0.0, 0.810, 0.380),
-        (0.0, 0.790, 0.460),
-    ]
-    snout = tube(snout_pts, 0.090, radial=16, name="snout", mat="skin_belly",
-                 taper=[1.0, 0.85, 0.60, 0.35])
-    snout.tag("head")
-    add(snout, False)
-
-    # Pink sniffing button nose
-    nose = sphere(0.032, 0.026, 0.026, seg=12, rings=8, name="nose", mat="nose_pink")
-    nose.move(0.0, 0.790, 0.475)
-    nose.tag("head")
-    parts.append(nose)
-
-    # Muscular curled armored tail at back (key ball-spring anatomy)
+    # 2. Heavy Tapering Armored Tail Resting on Floor Behind
     tail_pts = [
-        (0.0, 0.220, -0.160),
-        (0.0, 0.140, -0.320),
-        (0.0, 0.180, -0.460),
-        (0.0, 0.320, -0.480),
-        (0.0, 0.420, -0.360),
+        (0.0, 0.280, -0.150),
+        (0.0, 0.220, -0.320),
+        (0.0, 0.140, -0.500),
+        (0.0, 0.060, -0.680),
+        (0.0, 0.035, -0.800)
     ]
-    tail = tube(tail_pts, 0.100, radial=16, name="tail_curl", mat="scale_amber",
-                taper=[1.0, 0.85, 0.70, 0.50, 0.25])
-    tail.tag("hips", "tail_curl.01", "tail_curl.02")
+    tail = tube(tail_pts, 0.140, radial=14, name="armored_tail", mat="scale_amber",
+                taper=[1.0, 0.85, 0.65, 0.40, 0.18])
+    tail.tag("base", "hips")
     parts.append(tail)
 
-    # Short curved front paws
-    def pangolin_arm(sgn):
-        a = tube([(sgn * 0.220, 0.540, 0.050),
-                  (sgn * 0.250, 0.440, 0.160),
-                  (sgn * 0.150, 0.380, 0.220)], 0.045, radial=12, name="pangolin_arm", mat="scale_amber",
-                 taper=[1.0, 0.90, 0.80])
+    # 3. Chubby Torso with Cream Fur Belly
+    belly_profile = [
+        (0.180, 0.140),
+        (0.290, 0.240),
+        (0.350, 0.380),  # Max belly
+        (0.340, 0.520),
+        (0.280, 0.640),
+        (0.210, 0.740),
+        (0.150, 0.800)
+    ]
+    belly = lathe(belly_profile, seg=24, name="pangolin_body", mat="scale_amber")
+    belly.tag("hips", "spine", "chest", "head")
+    add(belly)
+
+    # Cream Fur Belly Inset Plate
+    fur_chest = superellipsoid(0.230, 0.260, 0.140, e1=0.45, e2=0.45, seg=16, rings=8,
+                               name="fur_chest", mat="fur_cream")
+    fur_chest.move(0.0, 0.420, 0.220)
+    fur_chest.tag("spine", "chest")
+    parts.append(fur_chest)
+
+    # 4. Head with Soft Cream Muzzle and Snout
+    head = sphere(0.260, 0.240, 0.250, seg=22, rings=14, name="head", mat="scale_amber")
+    head.move(0.0, 0.860, 0.060)
+    head.tag("head")
+    add(head)
+
+    muzzle = superellipsoid(0.140, 0.110, 0.150, e1=0.40, e2=0.40, seg=14, rings=8,
+                            name="muzzle", mat="fur_cream")
+    muzzle.move(0.0, 0.820, 0.240)
+    muzzle.tag("head")
+    parts.append(muzzle)
+
+    nose_snout = sphere(0.038, 0.026, 0.030, seg=12, rings=6, name="nose", mat="nose_snout")
+    nose_snout.move(0.0, 0.840, 0.365)
+    nose_snout.tag("head")
+    parts.append(nose_snout)
+
+    # Small rounded ears
+    def pangolin_ear(sgn):
+        e = superellipsoid(0.022, 0.045, 0.035, e1=0.45, e2=0.45, seg=10, rings=6,
+                           name="ear", mat="fur_cream")
+        e.move(sgn * 0.240, 0.920, -0.020)
+        e.rotate(ry=sgn * 0.40, rz=sgn * 0.20)
+        e.tag("head")
+        return e
+
+    parts.extend(mirrored(pangolin_ear))
+
+    # 5. Overlapping Honey-Amber Keratin Shingle Scales on Back & Head
+    for ring_i, ry_pos in enumerate((0.30, 0.42, 0.54, 0.66, 0.78, 0.90, 0.98)):
+        num_s = 5 + ring_i
+        rad_scale = 0.32 - ring_i * 0.025
+        for si in range(num_s):
+            ang = -math.pi * 0.75 + (si / max(1, num_s - 1)) * math.pi * 1.50
+            sx = rad_scale * math.sin(ang)
+            sz = -rad_scale * math.cos(ang) * 0.85
+            sc = superellipsoid(0.045, 0.065, 0.016, e1=0.35, e2=0.35, seg=10, rings=5,
+                                name=f"scale_{ring_i}_{si}", mat="scale_amber")
+            sc.rotate(rx=math.radians(-25), ry=-ang)
+            sc.move(sx, ry_pos, sz)
+            sc.tag("chest" if ry_pos < 0.75 else "head")
+            parts.append(sc)
+
+    # 6. Clasped "Namaste" Paws in Front
+    def clasped_arm(sgn):
+        a = tube([(sgn * 0.260, 0.620, 0.060),
+                  (sgn * 0.240, 0.540, 0.220),
+                  (sgn * 0.070, 0.550, 0.310)], 0.052, radial=12, name="arm_clasped", mat="scale_amber",
+                 taper=[1.0, 0.92, 0.85])
         a.tag("armL" if sgn < 0 else "armR", "chest")
-        paw = sphere(0.040, 0.035, 0.040, seg=12, rings=8, name="paw", mat="skin_belly")
-        paw.move(sgn * 0.150, 0.380, 0.220)
+
+        paw = superellipsoid(0.045, 0.055, 0.040, e1=0.35, e2=0.35, seg=12, rings=6,
+                             name="clasped_paw", mat="fur_cream")
+        paw.rotate(rz=sgn * math.radians(25))
+        paw.move(sgn * 0.050, 0.560, 0.320)
         paw.tag("armL" if sgn < 0 else "armR", "chest")
         return [a, paw]
 
-    parts.extend(mirrored(pangolin_arm))
+    parts.extend(mirrored(clasped_arm))
 
-    # Sweet open mouth
-    mouth = superellipsoid(0.038, 0.022, 0.020, e1=0.45, e2=0.45, seg=14, rings=6,
-                           name="mouth", mat="mouth_dark")
-    mouth.move(0.0, 0.740, 0.360)
-    mouth.tag("head")
-    parts.append(mouth)
-
-    # Shy, endearing Boba eyes with recessed pupil & blush
-    ex, ey = 0.105, 0.850
-    parts.extend(eye_pair(shell, ex, ey, 0.055, 0.062, 0.035, M,
+    # 7. Big Sweet Boba Eyes
+    ex, ey = 0.115, 0.880
+    parts.extend(eye_pair(shell, ex, ey, 0.062, 0.068, 0.038, M,
                           lid=(1.10, 0.35, 0.80), lid_lift=1.35, proud=0.80, lid_mat="lid",
-                          iris_mat="eye_iris", has_blush=True))
+                          iris_mat="eye_iris", has_blush=False))
 
-    # Blank cream badge on lower chest
-    poly = rounded_rect_poly(0.165, 0.095, 0.025, seg=6)
-    parts.extend(conform_plate(shell, poly, 0.250, thickness=0.016, proud=0.012,
-                               rim=1.10, rim_proud=0.008, name="badge"))
-    pz = (probe_z(shell, 0.0, 0.250) or 0.28) + 0.012
+    # 8. Blank Belly Badge Conformed to Fur Belly
+    poly = rounded_rect_poly(0.170, 0.095, 0.026, seg=8)
+    parts.extend(conform_plate(shell, poly, 0.350, thickness=0.016, proud=0.014,
+                               rim=1.12, rim_proud=0.008, name="badge"))
+    pz = (probe_z(shell, 0.0, 0.350) or 0.34) + 0.014
 
-    props = dict(hipY=0.18, spineY=0.34, chestY=0.52, neckY=0.68, headY=0.82,
-                 legX=0.140, legY=0.06, baseY=0.04, badgeY=0.250, badgeZ=pz,
-                 eyeX=ex, eyeY=ey, eyeZ=(probe_z(shell, ex, ey) or 0.25),
-                 r_hips=0.30, r_spine=0.30, r_chest=0.28, r_neck=0.22, r_head=0.24,
-                 r_base=0.22, r_leg=0.08, badge_size=[0.165, 0.095])
+    props = dict(hipY=0.18, spineY=0.35, chestY=0.55, neckY=0.72, headY=0.86,
+                 legX=0.155, legY=0.08, baseY=0.04, badgeY=0.350, badgeZ=pz,
+                 eyeX=ex, eyeY=ey, eyeZ=(probe_z(shell, ex, ey) or 0.32),
+                 r_hips=0.35, r_spine=0.35, r_chest=0.32, r_neck=0.26, r_head=0.26,
+                 r_base=0.26, r_leg=0.08, badge_size=[0.170, 0.095])
 
     bones = [
-        mat_bone("tail_curl.01", "hips", (0.0, 0.180 - 0.18, -0.320), (0, -0.3, -0.9), 0.20, 0.18),
-        mat_bone("tail_curl.02", "tail_curl.01", (0.0, 0.280 - 0.18, -0.160), (0, 0.8, 0.2), 0.18, 0.14),
-        mat_bone("scale_hood", "head", (0.0, 0.900 - 0.82, -0.030), (0, 0.8, -0.4), 0.18, 0.18),
-        mat_bone("armL", "chest", (-0.220, 0.540 - 0.52, 0.050), (-0.4, -0.8, 0.4), 0.20, 0.12),
-        mat_bone("armR", "chest", (0.220, 0.540 - 0.52, 0.050), (0.4, -0.8, 0.4), 0.20, 0.12),
+        mat_bone("armL", "chest", (-0.260, 0.620 - 0.55, 0.060), (-1, -1, 1), 0.18, 0.14),
+        mat_bone("armR", "chest", (0.260, 0.620 - 0.55, 0.060), (1, -1, 1), 0.18, 0.14),
+        mat_bone("tail.01", "base", (0.0, 0.220 - 0.04, -0.320), (0, -1, -1), 0.20, 0.16),
+        mat_bone("tail.02", "tail.01", (0.0, -0.10, -0.250), (0, 0, -1), 0.20, 0.14),
     ]
 
     P = dict(clips.DEFAULT_PARAMS)
-    P.update({"hop_h": 0.30, "crouch_d": 0.085, "land_d": 0.100, "squash": 1.10,
-              "gaze_yaw": -0.35, "chest_yaw": 0.40, "leg_squash": 0.60, "leg_len": 0.14,
-              "up_scale": 1.0, "breath": 1.0, "sway": 0.90, "lid_close": 1.60})
+    P.update({"hop_h": 0.22, "crouch_d": 0.075, "land_d": 0.095, "squash": 1.14,
+              "gaze_yaw": -0.30, "chest_yaw": 0.40, "leg_squash": 0.72, "leg_len": 0.12,
+              "up_scale": 1.0, "breath": 1.0, "sway": 0.85, "lid_close": 1.65})
 
     def extras(clip, t, dur, ph):
         b = ph["breath"]
         lag = ph["lag_up"]
+        imp = ph["impact"]
         happy = ph["happy"]
-        air = ph.get("air", 0.0)
-        crouch = max(0.0, -ph.get("up", 0.0) / 0.10)
-        # Tight ball curl during jump and crouch
-        tail_spring = 0.50 * crouch - 0.80 * air + 0.30 * happy
+        tail_lift = 0.15 * b - 1.8 * lag + 0.35 * imp
         out = {
-            "tail_curl.01": {"r": (tail_spring, 0.0, 0.0)},
-            "tail_curl.02": {"r": (tail_spring * 1.3, 0.0, 0.0)},
-            "scale_hood": {"r": (0.08 * b - 1.2 * lag, 0.0, 0.0)},
-            "armL": {"r": (0.2 * air - 0.1 * happy, 0.0, -0.15 * lag)},
-            "armR": {"r": (0.2 * air - 0.1 * happy, 0.0, 0.15 * lag)},
+            "tail.01": {"r": (tail_lift, 0.0, 0.10 * math.sin(b * 2.0 * math.pi))},
+            "tail.02": {"r": (0.5 * tail_lift, 0.0, 0.15 * math.sin(b * 2.0 * math.pi))},
+            "armL": {"r": (0.08 * b, 0.0, 0.10 * happy)},
+            "armR": {"r": (0.08 * b, 0.0, -0.10 * happy)},
         }
         return out
 
-    return Char("salya", "Salya", "The Invariance Defense",
-                "Indian Scaled Pangolin mascot with amber keratin pinecone armor and spring curl tail",
+    return Char("salya", "Salya", "The Scaled Sentinel",
+                "armored honey-amber pangolin with overlapping shingle scales and namaste hands",
                 M, P, props, extras, bones,
-                ["#FF8C00", "#FFD54F", "#FFF3E0", "#F48FB1"], 0.92).finish(parts)
-
+                ["#D99538", "#B26D1E", "#F5E6CC", "#E4D2B2"], 0.88).finish(parts)
 
 BUILDERS = {
     "gaja": build_gaja,
@@ -1758,3 +1897,5 @@ BUILDERS = {
     "dhanesh": build_dhanesh,
     "salya": build_salya,
 }
+
+ROSTER_ORDER = ["gaja", "mayur", "diya", "patra", "kumbha", "grantha", "dhanesh", "salya"]
