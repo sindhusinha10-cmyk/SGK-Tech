@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Bubble-Sort Squad — live model viewer</title>
+<style>
+  :root{
+    --bg:#0B0D12; --ink:#F2EEE6; --muted:#8C8798; --pop:#6FD9BE; --line:rgba(255,255,255,.10);
+    --panel:rgba(16,18,24,.72);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--ink);
+    font:400 15px/1.45 "Outfit",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;}
+  #stage{position:fixed;inset:0}
+  canvas{display:block}
+  .hud{position:fixed;z-index:5;background:var(--panel);border:1px solid var(--line);
+    border-radius:14px;backdrop-filter:blur(10px)}
+  #title{left:20px;top:18px;padding:14px 18px}
+  #title h1{margin:0 0 4px;font-size:19px;letter-spacing:.2px}
+  #title p{margin:0;color:var(--muted);font-size:12.5px}
+  #values{left:20px;top:104px;padding:12px 16px;display:flex;gap:10px;align-items:center}
+  .chip{min-width:34px;text-align:center;padding:5px 9px;border-radius:9px;
+    background:rgba(255,255,255,.05);border:1px solid var(--line);font-weight:600;font-size:14px;
+    transition:transform .18s ease, background .18s ease, border-color .18s ease}
+  .chip.on{background:rgba(111,217,190,.16);border-color:rgba(111,217,190,.55);transform:translateY(-3px)}
+  .chip.done{background:rgba(255,255,255,.10)}
+  #ctl{right:20px;bottom:20px;padding:12px;display:flex;gap:8px;flex-wrap:wrap;max-width:min(560px,80vw)}
+  button{font:inherit;font-size:13px;color:var(--ink);background:rgba(255,255,255,.06);
+    border:1px solid var(--line);padding:8px 13px;border-radius:10px;cursor:pointer;transition:.15s}
+  button:hover{background:rgba(255,255,255,.12)}
+  button.primary{background:rgba(111,217,190,.18);border-color:rgba(111,217,190,.5)}
+  button:disabled{opacity:.45;cursor:default}
+  #status{left:20px;bottom:20px;padding:11px 16px;font-size:13px;color:var(--muted);min-width:260px}
+  #status b{color:var(--pop);font-weight:600}
+  #legend{right:20px;top:18px;padding:12px 16px;font-size:12px;color:var(--muted);max-width:250px}
+  #legend b{color:var(--ink);font-weight:600}
+  #legend span{color:var(--pop)}
+  .slotnum{position:fixed;z-index:4;transform:translate(-50%,-50%);pointer-events:none;
+    font:600 22px/1 "Outfit",system-ui,sans-serif;color:#2A2018;text-align:center;
+    text-shadow:0 1px 0 rgba(255,255,255,.35)}
+  #err{position:fixed;inset:auto 20px 20px 20px;padding:14px 18px;z-index:9;display:none;
+    background:#3a1620;border:1px solid #7d2b3c;border-radius:12px;font-size:13px}
+  @media (max-width:720px){ #legend{display:none} #values{top:auto;bottom:78px;left:20px} }
+
+  .vtab{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#F2EEE6;padding:6px 14px;border-radius:20px;cursor:pointer;font-size:13px;transition:all .15s ease;}
+  .vtab:hover{background:rgba(255,255,255,0.15);}
+  .vtab.on{background:#6FD9BE;color:#0B0D12;border-color:#6FD9BE;font-weight:600;}
+</style>
+</head>
+<body>
+<div id="stage"></div>
+
+<div class="hud" id="title">
+  <h1>Bubble-Sort Squad — Indian Heritage Mascots</h1>
+  <p>Gaja · Diya · Kumbha · Grantha · Dhanesh · Salya · Mayur | Live 3D GLB Models & FAISS Knowledge Base</p>
+</div>
+
+<div class="hud" id="values"><span style="color:var(--muted);font-size:12.5px">array</span><div id="chips" style="display:flex;gap:8px"></div></div>
+
+<div class="hud" id="legend">
+  <div><b>Clips driving this</b></div>
+  <div><span>Idle</span> — breathing, blinks</div>
+  <div><span>GlanceL / GlanceR</span> — the compare look</div>
+  <div><span>Hop → Land</span> — the in-place swap</div>
+  <div><span>NoSwap</span> — already in order</div>
+  <div><span>Success</span> — array sorted</div>
+</div>
+
+<div class="hud" id="ctl">
+  <button class="primary" id="btnPlay">▶ Run bubble sort</button>
+  <button id="btnStep">Step</button>
+  <button id="btnShuffle">Shuffle</button>
+  <button id="btnSquad" style="background:rgba(111,217,190,.15);border-color:#6FD9BE;color:#6FD9BE">Squad: 8 Mascots</button>
+  <button id="btnSpeed">Speed ×1</button>
+    <button id="btnFocus" style="background:rgba(111,217,190,0.2);border-color:#6FD9BE;font-weight:bold">🔍 Inspect Mascot</button>
+    <button id="btnViews" style="background:rgba(255,180,50,0.15);border-color:#FFB432;color:#FFB432">📷 Turnaround Views</button>
+<button id="btnSpin">Auto-orbit</button>
+</div>
+
+<div class="hud" id="status">ready — <b>drag</b> to orbit, <b>scroll</b> to zoom</div>
+<div id="err"></div>
+
+
+<!-- Turnaround Views Modal -->
+<div id="viewsModal" style="display:none;position:fixed;inset:0;z-index:999;background:rgba(8,10,14,0.92);backdrop-filter:blur(12px);flex-direction:column;align-items:center;padding:24px;overflow-y:auto;box-sizing:border-box;">
+  <div style="width:100%;max-width:1100px;display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+    <div>
+      <h2 style="margin:0;font-size:20px;color:#F2EEE6;letter-spacing:0.3px;">Mascot Multi-View Turnaround Sheets (Blender / Cycles)</h2>
+      <p style="margin:4px 0 0;font-size:13px;color:#8C8798;">Real orthographic Front, Side, and Back renders directly from native 3D assets</p>
+    </div>
+    <button id="btnCloseModal" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:8px;padding:8px 16px;cursor:pointer;font-weight:600;">✕ Close</button>
+  </div>
+
+  <!-- Character Tab Selector -->
+  <div id="viewTabs" style="display:flex;gap:8px;flex-wrap:wrap;max-width:1100px;width:100%;margin-bottom:18px;">
+    <button class="vtab on" data-img="shots/blender_views_gaja.png" data-name="Gaja (Elephant)">Gaja</button>
+    <button class="vtab" data-img="shots/blender_views_diya.png" data-name="Diya (Earthen Lamp)">Diya</button>
+    <button class="vtab" data-img="shots/blender_views_kumbha.png" data-name="Kumbha (Brass Kalash)">Kumbha</button>
+    <button class="vtab" data-img="shots/blender_views_grantha.png" data-name="Grantha (Palm-Leaf Manuscript)">Grantha</button>
+    <button class="vtab" data-img="shots/blender_views_dhanesh.png" data-name="Dhanesh (Hornbill)">Dhanesh</button>
+    <button class="vtab" data-img="shots/blender_views_salya.png" data-name="Salya (Pangolin)">Salya</button>
+    <button class="vtab" data-img="shots/blender_views_mayur.png" data-name="Mayur (Peacock)">Mayur</button>
+    <button class="vtab" data-img="shots/roster_sheet.png" data-name="Full Studio Roster">Studio Roster</button>
+    <button class="vtab" data-img="shots/silhouettes.png" data-name="Solid-Black Silhouettes">Silhouettes</button>
+  </div>
+
+  <!-- Active Sheet Image Container -->
+  <div style="width:100%;max-width:1100px;background:#101218;border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:12px;display:flex;flex-direction:column;align-items:center;box-shadow:0 12px 36px rgba(0,0,0,0.6);">
+    <div id="modalTitle" style="align-self:flex-start;font-size:14px;font-weight:600;color:#6FD9BE;margin-bottom:8px;">Gaja (Elephant) — Front / Side / Back Orthographic Views</div>
+    <img id="modalImg" src="shots/blender_views_gaja.png" style="width:100%;height:auto;border-radius:8px;display:block;" alt="Mascot Views" />
+  </div>
+</div>
+
+<script src="vendor/three.min.js"></script>
+<script src="vendor/GLTFLoader.js"></script>
+<script>
+(function () {
+  'use strict';
+  var T = THREE;
+  if (!T || !T.GLTFLoader) {
+    var e = document.getElementById('err');
+    e.style.display = 'block';
+    e.innerHTML = '<b>three.js r128 could not be loaded.</b> Make sure <code>vendor/three.min.js</code> ' +
+                  'and <code>vendor/GLTFLoader.js</code> sit next to this file.';
+    return;
+  }
+
+  /* ---------------------------------------------------------------- config */
+  var SPACING = 1.45;                       // slot pitch, matches the sheets
+  var ALL_IDS = ['gaja', 'diya', 'kumbha', 'grantha', 'dhanesh', 'salya', 'mayur', 'patra'];
+  var IDS = ['gaja', 'diya', 'kumbha', 'grantha', 'dhanesh', 'salya', 'mayur', 'patra'];
+  var START = [8, 3, 7, 1, 5, 2, 6, 4];
+  var CAM = { yaw: 0.0, pitch: 0.30, dist: 6.8, target: { x: 0, y: 0.62, z: 0 } };
+
+  var stage = document.getElementById('stage');
+  var renderer = new T.WebGLRenderer({ antialias: true, alpha: false });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.setSize(innerWidth, innerHeight);
+  renderer.outputEncoding = T.sRGBEncoding;
+  renderer.toneMapping = T.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.05;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = T.PCFSoftShadowMap;
+  stage.appendChild(renderer.domElement);
+
+  var scene = new T.Scene();
+  scene.background = new T.Color(0x0B0D12);
+  scene.fog = new T.Fog(0x0B0D12, 7, 15);
+  var camera = new T.PerspectiveCamera(34, innerWidth / innerHeight, 0.1, 100);
+
+
+  /* -------------------------------------------------------------- Audio & FX (Web Audio API) */
+  var audioCtx = null;
+  function getAudio() {
+    if (!audioCtx) {
+      try {
+        var AC = window.AudioContext || window.webkitAudioContext;
+        if (AC) audioCtx = new AC();
+      } catch (e) {}
+    }
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+    return audioCtx;
+  }
+
+  // Global user gesture listener for immediate zero-lag audio unlock
+  ['pointerdown', 'touchstart', 'click', 'keydown'].forEach(function(ev) {
+    window.addEventListener(ev, function() {
+      getAudio();
+    }, { once: true, passive: true });
+  });
+
+  function playSound(type) {
+    var ctx = getAudio();
+    if (!ctx) return;
+    var t0 = ctx.currentTime;
+
+    if (type === 'gaja_stomp') {
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(120, t0);
+      osc.frequency.exponentialRampToValueAtTime(28, t0 + 0.35);
+      gain.gain.setValueAtTime(0.65, t0);
+      gain.gain.exponentialRampToValueAtTime(0.001, t0 + 0.40);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(t0);
+      osc.stop(t0 + 0.40);
+    } else if (type === 'kumbha_chime') {
+      [587.33, 880.0, 1174.66, 1760.0].forEach(function(freq, i) {
+        var osc = ctx.createOscillator();
+        var gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, t0);
+        var vol = 0.28 / (i + 1);
+        gain.gain.setValueAtTime(vol, t0);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.85 + i * 0.15);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(t0);
+        osc.stop(t0 + 1.2);
+      });
+    } else if (type === 'grantha_clap') {
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(320, t0);
+      osc.frequency.exponentialRampToValueAtTime(80, t0 + 0.08);
+      gain.gain.setValueAtTime(0.40, t0);
+      gain.gain.exponentialRampToValueAtTime(0.001, t0 + 0.09);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(t0);
+      osc.stop(t0 + 0.10);
+    } else if (type === 'whoosh') {
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(220, t0);
+      osc.frequency.exponentialRampToValueAtTime(540, t0 + 0.25);
+      gain.gain.setValueAtTime(0.18, t0);
+      gain.gain.exponentialRampToValueAtTime(0.001, t0 + 0.32);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(t0);
+      osc.stop(t0 + 0.35);
+    }
+  }
+
+  // Camera Shake
+  var camShake = { time: 0, dur: 0, amp: 0 };
+  function triggerCameraShake(amp, dur) {
+    camShake.amp = amp || 0.04;
+    camShake.dur = dur || 0.35;
+    camShake.time = camShake.dur;
+  }
+
+  // Particle System (Embers & Dust)
+  var particles = [];
+  var pGeo = new T.BufferGeometry();
+  var MAX_P = 200;
+  var pPos = new Float32Array(MAX_P * 3);
+  var pCol = new Float32Array(MAX_P * 3);
+  pGeo.setAttribute('position', new T.BufferAttribute(pPos, 3));
+  pGeo.setAttribute('color', new T.BufferAttribute(pCol, 3));
+  var pMat = new T.PointsMaterial({
+    size: 0.065,
+    vertexColors: true,
+    transparent: true,
+    opacity: 0.85,
+    blending: T.AdditiveBlending,
+    depthWrite: false
+  });
+  var pPoints = new T.Points(pGeo, pMat);
+  scene.add(pPoints);
+
+  function spawnDustPuff(x, z, count) {
+    count = count || 16;
+    for (var i = 0; i < count; i++) {
+      if (particles.length >= MAX_P) particles.shift();
+      var ang = Math.random() * Math.PI * 2;
+      var spd = 0.8 + Math.random() * 1.4;
+      particles.push({
+        x: x, y: 0.04, z: z,
+        vx: Math.cos(ang) * spd,
+        vy: 0.4 + Math.random() * 0.6,
+        vz: Math.sin(ang) * spd,
+        life: 0.45 + Math.random() * 0.25,
+        maxLife: 0.70,
+        r: 0.75, g: 0.70, b: 0.62
+      });
+    }
+  }
+
+  function spawnFlameEmbers(x, y, z, count) {
+    count = count || 6;
+    for (var i = 0; i < count; i++) {
+      if (particles.length >= MAX_P) particles.shift();
+      particles.push({
+        x: x + (Math.random() - 0.5) * 0.12,
+        y: y,
+        z: z + (Math.random() - 0.5) * 0.12,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: 0.8 + Math.random() * 0.8,
+        vz: (Math.random() - 0.5) * 0.4,
+        life: 0.35 + Math.random() * 0.20,
+        maxLife: 0.55,
+        r: 1.0, g: 0.55, b: 0.12
+      });
+    }
+  }
+
+  function updateParticles(dt) {
+    for (var i = particles.length - 1; i >= 0; i--) {
+      var p = particles[i];
+      p.life -= dt;
+      if (p.life <= 0) {
+        particles.splice(i, 1);
+        continue;
+      }
+      p.x += p.vx * dt;
+      p.y += p.vy * dt;
+      p.z += p.vz * dt;
+      p.vy -= 2.2 * dt;
+    }
+    var positions = pGeo.attributes.position.array;
+    var colors = pGeo.attributes.color.array;
+    for (var j = 0; j < MAX_P; j++) {
+      if (j < particles.length) {
+        var pt = particles[j];
+        positions[j * 3] = pt.x;
+        positions[j * 3 + 1] = pt.y;
+        positions[j * 3 + 2] = pt.z;
+        var fade = Math.max(0, pt.life / pt.maxLife);
+        colors[j * 3] = pt.r * fade;
+        colors[j * 3 + 1] = pt.g * fade;
+        colors[j * 3 + 2] = pt.b * fade;
+      } else {
+        positions[j * 3] = 0;
+        positions[j * 3 + 1] = -100;
+        positions[j * 3 + 2] = 0;
+      }
+    }
+    pGeo.attributes.position.needsUpdate = true;
+    pGeo.attributes.color.needsUpdate = true;
+  }
+
+  /* ------------------------------------------------------------- lighting */
+  scene.add(new T.HemisphereLight(0x5A6478, 0x0E0F14, 0.75));
+  var key = new T.DirectionalLight(0xFFF3E2, 2.1);
+  key.position.set(3.4, 6.0, 4.2);
+  key.castShadow = true;
+  key.shadow.mapSize.set(2048, 2048);
+  key.shadow.camera.near = 1; key.shadow.camera.far = 20;
+  key.shadow.camera.left = -4; key.shadow.camera.right = 4;
+  key.shadow.camera.top = 4; key.shadow.camera.bottom = -1;
+  key.shadow.bias = -0.0012;
+  key.shadow.camera.updateProjectionMatrix();
+  key.target.position.set(0, 0.5, 0);
+  scene.add(key);
+  scene.add(key.target);
+  var fill = new T.DirectionalLight(0x9FB6E8, 0.55); fill.position.set(-4.5, 2.4, 2.0); scene.add(fill);
+  var rim = new T.DirectionalLight(0xDCE9FF, 1.0); rim.position.set(-1.2, 3.2, -5.0); scene.add(rim);
+  var bounce = new T.DirectionalLight(0x6FD9BE, 0.18); bounce.position.set(0, -2, 1.2); scene.add(bounce);
+
+  /* ---------------------------------------------------------------- floor */
+  var floor = new T.Mesh(
+    new T.CircleGeometry(14, 72),
+    new T.MeshStandardMaterial({ color: 0x15171E, roughness: 0.92, metalness: 0.0 })
+  );
+  floor.rotation.x = -Math.PI / 2;
+  floor.receiveShadow = true;
+  scene.add(floor);
+  var grid = new T.GridHelper(14, 14, 0x2A2E3A, 0x1B1E27);
+  grid.position.y = 0.002;
+  scene.add(grid);
+  // slot pads
+  for (var s = 0; s < IDS.length; s++) {
+    var pad = new T.Mesh(new T.RingGeometry(0.34, 0.36, 48),
+      new T.MeshBasicMaterial({ color: 0x2C3140, transparent: true, opacity: 0.85 }));
+    pad.rotation.x = -Math.PI / 2;
+    pad.position.set((s - 2) * SPACING, 0.003, 0);
+    scene.add(pad);
+  }
+
+  /* --------------------------------------------------------------- loading */
+  var chars = {};        // id -> { root, mixer, actions, bone(badge), el }
+  var order = [];        // array slots: { value, id }
+  var loader = new T.GLTFLoader();
+  var chips = document.getElementById('chips');
+  var chipEls = [];
+  var statusEl = document.getElementById('status');
+
+  function setStatus(html) { statusEl.innerHTML = html; }
+
+  function buildChips(values) {
+    chips.innerHTML = '';
+    chipEls = values.map(function (v) {
+      var d = document.createElement('div');
+      d.className = 'chip';
+      d.textContent = v;
+      chips.appendChild(d);
+      return d;
+    });
+  }
+
+  var loadedCount = 0;
+  function load(id) {
+    return new Promise(function (res, rej) {
+      loader.load('models/' + id + '.glb?v=v2_target_' + 1791406174, function (g) {
+        var root = g.scene;
+        root.traverse(function (o) {
+          if (o.isMesh) {
+            o.castShadow = true;
+            o.receiveShadow = false;
+            var mats = Array.isArray(o.material) ? o.material : [o.material];
+            mats.forEach(function (m) {
+              if (!m) return;
+              if (m.map) m.map.encoding = T.sRGBEncoding;
+              m.envMapIntensity = 1.1;
+              if (m.name && m.name.indexOf('eye') !== -1) {
+                // Boba Eyes: glazed clearcoat reflection
+                m.roughness = 0.08;
+                m.metalness = 0.05;
+              } else if (m.name && (m.name.indexOf('skin') !== -1 || m.name.indexOf('fur') !== -1 || m.name.indexOf('ear') !== -1)) {
+                // Velvet peach-fuzz plush finish
+                m.roughness = 0.58;
+              } else if (m.name && m.name.indexOf('flame') !== -1) {
+                // Diya's twisting flame self-glow
+                m.roughness = 0.15;
+              }
+              if (m.transparent) { m.depthWrite = false; m.side = T.DoubleSide; }
+            });
+          }
+        });
+        var mixer = new T.AnimationMixer(root);
+        var actions = {};
+        g.animations.forEach(function (clip) {
+          var a = mixer.clipAction(clip);
+          a.clampWhenFinished = clip.name !== 'Idle';
+          a.setLoop(clip.name === 'Idle' ? T.LoopRepeat : T.LoopOnce, 1);
+          actions[clip.name] = a;
+        });
+        var el = document.createElement('div');
+        el.className = 'slotnum';
+        document.body.appendChild(el);
+        chars[id] = { root: root, mixer: mixer, actions: actions,
+                      bone: root.getObjectByName('badge'), el: el,
+                      meta: (g.scene.getObjectByName(id + '_mesh') || {}).userData || {} };
+        scene.add(root);
+        loadedCount++;
+        setStatus('loading models… (' + loadedCount + '/' + IDS.length + ')');
+        res();
+      }, undefined, function (err) {
+        console.error('Error loading ' + id, err);
+        rej(err);
+      });
+    });
+  }
+
+  /* ------------------------------------------------------------- playback */
+  function play(clip, id, fade) {
+    var c = chars[id];
+    var a = c.actions[clip];
+    if (!a) return;
+    Object.keys(c.actions).forEach(function (k) {
+      if (k !== clip && c.actions[k].isRunning()) c.actions[k].fadeOut(fade || 0.14);
+    });
+    a.reset();
+    a.setEffectiveWeight(1);
+    a.fadeIn(fade || 0.10).play();
+  }
+
+  /* --------------------------------------------------------- sort machine */
+  var S = { playing: false, speed: 1, step: 0, t: 0, steps: [], slotX: [0,0,0,0,0] };
+
+  function makeSteps(values) {
+    var arr = values.slice();
+    var steps = [];
+    var n = arr.length;
+    for (var pass = 0; pass < n - 1; pass++) {
+      var swapped = false;
+      for (var i = 0; i < n - 1 - pass; i++) {
+        var j = i + 1;
+        steps.push({ kind: 'compare', i: i, j: j, dur: 0.75 });
+        if (arr[i] > arr[j]) {
+          steps.push({ kind: 'swap', i: i, j: j, dur: 0.62 });
+          var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+          swapped = true;
+        } else {
+          steps.push({ kind: 'noswap', i: i, j: j, dur: 0.85 });
+        }
+      }
+      if (!swapped) break;
+    }
+    steps.push({ kind: 'sorted', dur: 1.35 });
+    return steps;
+  }
+
+  function idAtSlot(i) { return order[i].id; }
+  function valueAtSlot(i) { return order[i].value; }
+
+  function startStep(st) {
+    var a = idAtSlot(st.i), b = idAtSlot(st.j);
+    if (st.kind === 'compare') {
+      play('GlanceR', a, 0.12);
+      play('GlanceL', b, 0.12);
+      setStatus('comparing <b>' + valueAtSlot(st.i) + '</b> with <b>' + valueAtSlot(st.j) +
+                '</b> — ' + (valueAtSlot(st.i) > valueAtSlot(st.j) ? 'swap needed' : 'already in order'));
+      chipEls.forEach(function (c, k) { c.classList.toggle('on', k === st.i || k === st.j); });
+    } else if (st.kind === 'swap') {
+      playSound('whoosh');
+      play('Hop', a, 0.08); play('Hop', b, 0.08);
+      st.fromA = S.slotX[st.i]; st.fromB = S.slotX[st.j];
+      st.done = false;
+      if (a === 'diya') {
+        spawnFlameEmbers(S.slotX[st.i], 0.75, 0, 14);
+      }
+      if (b === 'diya') {
+        spawnFlameEmbers(S.slotX[st.j], 0.75, 0, 14);
+      }
+      setStatus('swap — both <b>hop</b>, the slot translation carries them past each other');
+    } else if (st.kind === 'noswap') {
+      play('NoSwap', a, 0.12); play('NoSwap', b, 0.12);
+      setStatus('<b>no swap</b> — these two are already in order');
+    } else if (st.kind === 'sorted') {
+      IDS.forEach(function (id, k) { setTimeout(function () { play('Success', id, 0.12); },
+        k * 90); });
+      chipEls.forEach(function (c) { c.classList.remove('on'); c.classList.add('done'); });
+      setStatus('<b>sorted!</b> 1 · 3 · 5 · 7 · 9 — every character celebrates');
+    }
+  }
+
+  function tickStep(dt) {
+    if (S.step >= S.steps.length) {
+      S.playing = false;
+      document.getElementById('btnPlay').textContent = '↻ Replay';
+      return;
+    }
+    var st = S.steps[S.step];
+    if (S.t === 0) startStep(st);
+    S.t += dt * S.speed;
+
+    if (st.kind === 'swap') {
+      var u = Math.min(Math.max((S.t - 0.08) / 0.58, 0), 1);
+      // Smooth quintic ease in-out curve
+      var e = u < 0.5 ? 16 * u * u * u * u * u : 1 - Math.pow(-2 * u + 2, 5) / 2;
+      S.slotX[st.i] = st.fromA + (st.fromB - st.fromA) * e;
+      S.slotX[st.j] = st.fromB + (st.fromA - st.fromB) * e;
+
+      // Parabolic vertical jump arc & depth bypass offset (Zero clipping!)
+      var arcSin = Math.sin(u * Math.PI);
+      S.slotY = S.slotY || {};
+      S.slotZ = S.slotZ || {};
+      S.slotY[st.i] = arcSin * 0.42;
+      S.slotY[st.j] = arcSin * 0.42;
+      S.slotZ[st.i] = arcSin * 0.32;  // Left character leaps forward in Z
+      S.slotZ[st.j] = -arcSin * 0.32; // Right character leaps backward in Z
+
+      // hand the array order over at touchdown, then play Land
+      if (u >= 1 && !st.done) {
+        st.done = true;
+        S.slotY[st.i] = 0; S.slotY[st.j] = 0;
+        S.slotZ[st.i] = 0; S.slotZ[st.j] = 0;
+        var tmp = order[st.i]; order[st.i] = order[st.j]; order[st.j] = tmp;
+        S.slotX[st.i] = st.fromB; S.slotX[st.j] = st.fromA;
+        var idA = idAtSlot(st.i), idB = idAtSlot(st.j);
+        play('Land', idA, 0.06);
+        play('Land', idB, 0.06);
+        updateChips();
+
+        // Audio & impact reaction at exact character coordinates
+        if (idA === 'gaja' || idB === 'gaja') {
+          var gajaSlotX = (idA === 'gaja') ? S.slotX[st.i] : S.slotX[st.j];
+          triggerCameraShake(0.05, 0.40);
+          playSound('gaja_stomp');
+          spawnDustPuff(gajaSlotX, 0, 20);
+        } else if (idA === 'salya' || idB === 'salya') {
+          var salyaSlotX = (idA === 'salya') ? S.slotX[st.i] : S.slotX[st.j];
+          triggerCameraShake(0.025, 0.25);
+          spawnDustPuff(salyaSlotX, 0, 10);
+        } else if (idA === 'kumbha' || idB === 'kumbha') {
+          playSound('kumbha_chime');
+        } else if (idA === 'grantha' || idB === 'grantha') {
+          playSound('grantha_clap');
+        }
+      }
+    }
+    if (S.t >= (st.kind === 'swap' ? st.dur + 0.45 : st.dur)) {
+      S.t = 0;
+      S.step++;
+      if (S.singleStep !== undefined && S.step > S.singleStep) {
+        S.singleStep = undefined;
+        S.playing = false;
+      }
+    }
+  }
+
+  function updateChips() {
+    chipEls.forEach(function (c, k) {
+      c.textContent = order[k].value;
+      c.style.order = k;
+    });
+  }
+
+  /* -------------------------------------------------------------- controls */
+  var dragging = false, lastX = 0, lastY = 0, autoSpin = false;
+
+  renderer.domElement.addEventListener('pointerdown', function (e) {
+    dragging = true; lastX = e.clientX; lastY = e.clientY;
+  });
+  addEventListener('pointerup', function () { dragging = false; });
+  addEventListener('pointermove', function (e) {
+    if (!dragging) return;
+    CAM.yaw -= (e.clientX - lastX) * 0.006;
+    CAM.pitch = Math.min(Math.max(CAM.pitch + (e.clientY - lastY) * 0.004, 0.02), 1.15);
+    lastX = e.clientX; lastY = e.clientY;
+  });
+  renderer.domElement.addEventListener('wheel', function (e) {
+    e.preventDefault();
+    CAM.dist = Math.min(Math.max(CAM.dist + e.deltaY * 0.0035, 2.4), 11);
+  }, { passive: false });
+  addEventListener('resize', function () {
+    camera.aspect = innerWidth / innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(innerWidth, innerHeight);
+  });
+
+  document.getElementById('btnPlay').addEventListener('click', function () {
+    if (S.playing) { S.playing = false; this.textContent = '▶ Resume'; return; }
+    if (S.step >= S.steps.length) reset();
+    S.playing = true; this.textContent = '❙❙ Pause';
+  });
+  document.getElementById('btnStep').addEventListener('click', function () {
+    document.getElementById('btnPlay').textContent = '▶ Run bubble sort';
+    if (S.step >= S.steps.length) reset();
+    S.singleStep = S.step;      // the loop stops as soon as this step finishes
+    S.playing = true;
+  });
+  document.getElementById('btnShuffle').addEventListener('click', function () {
+    var vals = START.slice();
+    for (var i = vals.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = vals[i]; vals[i] = vals[j]; vals[j] = t;
+    }
+    reset(vals);
+  });
+  var speeds = [1, 0.5, 1.5, 2];
+  var speedIdx = 0;
+  document.getElementById('btnSpeed').addEventListener('click', function () {
+    speedIdx = (speedIdx + 1) % speeds.length;
+    S.speed = speeds[speedIdx];
+    this.textContent = 'Speed ×' + S.speed;
+  });
+  document.getElementById('btnSpin').addEventListener('click', function () {
+    autoSpin = !autoSpin;
+    this.classList.toggle('primary', autoSpin);
+  });
+
+  // Squad toggle (Switch between 8-Mascot Full Roster and 6-Mascot Core Squad)
+  var isEight = true;
+  document.getElementById('btnSquad').addEventListener('click', function () {
+    isEight = !isEight;
+    if (isEight) {
+      IDS = ['gaja', 'diya', 'kumbha', 'grantha', 'dhanesh', 'salya', 'mayur', 'patra'];
+      START = [8, 3, 7, 1, 5, 2, 6, 4];
+      this.textContent = 'Squad: 8 Mascots';
+      CAM.dist = 6.8;
+    } else {
+      IDS = ['gaja', 'diya', 'kumbha', 'grantha', 'dhanesh', 'salya'];
+      START = [8, 1, 7, 2, 4, 6];
+      this.textContent = 'Squad: 6 Mascots';
+      CAM.dist = 5.4;
+      // hide remaining models
+      ['mayur', 'patra'].forEach(function(id) {
+        if (chars[id]) chars[id].root.position.set(0, -100, 0);
+      });
+    }
+    reset();
+  });
+
+  function reset(values) {
+    var vals = (values || START).slice();
+    // clear one-shot clips back to Idle
+    IDS.forEach(function (id) { play('Idle', id, 0.2); });
+    order = vals.map(function (v, i) { return { value: v, id: IDS[i] }; });
+    S.steps = makeSteps(vals);
+    S.step = 0; S.t = 0; S.playing = false;
+    var mid = (vals.length - 1) / 2;
+    S.slotX = vals.map(function (_, i) { return (i - mid) * SPACING; });
+    S.slotY = {}; S.slotZ = {};
+    IDS.forEach(function(id) {
+      if (chars[id]) {
+        chars[id].root.position.set(0, 0, 0);
+        chars[id].root.rotation.set(0, 0, 0);
+      }
+    });
+    chipEls.forEach(function (c) { c.classList.remove('on', 'done'); });
+    buildChips(vals);
+    setStatus('ready — <b>' + vals.join(' · ') + '</b> — press Run');
+    document.getElementById('btnPlay').textContent = '▶ Run bubble sort';
+  }
+
+  /* ------------------------------------------------------------- main loop */
+  var clock = new T.Clock();
+  var v = new T.Vector3();
+
+  function frame() {
+    requestAnimationFrame(frame);
+    var dt = Math.min(clock.getDelta(), 0.05);
+
+    if (S.playing) tickStep(dt);
+    else if (S.steps.length && S.step < S.steps.length && S.t > 0) tickStep(dt);
+
+    // place characters on their (possibly animated) slot x
+    IDS.forEach(function (id, k) {
+      var c = chars[id];
+      if (!c) return;
+      var slotIdx = -1;
+      for (var i = 0; i < order.length; i++) if (order[i].id === id) slotIdx = i;
+      if (slotIdx < 0) return;
+      c.root.position.x = S.slotX[slotIdx];
+      var yOff = (S.slotY && S.slotY[slotIdx]) || 0;
+      var zOff = (S.slotZ && S.slotZ[slotIdx]) || 0;
+      c.root.position.y = yOff;
+      c.root.position.z = zOff;
+      c.mixer.update(dt * (S.playing ? S.speed : 1));
+
+      // Mochi/Pip Secondary Motion Tickers: organic micro-breathing & ear sway
+      var nowT = clock.getElapsedTime();
+      var breathScale = 1.0 + 0.016 * Math.sin(nowT * 2.2 + k * 0.7);
+      c.root.scale.set(breathScale, 1.0 / Math.sqrt(breathScale), breathScale);
+    });
+
+    if (autoSpin) CAM.yaw += dt * 0.14;
+
+    updateParticles(dt);
+    // Subtle tilt toward jump trajectory when in air
+    IDS.forEach(function (id) {
+      var c = chars[id];
+      if (!c) return;
+      var slotIdx = -1;
+      for (var i = 0; i < order.length; i++) if (order[i].id === id) slotIdx = i;
+      if (slotIdx >= 0 && S.slotY && S.slotY[slotIdx] > 0.02) {
+        var zOff = S.slotZ ? S.slotZ[slotIdx] : 0;
+        c.root.rotation.x = -zOff * 0.65;
+      } else if (c.root.rotation.x !== 0) {
+        c.root.rotation.x *= 0.85;
+      }
+    });
+
+    // camera shake decay
+    var shakeOffsetY = 0;
+    if (camShake.time > 0) {
+      camShake.time -= dt;
+      var sFrac = Math.max(0, camShake.time / camShake.dur);
+      shakeOffsetY = Math.sin(camShake.time * 45) * camShake.amp * sFrac;
+    }
+
+    // camera
+    var cp = Math.cos(CAM.pitch), sp = Math.sin(CAM.pitch);
+    camera.position.set(
+      CAM.target.x + Math.sin(CAM.yaw) * CAM.dist * cp,
+      CAM.target.y + CAM.dist * sp + 0.25 + shakeOffsetY,
+      CAM.target.z + Math.cos(CAM.yaw) * CAM.dist * cp
+    );
+    camera.lookAt(CAM.target.x, CAM.target.y + shakeOffsetY * 0.5, CAM.target.z);
+
+    // ---- number labels: live text projected onto the badge bone ----
+    IDS.forEach(function (id) {
+      var c = chars[id];
+      if (!c || !c.bone) return;
+      c.bone.updateWorldMatrix(true, false);
+      v.setFromMatrixPosition(c.bone.matrixWorld).project(camera);
+      var on = v.z < 1;
+      c.el.style.display = on ? 'block' : 'none';
+      c.el.style.left = ((v.x * 0.5 + 0.5) * innerWidth) + 'px';
+      c.el.style.top = ((-v.y * 0.5 + 0.5) * innerHeight - 2) + 'px';
+      var slotIdx = -1;
+      for (var i = 0; i < order.length; i++) if (order[i].id === id) slotIdx = i;
+      c.el.textContent = slotIdx < 0 ? '' : order[slotIdx].value;
+    });
+
+    renderer.render(scene, camera);
+  }
+
+  /* ------------------------------------------------------------------ boot */
+  setStatus('loading models…');
+  Promise.all(ALL_IDS.map(load)).then(function () {
+    reset(START);
+    IDS.forEach(function (id) { play('Idle', id, 0.0); });
+    frame();
+  }).catch(function (err) {
+    var e = document.getElementById('err');
+    e.style.display = 'block';
+    e.innerHTML = '<b>Could not load the models.</b> This page needs to be served over HTTP ' +
+      '(the browser blocks <code>file://</code> asset loading):<br><code>cd "' +
+      '3d bubblesort mascots" &amp;&amp; python3 -m http.server 8080</code><br>' +
+      'then open <code>http://localhost:8080/</code><br><br><small>' + err + '</small>';
+  });
+
+  /* -------------------------------------------------------------- Modal & Turnaround Views */
+  var viewsModal = document.getElementById('viewsModal');
+  var modalImg = document.getElementById('modalImg');
+  var modalTitle = document.getElementById('modalTitle');
+  var btnViews = document.getElementById('btnViews');
+  var btnCloseModal = document.getElementById('btnCloseModal');
+  var tabs = document.querySelectorAll('.vtab');
+
+  if (btnViews && viewsModal) {
+    btnViews.addEventListener('click', function() {
+      viewsModal.style.display = 'flex';
+    });
+  }
+
+  if (btnCloseModal && viewsModal) {
+    btnCloseModal.addEventListener('click', function() {
+      viewsModal.style.display = 'none';
+    });
+  }
+
+  tabs.forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      tabs.forEach(function(t) { t.classList.remove('on'); });
+      tab.classList.add('on');
+      modalImg.src = tab.getAttribute('data-img');
+      modalTitle.textContent = tab.getAttribute('data-name') + ' — High-Resolution Render Sheet';
+    });
+  });
+
+})();
+</script>
+</body>
+</html>

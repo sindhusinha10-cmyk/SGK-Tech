@@ -1,0 +1,116 @@
+[
+  {
+    "id": "gaja",
+    "name": "Gaja",
+    "title": "The Baby Elephant & Heavyweight Stomp",
+    "height_m": 1.25,
+    "cultural_heritage": {
+      "motif": "Airavata / Gajendra (Sacred Indian Elephant)",
+      "significance": "Emblem of wisdom, steadfast strength, and unbreakable memory. Represents patience and immense physical weight."
+    },
+    "powers_and_mechanics": {
+      "jump_physics": "Heavyweight Stomp: Deep crouch with delayed lift; lands with an earth-shaking resonant thud. Ears flap wide and trunk curls upward in triumphant J-salute.",
+      "superpower": "Heavyweight Anchor (Invariance): When swapped, smaller elements must hop completely over Gaja. Gaja's high numeric values bubble steadily rightward pass-by-pass into the sorted partition."
+    },
+    "3d_specs": {
+      "mesh": "gaja.glb",
+      "accessory_bones": ["trunk.01", "trunk.02", "trunk.03", "earL", "earR", "armL", "armR"],
+      "materials": ["slate_skin_soft", "terracotta_ear_inner", "curved_ivory_tusks", "badge_cream_slate"]
+    }
+  },
+  {
+    "id": "diya",
+    "name": "Diya",
+    "title": "The Terracotta Lamp & Flame Burst",
+    "height_m": 0.85,
+    "cultural_heritage": {
+      "motif": "Deepa / Diya (Clay Sacred Oil Lamp)",
+      "significance": "Triumph of knowledge over ignorance (Tamaso ma jyotir gamaya). Inner truth, persistence, and continuous illumination."
+    },
+    "powers_and_mechanics": {
+      "jump_physics": "Flame Burst Leap: Rapid, high-frequency spring; its living sculpted S-curve flame stretches and trails warm golden light in the air.",
+      "superpower": "Traversal Illuminator (Active Comparison): Flame flares into brilliant white-gold when inspecting adjacent pairs; cheek ember pulses warm amber when an inversion is detected."
+    },
+    "3d_specs": {
+      "mesh": "diya.glb",
+      "accessory_bones": ["flame_base", "flame_mid", "flame_tip"],
+      "materials": ["earthen_terracotta_clay", "flame_emissive_core", "flame_amber_glow", "cheek_ember"]
+    }
+  },
+  {
+    "id": "kumbha",
+    "name": "Kumbha",
+    "title": "The Sacred Kalasha & Boundary Chime",
+    "height_m": 0.98,
+    "cultural_heritage": {
+      "motif": "Purna Kalasha / Kumbha (Auspicious Vessel)",
+      "significance": "Emblem of fullness, auspicious abundance, and source of life. Adorned with mango leaves (Amrapallava) and sacred coconut (Shriphala)."
+    },
+    "powers_and_mechanics": {
+      "jump_physics": "Resonant Bell Chime Hop: Solid, balanced metallic leap; the 5 pointed mango leaves flutter rhythmically and coconut tuft sways, landing with a clean temple chime.",
+      "superpower": "Partition Boundary Buffer (Completion): Marks the sorted partition boundary (n - i - 1). Emits a golden sacred chime when an element reaches its permanent invariant slot."
+    },
+    "3d_specs": {
+      "mesh": "kumbha.glb",
+      "accessory_bones": ["coconut_tuft", "leaf_FL", "leaf_FR", "leaf_BL", "leaf_BR"],
+      "materials": ["sacred_brass_relief", "emerald_mango_leaf", "coconut_fibrous_husk", "badge_cream_slate"]
+    }
+  },
+  {
+    "id": "grantha",
+    "name": "Grantha",
+    "title": "The Vedic Palm-Leaf Book & Memory Logger",
+    "height_m": 1.15,
+    "cultural_heritage": {
+      "motif": "Grantha / Pothi (Ancient Vedic Manuscript)",
+      "significance": "Ancient preservation of foundational mathematics (Sulba Sutras, Aryabhatiya). Structured algorithmic records and written memory."
+    },
+    "powers_and_mechanics": {
+      "jump_physics": "Leaf Flutter Hop: Crisp upright box spring; carved teak wood covers clap with a gentle wooden snap, and the red braided cord bells chime.",
+      "superpower": "State & Swap Counter (Memory Logger): Unfurls its ancient manuscript leaves and tilts its peacock quill to log swap state changes and loop counts in memory."
+    },
+    "3d_specs": {
+      "mesh": "grantha.glb",
+      "accessory_bones": ["cover_top", "cord_tassel", "quill_pen"],
+      "materials": ["aged_birch_bark", "carved_teak_wood", "silk_cord_braid", "peacock_quill"]
+    }
+  },
+  {
+    "id": "dhanesh",
+    "name": "Dhanesh",
+    "title": "The Great Indian Hornbill & Casque Glide",
+    "height_m": 1.38,
+    "cultural_heritage": {
+      "motif": "Dhanesh (Great Indian Hornbill - Buceros bicornis)",
+      "significance": "Sacred forest bird of the Western Ghats and Northeast India. Embodies aerial vigilance, partnership, and ancient canopy wisdom."
+    },
+    "powers_and_mechanics": {
+      "jump_physics": "Casque Glide Leap: High vertical flutter with a slight wing glide at apex; regal golden casque horn leads the jump with a forward head dip.",
+      "superpower": "Precision Comparator Pointer: Massive golden beak dips down to point directly at the adjacent comparison target, making pairwise checks unmistakably clear."
+    },
+    "3d_specs": {
+      "mesh": "dhanesh.glb",
+      "accessory_bones": ["casque_horn", "beak_tip", "wingL", "wingR", "tail_long"],
+      "materials": ["feather_onyx_black", "feather_ivory_white", "golden_casque_amber", "perch_wood"]
+    }
+  },
+  {
+    "id": "salya",
+    "name": "Salya",
+    "title": "The Indian Pangolin & Scaled Defense",
+    "height_m": 0.92,
+    "cultural_heritage": {
+      "motif": "Salya (Indian Scaled Pangolin - Manis crassicaudata)",
+      "significance": "Shy, endangered native Indian wildlife covered in pinecone keratin armor. Symbolizes quiet persistence, defense, and self-contained strength."
+    },
+    "powers_and_mechanics": {
+      "jump_physics": "Armored Ball Spring: Low crouch that coils into a tight golden pinecone curve at apex, bouncing cleanly on its muscular counterbalanced tail.",
+      "superpower": "Stability Armor (Invariance Lock): Shivers its golden keratin scales and locks in place when two elements are already in sorted order (NoSwap)."
+    },
+    "3d_specs": {
+      "mesh": "salya.glb",
+      "accessory_bones": ["tail_curl.01", "tail_curl.02", "scale_hood", "armL", "armR"],
+      "materials": ["golden_keratin_scales", "soft_cream_underbelly", "tail_armor", "badge_cream_slate"]
+    }
+  }
+]
